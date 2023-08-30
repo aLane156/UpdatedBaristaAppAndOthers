@@ -18,6 +18,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="21,371,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top"/>
         <TextBlock x:Name="Task_Time" HorizontalAlignment="Left" Height="42" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="92" FontSize="18"/>
         <Button Content="DEBUG - FIND EVENT LINES" HorizontalAlignment="Left" Height="80" Margin="521,259,0,0" VerticalAlignment="Top" Width="171" Click="Button_Click_1"/>
+        <ComboBox HorizontalAlignment="Left" Margin="563,46,0,0" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

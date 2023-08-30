@@ -22,6 +22,8 @@ namespace TaskList
     /// </summary>
     public partial class MainWindow : Window
     {
+        // TO DO: Make tasks individually selectable via drop down                    <------------------------------------------------------- OI!
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +31,8 @@ namespace TaskList
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ReadEvent(2);
+            int[] lines = FindTasks();
+            ReadEvent(lines[lines.Length - 1]);
         }
 
         private string ReadLineOfFile(int lineNo)
