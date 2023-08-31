@@ -40,7 +40,7 @@ namespace ToDo
             Task newTask = new Task();
             newTask.description = "";
             newTask.complete = false;
-            newTask.date = 00000000;
+            newTask.date = "00/00/0000";
 
             // Add to end of tasks
             tasks.Add((1+tasks.Count).ToString(), newTask);
@@ -61,7 +61,7 @@ namespace ToDo
             {
                 foreach (var tb in panel.Children.OfType<TextBox>())
                 {
-                    if (tb.Background == Brushes.Red)
+                    if (tb.Background == Brushes.Crimson)
                     {
                         // Read file
                         string json = File.ReadAllText("myFile.json");
@@ -129,6 +129,35 @@ namespace ToDo
                 }
             }
         }
+        private void TextBox2_TaskChange(object sender, TextChangedEventArgs e)
+        {
+            // Select the updated textbox
+            TextBox currentTextBox = sender as TextBox;
+            if (currentTextBox != null)
+            {
+                // Read file
+                string json = File.ReadAllText("myFile.json");
+                TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+
+                // Get textBox id by removing start
+                string taskId = currentTextBox.Name.Replace("textBox2", "");
+
+                // For the task with this id
+                if (tasks.ContainsKey(taskId))
+                {
+                    Task task = tasks[taskId];
+
+                    // New description
+                    task.date = currentTextBox.Text;
+
+                    // Change the TaskList back to a JSON string
+                    string updatedJson = JsonConvert.SerializeObject(tasks);
+
+                    // Write the updated JSON string back to the file
+                    File.WriteAllText("myFile.json", updatedJson);
+                }
+            }
+        }
         private void TextBox_Clicked(object sender, MouseButtonEventArgs e)
         {
             // Select the updated textbox
@@ -141,10 +170,10 @@ namespace ToDo
                 {
                     foreach (var tb in panel.Children.OfType<TextBox>())
                     {
-                        tb.Background = Brushes.White;
+                        tb.Background = Brushes.MediumAquamarine;
                     }
                 }
-                currentTextBox.Background = Brushes.Red;
+                currentTextBox.Background = Brushes.Crimson;
             }
         }
         private void CheckBox_TaskChange(object sender, RoutedEventArgs e)
@@ -180,120 +209,130 @@ namespace ToDo
         private void AddUI()
         {
             // Read from the Json file
-            string json = File.ReadAllText("myFile.json");
-            TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
-
-            // Create a ScrollViewer
-            ScrollViewer scrollViewer = new ScrollViewer();
-            scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-            // Create a Grid
-            Grid grid = new Grid();
-            grid.Margin = new Thickness(10);
-
-            // topGrid 
-
-            // Define two ColumnDefinitions
-            //grid.ColumnDefinitions.Add(new ColumnDefinition());
-            //grid.ColumnDefinitions.Add(new ColumnDefinition());
-            ColumnDefinition col1 = new ColumnDefinition();
-            col1.Width = new GridLength(100);
-            grid.ColumnDefinitions.Add(col1);
-
-            ColumnDefinition col2 = new ColumnDefinition();
-            col2.Width = new GridLength(100);
-            grid.ColumnDefinitions.Add(col2);
-
-            // Define RowDefinitions for each task
-
-            int count;
-            if (tasks.Count < 13)
+            try
             {
-                count = 13;
+                string json = File.ReadAllText("myFile.json");
+                TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+
+                // Create a ScrollViewer
+                ScrollViewer scrollViewer = new ScrollViewer();
+                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+                // Create a Grid
+                Grid grid = new Grid();
+                grid.Margin = new Thickness(10);
+
+                // Define two ColumnDefinitions
+                ColumnDefinition col1 = new ColumnDefinition();
+                col1.Width = new GridLength(60);
+                grid.ColumnDefinitions.Add(col1);
+
+                ColumnDefinition col2 = new ColumnDefinition();
+                col2.Width = new GridLength(600);
+                grid.ColumnDefinitions.Add(col2);
+
+                ColumnDefinition col3 = new ColumnDefinition();
+                col3.Width = new GridLength(100);
+                grid.ColumnDefinitions.Add(col3);
+
+
+                // Add button
+                Button addButton = new Button();
+                addButton.Content = "Add";
+                addButton.Click += AddButton_clicked;
+                addButton.Height = 30;
+                addButton.Background = Brushes.Aquamarine;
+                Grid.SetRow(addButton, 0);
+                Grid.SetColumn(addButton, 0);
+                grid.Children.Add(addButton);
+
+                // Delete button
+                Button deleteButton = new Button();
+                deleteButton.Content = "Delete";
+                deleteButton.Click += DeleteButton_clicked;
+                deleteButton.Height = 30;
+                deleteButton.Width = 60;
+                deleteButton.HorizontalAlignment = HorizontalAlignment.Left;
+                deleteButton.Background = Brushes.Aquamarine;
+                Grid.SetRow(deleteButton, 0);
+                Grid.SetColumn(deleteButton, 1);
+                grid.Children.Add(deleteButton);
+
+                // Define RowDefinitions for each task
+                int count;
+                if (tasks.Count < 13)
+                {
+                    count = 13;
+                }
+                else
+                {
+                    count = tasks.Count;
+                }
+                for (int i = 0; i < count + 1; i++)
+                {
+                    grid.RowDefinitions.Add(new RowDefinition());
+                }
+
+                // Loop though and create a textbox for each task
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    Task task = tasks[(i + 1).ToString()];
+
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.IsChecked = task.complete;
+                    checkBox.Name = "checkBox" + (i + 1).ToString();
+                    checkBox.Height = 25;
+                    checkBox.Margin = new Thickness(1);
+                    checkBox.Background = Brushes.Aquamarine;
+
+                    TextBox textBox = new TextBox();
+                    textBox.Text = task.description;
+                    textBox.Name = "textBox" + (i + 1).ToString();
+                    textBox.Height = 25;
+                    textBox.Margin = new Thickness(1);
+                    textBox.Background = Brushes.MediumAquamarine;
+
+                    TextBox textBox2 = new TextBox();
+                    textBox2.Text = task.date.ToString();
+                    textBox2.Name = "textBox2" + (i + 1).ToString();
+                    textBox2.Height = 25;
+                    textBox2.Margin = new Thickness(1);
+                    textBox2.Background = Brushes.MediumAquamarine;
+
+                    // Attach the TextChanged event handler
+                    textBox.TextChanged += TextBox_TaskChange;
+                    textBox.GotFocus += (s, e) => TextBox_Clicked(s, null);
+                    textBox2.TextChanged += TextBox2_TaskChange;
+                    checkBox.Click += CheckBox_TaskChange;
+
+                    // Set the Grid.Row and Grid.Column attached properties
+                    Grid.SetRow(checkBox, i + 1);
+                    Grid.SetColumn(checkBox, 0);
+                    Grid.SetRow(textBox, i + 1);
+                    Grid.SetColumn(textBox, 1);
+                    Grid.SetRow(textBox2, i + 1);
+                    Grid.SetColumn(textBox2, 2);
+
+                    // Add the CheckBox and TextBox to the Grid
+                    grid.Children.Add(checkBox);
+                    grid.Children.Add(textBox);
+                    grid.Children.Add(textBox2);
+                }
+
+                // Add the Grid to the ScrollViewer
+                scrollViewer.Content = grid;
+
+                scrollViewer.Background = Brushes.Azure;
+
+                // Add the container to the window
+                this.Content = scrollViewer;
             }
-            else
+            catch (Exception e)
             {
-                count = tasks.Count;
+                Console.WriteLine("file doesn't work");
             }
-            for (int i = 0; i < count + 1; i++)
-            {
-                grid.RowDefinitions.Add(new RowDefinition());
-            }
-
-            // Add button
-            Button addButton = new Button();
-            addButton.Content = "Add";
-            addButton.Click += AddButton_clicked;
-            addButton.Height = 30;
-            Grid.SetRow(addButton, 0);
-            Grid.SetColumn(addButton, 0);
-            grid.Children.Add(addButton);
-
-            // Delete button
-            Button deleteButton = new Button();
-            deleteButton.Content = "Delete";
-            deleteButton.Click += DeleteButton_clicked;
-            deleteButton.Height = 30;
-            Grid.SetRow(deleteButton, 0);
-            Grid.SetColumn(deleteButton, 1);
-            grid.Children.Add(deleteButton);
-
-            // Loop though and create a textbox for each task
-            for (int i = 0; i < tasks.Count; i++)
-            {
-                Task task = tasks[(i + 1).ToString()];
-
-                CheckBox checkBox = new CheckBox();
-                checkBox.IsChecked = task.complete;
-                checkBox.Name = "checkBox" + (i + 1).ToString();
-                checkBox.Height = 25;
-                checkBox.Margin = new Thickness(1);
-
-                TextBox textBox = new TextBox();
-                textBox.Text = task.description;
-                textBox.Name = "textBox" + (i + 1).ToString();
-                textBox.Height = 25;
-                textBox.Margin = new Thickness(1);
-
-                // Attach the TextChanged event handler
-                textBox.TextChanged += TextBox_TaskChange;
-                textBox.GotFocus += (s, e) => TextBox_Clicked(s, null);
-                checkBox.Click += CheckBox_TaskChange;
-
-                // Set the Grid.Row and Grid.Column attached properties
-                Grid.SetRow(checkBox, i + 1);
-                Grid.SetColumn(checkBox, 0);
-                Grid.SetRow(textBox, i + 1);
-                Grid.SetColumn(textBox, 1);
-
-                // Add the CheckBox and TextBox to the Grid
-                grid.Children.Add(checkBox);
-                grid.Children.Add(textBox);
-            }
-
-            // Add the Grid to the ScrollViewer
-            scrollViewer.Content = grid;
-
-            // Add the ScrollViewer to the Window
-            this.Content = scrollViewer;
         }
 
 
     }
 }
-/*
-Old code 
-if (tasks.ContainsKey("1"))
-{
-    Task task = tasks["1"];
-    Console.WriteLine("Task ID: 1");
-    Console.WriteLine("Description: " + task.description);
-    Console.WriteLine("Complete: " + task.complete);
-    Console.WriteLine("Date: " + task.date);
-
-}
-else
-{
-    Console.WriteLine("No task found with ID");
-}
-*/

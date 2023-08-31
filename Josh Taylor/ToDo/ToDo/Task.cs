@@ -10,7 +10,7 @@ namespace ToDo
     {
         public string description { get; set; }
         public bool complete { get; set; }
-        public int date { get; set; }
+        public string date { get; set; }
     }
     public class TaskList : Dictionary<string, Task>
     {
