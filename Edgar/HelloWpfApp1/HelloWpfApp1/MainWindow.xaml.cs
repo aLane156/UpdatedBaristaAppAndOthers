@@ -1,54 +1,87 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Markup;
+using System.Xml.Linq;
+//using Newtonsoft.json;
 
 namespace HelloWpfApp1
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<TaskItem> tasks = new ObservableCollection<TaskItem>();
+
         public MainWindow()
         {
             InitializeComponent();
+            taskList.ItemsSource = tasks;
+            taskDescription.ItemsSource = tasks;
+            taskDate.ItemsSource = tasks;
         }
 
-        private void ButtonAddName_Click(object sender, RoutedEventArgs e)
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            /* Nested if statements to throw correct error */
-            if (!string.IsNullOrWhiteSpace(txtName.Text))
+            string name = txtName.Text.Trim();
+            string description = txtDescription.Text.Trim();
+            string date = txtDate.Text.Trim();
+
+            if (!string.IsNullOrEmpty(name))
             {
-                if (!string.IsNullOrWhiteSpace(txtDescription.Text))
+                if (!taskList.Items.Contains(txtName.Text))
                 {
-                    if (!taskNames.Items.Contains(txtName.Text))
-                    {
-                        taskNames.Items.Add(txtName.Text);
-                        taskDescription.Items.Add(txtDescription.Text);
-                        txtName.Clear();
-                    }
-                    else throw new InvalidOperationException("Name already used");
+                    tasks.Add(new TaskItem { Name = name, Description = description, Date = date });
+                    txtName.Clear();
+                    txtDescription.Clear();
+                    txtDate.Clear();
                 }
-                else throw new InvalidOperationException("Description not filled");
+                else throw new InvalidOperationException("Name already used");
             }
             else throw new InvalidOperationException("Name not filled");
         }
+    
 
-        private void taskNames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-
+            if (taskList.SelectedIndex >= 0)
+            {
+                tasks.RemoveAt(taskList.SelectedIndex);
+            }
         }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            string name = txtName.Text.Trim();
+            string description = txtDescription.Text.Trim();
+            string date = txtDate.Text.Trim();
+            if (taskList.SelectedIndex >= 0)
+            {
+                tasks.RemoveAt(taskList.SelectedIndex);
+                tasks.Add(new TaskItem { Name = name, Description = description, Date = date});
+            }
+        }
+
+        private void ButtonImport_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void TaskList_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (taskList.SelectedItem is TaskItem selectedTask)
+            {
+                txtName.Text = selectedTask.Name;
+                txtDescription.Text = selectedTask.Description;
+                txtDate.Text = selectedTask.Date;
+            }
+        }
+    }
+
+    public class TaskItem
+    {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? Date { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

@@ -5,27 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HelloWpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1060">
+        Title="Task Manager" Height="600" Width="1060">
 
-    <Grid Margin="0,0,0,0">
+    <Grid Margin="10">
+        <Grid.Background>
+            <ImageBrush ImageSource="/85-original.png-1000h.png"/>
+        </Grid.Background>
+        <Label Content="Names" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="10,0,0,0" Foreground="#FFC6C6C6"/>
+        <ListBox x:Name="taskList" HorizontalAlignment="Left" Width="170" Margin="10,75,0,10"
+                 SelectionChanged="TaskList_SelectionChanged" Background="#FF6D7998">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsCompleted}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
-        <Label Margin="10,0,0,360">Names</Label>
-        <ListBox x:Name="taskNames" Margin="10,35,0,320" HorizontalAlignment="Left" Width="60" SelectionChanged="taskNames_SelectionChanged" />
-        <ListBox x:Name="taskDescription" Margin="70,35,0,320" HorizontalAlignment="Left" Background="White" Width="300" />
-        <ListBox x:Name="completeDescription" Margin="370,35,0,320" HorizontalAlignment="Left" Background="White" Width="75" />
 
-        <Button x:Name="Delete" Margin="655,35,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="24" Width="104">
-            <Button.Foreground>
-                <SolidColorBrush Color="Black"/>
-            </Button.Foreground>
-            <Button.Content>
-                This is a button
-            </Button.Content>
-        </Button>
-        <StackPanel Margin="587,35,0,321" HorizontalAlignment="Left" Width="63">
-            <TextBox x:Name="txtName" />
-            <TextBox x:Name="txtDescription" />
-            <Button x:Name="btnAdd" Click="ButtonAddName_Click" Content="Add Task"/>
-        </StackPanel>
+        <Label Content="Descriptions" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="190,0,0,10" Foreground="#FFC6C6C6"/>
+        <ListBox x:Name="taskDescription" HorizontalAlignment="Left" Width="300" Margin="190,75,0,0" Height="475" VerticalAlignment="Top" Background="#FF6D7998">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Description}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Label Content="Dates" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="500,0,0,10" Foreground="#FFC6C6C6"/>
+        <ListBox x:Name="taskDate" HorizontalAlignment="Left" Width="100" Margin="500,75,0,0" Height="475" VerticalAlignment="Top" Background="#FF6D7998">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Date}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <TextBox x:Name="txtName" VerticalAlignment="Top" HorizontalAlignment="Left" Width="170" Margin="10,31,0,0" />
+        <TextBox x:Name="txtDescription" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="190,31,0,0" />
+        <TextBox x:Name="txtDate" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="500,31,0,0" />
+        <Button x:Name="btnAdd" Content="Add Task" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="625,27,0,0"
+        Click="ButtonAdd_Click"/>
+        <Button x:Name="btnImport" Content="Import" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,27,0,0"
+        Click="ButtonImport_Click"/>
+        <Button x:Name="btnUpdate" Content="Update" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="730,27,0,0"
+        Click="ButtonUpdate_Click"/>
+        <Button x:Name="btnDelete" Content="Delete" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="940,27,0,0"
+        Click="ButtonDelete_Click"/>
     </Grid>
 </Window>
