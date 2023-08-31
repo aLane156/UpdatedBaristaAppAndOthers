@@ -17,22 +17,17 @@ using System.Collections.Immutable;
 
 namespace TaskList
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        // TO DO: Make tasks individually selectable via drop down                    <------------------------------------------------------- OI!
-
         public MainWindow()
         {
             InitializeComponent();
+            UpdateDropDown();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            int[] lines = FindTasks();
-            ReadEvent(lines[lines.Length - 1]);
+            UpdateDropDown();
         }
 
         private string ReadLineOfFile(int lineNo)
@@ -51,6 +46,7 @@ namespace TaskList
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
         {
             CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
+            UpdateDropDown();
         }
 
         private void CreateNewEvent(string name, string time)
@@ -72,6 +68,25 @@ namespace TaskList
             {
                 TaskName.Text = "No Event Starts at " + lineNo.ToString();
             }
+        }
+
+        private int FindLine(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line)) { return -1; }
+            int lineNo = -1;
+            StreamReader sr = new StreamReader("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            string CurLine;
+            while ((CurLine = sr.ReadLine()) != null)
+            {
+                lineNo++;
+                if (CurLine == line)
+                {
+                    sr.Close();
+                    return lineNo;
+                }
+            }
+            sr.Close();
+            return lineNo;
         }
 
         private int[] FindTasks()
@@ -102,14 +117,25 @@ namespace TaskList
             return array;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void UpdateDropDown()
         {
-            int[] EventLines = FindTasks();
-            Task_Time.Text = "";
-            foreach (int line in EventLines)
+            int[] TaskLines = FindTasks();
+            Task_List.Items.Clear();
+            ListBoxItem lbi;
+            for (int i = 0; i < TaskLines.Length; i++)
             {
-                Task_Time.Text += line.ToString() + ", ";
+                lbi = new ListBoxItem();
+                lbi.Content = ReadLineOfFile(TaskLines[i]);
+                Task_List.Items.Add(lbi);
             }
+        }
+
+        private void ListBoxClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Task_List.SelectedItem == null) { return; }
+            string taskNameToFind = Task_List.SelectedItem.ToString();
+            taskNameToFind = taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            ReadEvent(FindLine(taskNameToFind));
         }
     }
 }
