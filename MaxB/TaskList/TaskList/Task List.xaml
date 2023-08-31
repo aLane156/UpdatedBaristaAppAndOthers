@@ -21,7 +21,7 @@
         <Button Content="Delete Task" HorizontalAlignment="Left" Height="20" Margin="124,239,0,0" VerticalAlignment="Top" Width="80" Click="DeleteTask"/>
         <TextBox x:Name="TaskName" HorizontalAlignment="Left" Height="51" Margin="33,31,0,0" TextWrapping="Wrap" Text="TaskName" VerticalAlignment="Top" Width="444" FontSize="30" Background="Transparent" BorderBrush="#00ABADB3" TextChanged="TaskName_TextChanged"/>
         <TextBox x:Name="Task_Time" HorizontalAlignment="Left" Margin="81,82,0,0" TextWrapping="Wrap" Text="00:00pm" VerticalAlignment="Top" Width="365" Height="37" BorderBrush="#00ABADB3" FontSize="18" TextChanged="Task_Time_TextChanged"/>
-        <TextBox x:Name="DescBox" HorizontalAlignment="Left" Height="110" Margin="37,124,0,0" TextWrapping="Wrap" Text="Description, notes, etc..." VerticalAlignment="Top" Width="444" Foreground="#FF737373" BorderBrush="White" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="Task_Desc" HorizontalAlignment="Left" Height="110" Margin="37,124,0,0" TextWrapping="Wrap" Text="Description, notes, etc..." VerticalAlignment="Top" Width="444" Foreground="#FF737373" BorderBrush="White" TextChanged="TextBox_TextChanged"/>
 
     </Grid>
 </Window>

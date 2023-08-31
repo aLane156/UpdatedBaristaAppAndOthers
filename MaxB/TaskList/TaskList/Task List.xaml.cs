@@ -23,7 +23,7 @@ namespace TaskList
         public MainWindow()
         {
             InitializeComponent();
-            UpdateDropDown();
+            UpdateDropDown(true);
         }
 
         private string ReadLineOfFile(int lineNo)
@@ -41,14 +41,14 @@ namespace TaskList
 
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
         {
-            CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);//                                                                <------------ affected by desc add
-            UpdateDropDown();
+            CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
+            UpdateDropDown(true);
         }
 
         private void CreateNewEvent(string name, string time)
         {
             List<string> lines = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ToList();
-            lines.AddRange(new List<string> { "Event - " + name, time });//                                                                <------------ affected by desc add
+            lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });
             File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
@@ -60,7 +60,8 @@ namespace TaskList
             if (lineContents.Length > 8 && lineContents.Substring(0, 5) == "Event")
             {
                 TaskName.Text = lineContents.Substring(8, lineContents.Length - 8);
-                Task_Time.Text = ReadLineOfFile(lineNo + 1);//                                                                <------------ affected by desc add
+                Task_Time.Text = ReadLineOfFile(lineNo + 1);
+                Task_Desc.Text = ReadLineOfFile(lineNo + 2);
             }
             else
             {
@@ -115,7 +116,7 @@ namespace TaskList
             return array;
         }
 
-        private void UpdateDropDown()
+        private void UpdateDropDown(bool selectLast)
         {
             int[] TaskLines = FindTasks();
 
@@ -123,7 +124,9 @@ namespace TaskList
             {
                 TaskName.Text = "Nothing to do yet...";
                 Task_Time.Text = "Why not add something?";
+                Task_Desc.Text = "";
                 Task_List.Items.Clear();
+                Save_Edits.Background = Brushes.LightGray;
                 return;
             }
 
@@ -137,8 +140,7 @@ namespace TaskList
                 lbi.Content = nameInList.Substring(8, nameInList.Length - 8);
                 Task_List.Items.Add(lbi);
             }
-            Task_List.SelectedItem = Task_List.Items[Task_List.Items.Count - 1];
-            SelectTask();
+            if (selectLast) { Task_List.SelectedItem = Task_List.Items[Task_List.Items.Count - 1]; SelectTask(); }
         }
 
         private void ListBoxClick(object sender, MouseButtonEventArgs e)
@@ -163,9 +165,10 @@ namespace TaskList
             string[] lines = File.ReadAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt");
             int taskStartingLine = FindLine(taskNameToFind);
             lines[taskStartingLine] = "Event - " + TaskName.Text;
-            lines[taskStartingLine + 1] = Task_Time.Text;//                                                                <------------ affected by desc add
+            lines[taskStartingLine + 1] = Task_Time.Text;
+            lines[taskStartingLine + 2] = Task_Desc.Text;
             File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
-            UpdateDropDown();
+            UpdateDropDown(false);
         }
 
         private void DeleteTask(object sender, RoutedEventArgs e)
@@ -174,9 +177,9 @@ namespace TaskList
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
             List<string> lines = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ToList();
-            lines.RemoveRange(FindLine(taskNameToFind), 2); //                                                                <------------ affected by desc add
+            lines.RemoveRange(FindLine(taskNameToFind), 3);
             File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
-            UpdateDropDown();
+            UpdateDropDown(true);
         }
 
         private void TaskName_TextChanged(object sender, TextChangedEventArgs e)
