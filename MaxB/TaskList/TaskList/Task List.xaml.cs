@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Collections.Immutable;
+using System.Xml.Linq;
 
 namespace TaskList
 {
@@ -59,7 +60,7 @@ namespace TaskList
             if (lineContents.Length > 8 && lineContents.Substring(0, 5) == "Event")
             {
                 TaskName.Text = lineContents.Substring(8, lineContents.Length - 8);
-                Task_Time.Text = "Time: " + ReadLineOfFile(lineNo + 1);
+                Task_Time.Text = ReadLineOfFile(lineNo + 1);
             }
             else
             {
@@ -150,6 +151,30 @@ namespace TaskList
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
             ReadEvent(FindLine(taskNameToFind));
+        }
+
+        private void SaveEdits(object sender, RoutedEventArgs e)
+        {
+            if (Task_List.SelectedItem == null) { return; } // same code as select task
+            string taskNameToFind = Task_List.SelectedItem.ToString();
+            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            string[] lines = File.ReadAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            int taskStartingLine = FindLine(taskNameToFind);
+            lines[taskStartingLine] = "Event - " + TaskName.Text;
+            lines[taskStartingLine + 1] = Task_Time.Text;
+            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            UpdateDropDown();
+        }
+
+        private void DeleteTask(object sender, RoutedEventArgs e)
+        {
+            if (Task_List.SelectedItem == null) { return; } // same code as select task
+            string taskNameToFind = Task_List.SelectedItem.ToString();
+            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            List<string> lines = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ToList();
+            lines.RemoveRange(FindLine(taskNameToFind), 2);
+            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            UpdateDropDown();
         }
     }
 }

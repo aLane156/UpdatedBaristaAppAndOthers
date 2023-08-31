@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Task List" Height="450" Width="800">
     <Grid>
-        <TextBlock x:Name="TaskName" HorizontalAlignment="Left" Margin="33,31,0,0" TextWrapping="Wrap" Text="TASK NAME" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="0.5,0.5" Height="73" Width="448"/>
+
         <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="18"/>
         <Button x:Name="SaveTaskName" Content="Add" HorizontalAlignment="Left" Margin="164,391,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40"/>
         <Rectangle HorizontalAlignment="Left" Height="248" Margin="21,22,0,0" Stroke="Black" VerticalAlignment="Top" Width="468"/>
@@ -15,8 +15,13 @@
         <TextBox x:Name="Task_Time_Input" HorizontalAlignment="Left" Margin="21,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.512,2.64" Height="17"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,323,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,371,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top"/>
-        <TextBlock x:Name="Task_Time" HorizontalAlignment="Left" Height="42" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="444" FontSize="18"/>
+        <TextBlock x:Name="Task_Time_Label" HorizontalAlignment="Left" Height="27" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="44" FontSize="18"/>
         <ListBox x:Name="Task_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="511,22,61,164" MouseLeftButtonUp="ListBoxClick"/>
+        <TextBox HorizontalAlignment="Left" Height="110" Margin="37,124,0,0" TextWrapping="Wrap" Text="Description, notes, etc..." VerticalAlignment="Top" Width="444" Foreground="#FF737373" BorderBrush="White"/>
+        <Button Content="Save Edits" HorizontalAlignment="Left" Margin="37,239,0,0" VerticalAlignment="Top" Width="70" Click="SaveEdits"/>
+        <Button Content="Delete Task" HorizontalAlignment="Left" Height="20" Margin="124,239,0,0" VerticalAlignment="Top" Width="80" Click="DeleteTask"/>
+        <TextBox x:Name="TaskName" HorizontalAlignment="Left" Height="51" Margin="33,31,0,0" TextWrapping="Wrap" Text="TaskName" VerticalAlignment="Top" Width="444" FontSize="30" Background="Transparent" BorderBrush="#00ABADB3"/>
+        <TextBox x:Name="Task_Time" HorizontalAlignment="Left" Margin="81,82,0,0" TextWrapping="Wrap" Text="00:00pm" VerticalAlignment="Top" Width="365" Height="37" BorderBrush="#00ABADB3" FontSize="18"/>
 
     </Grid>
 </Window>
