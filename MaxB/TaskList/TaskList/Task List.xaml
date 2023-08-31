@@ -7,16 +7,16 @@
         mc:Ignorable="d"
         Title="Task List" Height="450" Width="800">
     <Grid>
-        <TextBlock x:Name="TaskName" HorizontalAlignment="Left" Margin="33,31,0,0" TextWrapping="Wrap" Text="TASK NAME" VerticalAlignment="Top" FontSize="35" RenderTransformOrigin="0.5,0.5" Height="73" Width="439"/>
+        <TextBlock x:Name="TaskName" HorizontalAlignment="Left" Margin="33,31,0,0" TextWrapping="Wrap" Text="TASK NAME" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="0.5,0.5" Height="73" Width="448"/>
         <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="18"/>
-        <Button x:Name="SaveTaskName" Content="Save" HorizontalAlignment="Left" Margin="188,394,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40"/>
-        <Rectangle HorizontalAlignment="Left" Height="248" Margin="21,22,0,0" Stroke="Black" VerticalAlignment="Top" Width="289"/>
+        <Button x:Name="SaveTaskName" Content="Add" HorizontalAlignment="Left" Margin="164,391,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40"/>
+        <Rectangle HorizontalAlignment="Left" Height="248" Margin="21,22,0,0" Stroke="Black" VerticalAlignment="Top" Width="468"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,285,0,0" TextWrapping="Wrap" Text="Create new task" VerticalAlignment="Top" FontSize="24"/>
         <TextBox x:Name="Task_Time_Input" HorizontalAlignment="Left" Margin="21,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.512,2.64" Height="17"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,323,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,371,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top"/>
-        <TextBlock x:Name="Task_Time" HorizontalAlignment="Left" Height="42" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="92" FontSize="18"/>
-        <ListBox x:Name="Task_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="511,31,61,55" MouseLeftButtonUp="ListBoxClick"/>
+        <TextBlock x:Name="Task_Time" HorizontalAlignment="Left" Height="42" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="444" FontSize="18"/>
+        <ListBox x:Name="Task_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="511,22,61,164" MouseLeftButtonUp="ListBoxClick"/>
 
     </Grid>
 </Window>
