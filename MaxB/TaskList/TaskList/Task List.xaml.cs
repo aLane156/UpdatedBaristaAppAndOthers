@@ -26,6 +26,45 @@ namespace TaskList
         {
             InitializeComponent();
             UpdateDropDown(true);
+            CheckFileIntegrity();
+        }
+
+        private void CheckFileIntegrity()
+        {
+            if (File.Exists(pathwayToSaveFile) && !IsCorrupted(pathwayToSaveFile))
+            {
+                Corruptometer.Content = "File is intact";
+                Corruptometer.Foreground = Brushes.Gray;
+            }
+            else
+            {
+                Corruptometer.Content = "File may be corrupted!";
+                Corruptometer.Foreground = Brushes.Red;
+            }
+        }
+
+        private bool IsCorrupted(string filePathway)
+        {
+            if (!File.Exists(filePathway)) { return false; }
+            if (File.ReadAllLines(pathwayToSaveFile).ElementAt(0).Length > 4)
+            {
+                string firstLine = File.ReadAllLines(pathwayToSaveFile).ElementAt(0);
+                if (firstLine.Substring(0, 4) == "HASH")
+                {
+                    List<string> _lines = File.ReadAllLines(pathwayToSaveFile).ToList();
+                    _lines.RemoveAt(0);
+                    string _totLines = "";
+                    foreach (string line in _lines) { _totLines += line; }
+                    DEBUGhashLog.Text = "Comparing " + firstLine + " to HASH" + _totLines.GetHashCode().ToString() + ". totlines: " + _totLines;
+                    return firstLine != "HASH" + _totLines.GetHashCode().ToString();
+                }
+            }
+             List<string> lines = File.ReadAllLines(pathwayToSaveFile).ToList();
+             string totLines = "";
+             foreach (string line in lines) { totLines += line; }
+             lines.Insert(0, "HASH" + totLines.GetHashCode());
+             File.WriteAllLines(pathwayToSaveFile, lines);
+             return false;
         }
 
         private string ReadLineOfFile(int lineNo)
@@ -179,6 +218,14 @@ namespace TaskList
             lines[taskStartingLine + 2] = Task_Desc.Text;
             File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(false);
+            if (string.IsNullOrWhiteSpace(Task_Time.Text))
+            {
+                Task_Time_Label.Text = "";
+            }
+            else
+            {
+                Task_Time_Label.Text = "Time:";
+            }
         }
 
         private void DeleteTask(object sender, RoutedEventArgs e)
@@ -207,9 +254,11 @@ namespace TaskList
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void Save_File_Pathway_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             pathwayToSaveFile = Save_File_Pathway.Text;
+            UpdateDropDown(true);
+            CheckFileIntegrity();
         }
     }
 }
