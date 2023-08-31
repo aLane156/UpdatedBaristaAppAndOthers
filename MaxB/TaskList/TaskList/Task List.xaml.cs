@@ -20,6 +20,8 @@ namespace TaskList
 {
     public partial class MainWindow : Window
     {
+        public string pathwayToSaveFile = "C:\\Users\\mb153367\\Documents\\testing-file.txt";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,15 +30,15 @@ namespace TaskList
 
         private string ReadLineOfFile(int lineNo)
         {
-            string line = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ElementAt(lineNo);
+            string line = File.ReadLines(pathwayToSaveFile).ElementAt(lineNo);
             return line;
         }
 
         private void WriteLineOfFile(int lineNo, string changeTo)
         {
-            string[] lines = File.ReadAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            string[] lines = File.ReadAllLines(pathwayToSaveFile);
             lines[lineNo] = changeTo;
-            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            File.WriteAllLines(pathwayToSaveFile, lines);
         }
 
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
@@ -47,9 +49,9 @@ namespace TaskList
 
         private void CreateNewEvent(string name, string time)
         {
-            List<string> lines = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ToList();
+            List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });
-            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            File.WriteAllLines(pathwayToSaveFile, lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
         }
@@ -61,6 +63,13 @@ namespace TaskList
             {
                 TaskName.Text = lineContents.Substring(8, lineContents.Length - 8);
                 Task_Time.Text = ReadLineOfFile(lineNo + 1);
+                if (string.IsNullOrWhiteSpace(Task_Time.Text))
+                {
+                    Task_Time_Label.Text = "";
+                } else
+                {
+                    Task_Time_Label.Text = "Time:";
+                }
                 Task_Desc.Text = ReadLineOfFile(lineNo + 2);
             }
             else
@@ -73,7 +82,7 @@ namespace TaskList
         {
             if (string.IsNullOrWhiteSpace(line)) { return -1; }
             int lineNo = -1;
-            StreamReader sr = new StreamReader("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            StreamReader sr = new StreamReader(pathwayToSaveFile);
             string CurLine;
             while ((CurLine = sr.ReadLine()) != null)
             {
@@ -91,7 +100,7 @@ namespace TaskList
         private int[] FindTasks()
         {
             List<int> linesWithTaskOn = new List<int>();
-            StreamReader sr = new StreamReader("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            StreamReader sr = new StreamReader(pathwayToSaveFile);
             string line;
             int lineNo = 0;
             while ((line = sr.ReadLine()) != null)
@@ -123,8 +132,9 @@ namespace TaskList
             if (TaskLines.Length == 0) 
             {
                 TaskName.Text = "Nothing to do yet...";
-                Task_Time.Text = "Why not add something?";
-                Task_Desc.Text = "";
+                Task_Time.Text = "";
+                Task_Time_Label.Text = "";
+                Task_Desc.Text = "Why not add something?";
                 Task_List.Items.Clear();
                 Save_Edits.Background = Brushes.LightGray;
                 return;
@@ -159,15 +169,15 @@ namespace TaskList
 
         private void SaveEdits(object sender, RoutedEventArgs e)
         {
-            if (Task_List.SelectedItem == null) { return; } // same code as select task
+            if (Task_List.SelectedItem == null) { Save_Edits.Background = Brushes.LightGray; return; } // same code as select task
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
-            string[] lines = File.ReadAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt");
+            string[] lines = File.ReadAllLines(pathwayToSaveFile);
             int taskStartingLine = FindLine(taskNameToFind);
             lines[taskStartingLine] = "Event - " + TaskName.Text;
             lines[taskStartingLine + 1] = Task_Time.Text;
             lines[taskStartingLine + 2] = Task_Desc.Text;
-            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(false);
         }
 
@@ -176,9 +186,9 @@ namespace TaskList
             if (Task_List.SelectedItem == null) { return; } // same code as select task
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
-            List<string> lines = File.ReadLines("C:\\Users\\mb153367\\Documents\\testing-file.txt").ToList();
+            List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.RemoveRange(FindLine(taskNameToFind), 3);
-            File.WriteAllLines("C:\\Users\\mb153367\\Documents\\testing-file.txt", lines);
+            File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(true);
         }
 
@@ -195,6 +205,11 @@ namespace TaskList
         private void Task_Time_TextChanged(object sender, TextChangedEventArgs e)
         {
             Save_Edits.Background = Brushes.LightSteelBlue;
+        }
+
+        private void Save_File_Pathway_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            pathwayToSaveFile = Save_File_Pathway.Text;
         }
     }
 }
