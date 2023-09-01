@@ -1,0 +1,25 @@
+﻿<Application x:Class="WPFApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPFApp"
+             xmlns:view="clr-namespace:WPFApp.View"
+             xmlns:viewmodel="clr-namespace:WPFApp.ViewModel"
+             StartupUri="View\MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/RadioButtonTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewmodel:TodoViewModel}">
+                <view:TodoView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:ArchiveViewModel}">
+                <view:ArchivedView/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
