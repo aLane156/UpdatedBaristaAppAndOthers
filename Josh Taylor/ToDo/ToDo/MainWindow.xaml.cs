@@ -19,6 +19,8 @@ namespace ToDo
             InitializeComponent();
 
             AddUI();
+
+            //UpdateDate()
         }
 
         private void AddButton_clicked(object sender, RoutedEventArgs e)
@@ -240,7 +242,6 @@ namespace ToDo
                     File.WriteAllText("myFile.json", updatedJson);
                 }
 
-                AddUI();
             }
         }
 
@@ -253,65 +254,38 @@ namespace ToDo
 
             var panel = textbox.Parent as Panel;
 
-            for (int i = 0; i < tasks.Count; i++)
+            foreach (var tb in panel.Children.OfType<TextBox>())
             {
-                Task task = tasks[(i + 1).ToString()];
-
-                // Use FindVisualChildren() to get all the text boxes within the panel
-                foreach (var tb in FindVisualChildren<TextBox>(panel))
+                if (tb.Width == 100)
                 {
-                    if (tb.Width == 100)
+                    try
                     {
-                        try
-                        {
-                            string dateString = task.date.ToString();
-                            DateTime date = DateTime.Parse(dateString);
+                        string dateString = tb.Text.ToString();
+                        DateTime date = DateTime.Parse(dateString);
 
-                            int year = date.Year;
-                            int month = date.Month;
-                            int day = date.Day;
+                        int year = date.Year;
+                        int month = date.Month;
+                        int day = date.Day;
 
-                            DateTime date1 = DateTime.Now;
-                            DateTime date2 = new DateTime(year, month, day);
+                        DateTime date1 = DateTime.Now;
+                        DateTime date2 = new DateTime(year, month, day);
 
-                            TimeSpan difference = date2 - date1;
-                            int days = (int)difference.TotalDays;
+                        TimeSpan difference = date2 - date1;
+                        int days = (int)difference.TotalDays;
 
-                            if (days < 0) { tb.Background = Brushes.Crimson; }
-                            else if (days < 2) { tb.Background = Brushes.DarkOrange; }
-                            else { tb.Background = Brushes.MediumAquamarine; }
+                        if (days < 0) { tb.Background = Brushes.Crimson; }
+                        else if (days < 2) { tb.Background = Brushes.DarkOrange; }
+                        else {  tb.Background = Brushes.MediumAquamarine; }
 
-                        }
-                        catch (Exception d)
-                        {
-                            Console.WriteLine("Wrong format for date");
-                            tb.Background = Brushes.MediumAquamarine;
-                        }
+                    }
+                    catch (Exception d)
+                    {
+                        Console.WriteLine("Wrong format for date");
+                        tb.Background = Brushes.MediumAquamarine;
                     }
                 }
             }
         }
-
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
-
 
 
 
@@ -441,9 +415,32 @@ namespace ToDo
                     grid.Children.Add(textBox);
                     grid.Children.Add(textBox2);
 
-                    UpdateDate(textBox2);
-                }
+                    try
+                    {
+                        string dateString = textBox2.Text.ToString();
+                        DateTime date = DateTime.Parse(dateString);
 
+                        int year = date.Year;
+                        int month = date.Month;
+                        int day = date.Day;
+
+                        DateTime date1 = DateTime.Now;
+                        DateTime date2 = new DateTime(year, month, day);
+
+                        TimeSpan difference = date2 - date1;
+                        int days = (int)difference.TotalDays;
+
+                        if (days < 0) { textBox2.Background = Brushes.Crimson; }
+                        else if (days < 2) { textBox2.Background = Brushes.DarkOrange; }
+                        else { textBox2.Background = Brushes.MediumAquamarine; }
+
+                    }
+                    catch (Exception d)
+                    {
+                        Console.WriteLine("Wrong format for date");
+                        textBox2.Background = Brushes.MediumAquamarine;
+                    }
+                }
                 // Add the Grid to the ScrollViewer
                 scrollViewer.Content = grid;
 
