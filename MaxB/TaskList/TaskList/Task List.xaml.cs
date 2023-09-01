@@ -80,40 +80,6 @@ namespace TaskList
             File.Copy(pathwayToSaveFile, copyPathway);
         }
 
-        /*
-        private bool IsCorrupted(string filePathway)
-        {
-            if (!File.Exists(filePathway)) { return false; }
-            if (File.ReadAllLines(pathwayToSaveFile).ElementAt(0).Length > 4)
-            {
-                string firstLine = File.ReadAllLines(pathwayToSaveFile).ElementAt(0);
-                if (firstLine.Substring(0, 4) == "HASH")
-                {
-                    List<string> _lines = File.ReadAllLines(pathwayToSaveFile).ToList();
-                    _lines.RemoveAt(0);
-                    string _totLines = "";
-                    foreach (string line in _lines) { _totLines += line; }
-                    DEBUGhashLog.Text = "Hash in file: " + firstLine + " Hash attempts " + _totLines.GetHashCode().ToString() + _totLines.GetHashCode().ToString() + _totLines.GetHashCode().ToString();
-                    return firstLine != "HASH" + _totLines.GetHashCode().ToString();
-                }
-            }
-            SetHash(true);
-            return false;
-        }
-
-        private void SetHash(bool createNew)
-        {
-            List<string> lines = File.ReadAllLines(pathwayToSaveFile).ToList();
-            if (!createNew)
-            {
-                lines.RemoveAt(0);
-            }
-            string totLines = "";
-            foreach (string line in lines) { totLines += line; }
-            lines.Insert(0, "HASH" + totLines.GetHashCode());
-            File.WriteAllLines(pathwayToSaveFile, lines);
-        }*/
-
         private string ReadLineOfFile(int lineNo)
         {
             string line = File.ReadLines(pathwayToSaveFile).ElementAt(lineNo);
@@ -129,7 +95,7 @@ namespace TaskList
         private void CreateNewEvent(string name, string time)
         {
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
-            lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });
+            lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
@@ -150,7 +116,7 @@ namespace TaskList
                 {
                     Task_Time_Label.Text = "Time:";
                 }
-                Task_Desc.Text = ReadLineOfFile(lineNo + 2);
+                Task_Desc.Text = ReadLineOfFile(lineNo + 2);// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             }
             else
             {
@@ -214,7 +180,7 @@ namespace TaskList
                 TaskName.Text = "Nothing to do yet...";
                 Task_Time.Text = "";
                 Task_Time_Label.Text = "";
-                Task_Desc.Text = "Why not add something?";
+                Task_Desc.Text = "Why not add something?";// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
                 Task_List.Items.Clear();
                 Save_Edits.Background = Brushes.LightGray;
                 return;
@@ -256,7 +222,7 @@ namespace TaskList
             int taskStartingLine = FindLine(taskNameToFind);
             lines[taskStartingLine] = "Event - " + TaskName.Text;
             lines[taskStartingLine + 1] = Task_Time.Text;
-            lines[taskStartingLine + 2] = Task_Desc.Text;
+            lines[taskStartingLine + 2] = Task_Desc.Text;// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(false);
             if (string.IsNullOrWhiteSpace(Task_Time.Text))
@@ -276,7 +242,7 @@ namespace TaskList
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
-            lines.RemoveRange(FindLine(taskNameToFind), 3);
+            lines.RemoveRange(FindLine(taskNameToFind), 3);// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(true);
             UpdateCopyFile();
@@ -297,11 +263,33 @@ namespace TaskList
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e) //update file pathway
         {
+            if (string.IsNullOrWhiteSpace(Save_File_Pathway.Text)) { return; }
+            if (Save_File_Pathway.Text[0] == '"' && Save_File_Pathway.Text[Save_File_Pathway.Text.Length-1] == '"'){
+                Save_File_Pathway.Text = Save_File_Pathway.Text.Substring(1, Save_File_Pathway.Text.Length - 2);
+            }
             pathwayToSaveFile = Save_File_Pathway.Text;
             UpdateDropDown(true);
             CheckFileIntegrity();
+        }
+
+        private void Duplicate_Task_Click(object sender, RoutedEventArgs e)
+        {
+            if (Task_List.SelectedItem == null) { return; }
+
+            string taskNameToFind = Task_List.SelectedItem.ToString();
+            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            int startOfSelectedTask = FindLine(taskNameToFind);
+            if (startOfSelectedTask == -1) { return; }
+            DEBUG_TEXT.Text = "startOfSelectedTask: " + startOfSelectedTask.ToString();
+
+            List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
+            lines.AddRange(new List<string> { lines[startOfSelectedTask] + " copy", lines[startOfSelectedTask+1], lines[startOfSelectedTask+2] });// CHANGECHANGECHNAGECHANGECHANGECHNAGE
+            File.WriteAllLines(pathwayToSaveFile, lines);
+
+            UpdateDropDown(true);
+            UpdateCopyFile();
         }
     }
 }
