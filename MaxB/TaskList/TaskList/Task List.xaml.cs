@@ -75,7 +75,6 @@ namespace TaskList
             if (File.Exists(copyPathway))
             {
                 File.Delete(copyPathway);
-                
             }
             File.Copy(pathwayToSaveFile, copyPathway);
         }
@@ -94,6 +93,7 @@ namespace TaskList
 
         private void CreateNewEvent(string name, string time)
         {
+            if (string.IsNullOrWhiteSpace(name) || (time.Length > 5 && time.Substring(0, 5) == "Event")) { return; }
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
@@ -215,7 +215,8 @@ namespace TaskList
 
         private void SaveEdits(object sender, RoutedEventArgs e)
         {
-            if (Task_List.SelectedItem == null) { Save_Edits.Background = Brushes.LightGray; return; } // same code as select task
+            if (Task_List.SelectedItem == null) { Save_Edits.Background = Brushes.LightGray; return; } // not sure why this is here
+            if (string.IsNullOrWhiteSpace(TaskName.Text) || (Task_Time.Text.Length > 5 && Task_Time.Text.Substring(0, 5) == "Event")) { return; }
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
             string[] lines = File.ReadAllLines(pathwayToSaveFile);
