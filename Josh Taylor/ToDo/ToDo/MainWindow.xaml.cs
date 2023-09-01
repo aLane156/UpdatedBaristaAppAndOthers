@@ -1,23 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using System.Windows.Controls.Primitives;
-using static ToDo.MainWindow;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Windows.Themes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Reflection;
 
 namespace ToDo
 {
@@ -98,6 +89,47 @@ namespace ToDo
                 }
             }
         }
+        private void DeleteFinished_clicked(object sender, RoutedEventArgs e)
+        {
+            // Read file
+            string json = File.ReadAllText("myFile.json");
+            TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+
+            // Use a for loop and iterate in reverse order
+            for (int i = tasks.Count; i > 0; i--)
+            {
+                // Get the task at the current index
+                Task task = tasks[i.ToString()];
+
+                // For the task with this id
+                if (task.complete == true)
+                {
+                    // Remove the task from the collection
+                    tasks.Remove(i.ToString());
+
+                    // Update the taskId of all tasks with a higher taskId than the deleted one
+                    int deletedTaskId = i;
+                    var keysToUpdate = tasks.Keys.Where(k => int.Parse(k) > deletedTaskId).ToList();
+                    foreach (var key in keysToUpdate)
+                    {
+                        var value = tasks[key];
+                        tasks.Remove(key);
+                        int newKey = int.Parse(key) - 1;
+                        //value = new Task { Id = newKey.ToString() }; // Update the taskId of the task
+                        tasks[newKey.ToString()] = value;
+                    }
+                }
+            }
+
+            // Change the TaskList back to a JSON string
+            string updatedJson = JsonConvert.SerializeObject(tasks);
+
+            // Write the updated JSON string back to the file
+            File.WriteAllText("myFile.json", updatedJson);
+
+
+            AddUI();
+        }
 
         // When textbox updated save changes
         private void TextBox_TaskChange(object sender, TextChangedEventArgs e)
@@ -128,6 +160,7 @@ namespace ToDo
                     File.WriteAllText("myFile.json", updatedJson);
                 }
             }
+            //AddUI();
         }
         private void TextBox2_TaskChange(object sender, TextChangedEventArgs e)
         {
@@ -140,7 +173,7 @@ namespace ToDo
                 TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
 
                 // Get textBox id by removing start
-                string taskId = currentTextBox.Name.Replace("textBox2", "");
+                string taskId = currentTextBox.Name.Replace("_textBox2", "");
 
                 // For the task with this id
                 if (tasks.ContainsKey(taskId))
@@ -156,6 +189,8 @@ namespace ToDo
                     // Write the updated JSON string back to the file
                     File.WriteAllText("myFile.json", updatedJson);
                 }
+
+                UpdateDate(sender);
             }
         }
         private void TextBox_Clicked(object sender, MouseButtonEventArgs e)
@@ -170,11 +205,12 @@ namespace ToDo
                 {
                     foreach (var tb in panel.Children.OfType<TextBox>())
                     {
-                        tb.Background = Brushes.MediumAquamarine;
+                        if (tb.Width == 600) { tb.Background = Brushes.MediumAquamarine; } 
                     }
                 }
                 currentTextBox.Background = Brushes.Crimson;
             }
+            //AddUI();
         }
         private void CheckBox_TaskChange(object sender, RoutedEventArgs e)
         {
@@ -203,8 +239,81 @@ namespace ToDo
                     // Write the updated JSON string back to the file
                     File.WriteAllText("myFile.json", updatedJson);
                 }
+
+                AddUI();
             }
         }
+
+        private void UpdateDate(object box)
+        {
+            string json = File.ReadAllText("myFile.json");
+            TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+
+            TextBox textbox = box as TextBox;
+
+            var panel = textbox.Parent as Panel;
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Task task = tasks[(i + 1).ToString()];
+
+                // Use FindVisualChildren() to get all the text boxes within the panel
+                foreach (var tb in FindVisualChildren<TextBox>(panel))
+                {
+                    if (tb.Width == 100)
+                    {
+                        try
+                        {
+                            string dateString = task.date.ToString();
+                            DateTime date = DateTime.Parse(dateString);
+
+                            int year = date.Year;
+                            int month = date.Month;
+                            int day = date.Day;
+
+                            DateTime date1 = DateTime.Now;
+                            DateTime date2 = new DateTime(year, month, day);
+
+                            TimeSpan difference = date2 - date1;
+                            int days = (int)difference.TotalDays;
+
+                            if (days < 0) { tb.Background = Brushes.Crimson; }
+                            else if (days < 2) { tb.Background = Brushes.DarkOrange; }
+                            else { tb.Background = Brushes.MediumAquamarine; }
+
+                        }
+                        catch (Exception d)
+                        {
+                            Console.WriteLine("Wrong format for date");
+                            tb.Background = Brushes.MediumAquamarine;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+
+
+
 
         private void AddUI()
         {
@@ -258,6 +367,16 @@ namespace ToDo
                 Grid.SetColumn(deleteButton, 1);
                 grid.Children.Add(deleteButton);
 
+                // Delete Finished button
+                Button deleteFinished = new Button();
+                deleteFinished.Content = "Delete Finished";
+                deleteFinished.Click += DeleteFinished_clicked;
+                deleteFinished.Height = 30;
+                deleteFinished.Background = Brushes.Aquamarine;
+                Grid.SetRow(deleteFinished, 0);
+                Grid.SetColumn(deleteFinished, 2);
+                grid.Children.Add(deleteFinished);
+
                 // Define RowDefinitions for each task
                 int count;
                 if (tasks.Count < 13)
@@ -289,21 +408,25 @@ namespace ToDo
                     textBox.Text = task.description;
                     textBox.Name = "textBox" + (i + 1).ToString();
                     textBox.Height = 25;
+                    textBox.Width = 600;
                     textBox.Margin = new Thickness(1);
                     textBox.Background = Brushes.MediumAquamarine;
 
                     TextBox textBox2 = new TextBox();
                     textBox2.Text = task.date.ToString();
-                    textBox2.Name = "textBox2" + (i + 1).ToString();
+                    textBox2.Name = "_textBox2" + (i + 1).ToString();
                     textBox2.Height = 25;
+                    textBox2.Width = 100;
                     textBox2.Margin = new Thickness(1);
                     textBox2.Background = Brushes.MediumAquamarine;
 
                     // Attach the TextChanged event handler
                     textBox.TextChanged += TextBox_TaskChange;
                     textBox.GotFocus += (s, e) => TextBox_Clicked(s, null);
+                    //textBox2.GotFocus += (s, e) => TextBox_Clicked(s, null);
                     textBox2.TextChanged += TextBox2_TaskChange;
                     checkBox.Click += CheckBox_TaskChange;
+
 
                     // Set the Grid.Row and Grid.Column attached properties
                     Grid.SetRow(checkBox, i + 1);
@@ -317,6 +440,8 @@ namespace ToDo
                     grid.Children.Add(checkBox);
                     grid.Children.Add(textBox);
                     grid.Children.Add(textBox2);
+
+                    UpdateDate(textBox2);
                 }
 
                 // Add the Grid to the ScrollViewer
