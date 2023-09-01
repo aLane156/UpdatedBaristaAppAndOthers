@@ -26,7 +26,7 @@
         <Label Content="Save file pathway" HorizontalAlignment="Left" Margin="525,285,0,0" VerticalAlignment="Top" Height="32" Width="108"/>
         <Button Content="Select File" HorizontalAlignment="Left" Margin="525,342,0,0" VerticalAlignment="Top" Width="64" Click="Button_Click"/>
         <Label x:Name="Corruptometer" Content="File is intact" HorizontalAlignment="Left" Height="36" Margin="525,387,0,0" VerticalAlignment="Top" Width="142"/>
-        <TextBlock x:Name="DEBUGhashLog" HorizontalAlignment="Left" Height="62" Margin="264,317,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="182"/>
+        <TextBlock x:Name="DEBUGhashLog" HorizontalAlignment="Left" Height="138" Margin="264,285,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="225"/>
 
     </Grid>
 </Window>
