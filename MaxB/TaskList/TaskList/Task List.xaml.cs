@@ -26,19 +26,98 @@ namespace TaskList
         {
             InitializeComponent();
             UpdateDropDown(true);
+            CheckFileIntegrity();
         }
+
+        private void CheckFileIntegrity()
+        {
+            if (File.Exists(pathwayToSaveFile) && IsIntactSimple())
+            {
+                Corruptometer.Content = "File is intact";
+                Corruptometer.Foreground = Brushes.Gray;
+            }
+            else
+            {
+                Corruptometer.Content = "File may be corrupted!";
+                Corruptometer.Foreground = Brushes.Red;
+                //if (File.Exists(pathwayToSaveFile)) { SetHash(false); }
+            }
+            UpdateCopyFile();
+        }
+
+        private bool IsIntactSimple()
+        {
+            string copyPathway = pathwayToSaveFile.Substring(0, pathwayToSaveFile.Length - 4) + "COPY.txt";
+            if (File.Exists(copyPathway))
+            {
+                //check similarity
+                string[] LinesCopy = File.ReadAllLines(copyPathway);
+                string totalLinesCopy = "";
+                string[] LinesMain = File.ReadAllLines(pathwayToSaveFile);
+                string totalLinesMain = "";
+                if (LinesCopy.Length != LinesMain.Length) { return false; }
+                for (int i = 0; i < LinesCopy.Length; i++)
+                {
+                    totalLinesMain += LinesMain[i];
+                    totalLinesCopy += LinesCopy[i];
+                }
+
+                return totalLinesCopy == totalLinesMain;
+            } else
+            {
+                return true;
+            }
+        }
+
+        private void UpdateCopyFile()
+        {
+            string copyPathway = pathwayToSaveFile.Substring(0, pathwayToSaveFile.Length - 4) + "COPY.txt";
+            if (File.Exists(copyPathway))
+            {
+                File.Delete(copyPathway);
+                
+            }
+            File.Copy(pathwayToSaveFile, copyPathway);
+        }
+
+        /*
+        private bool IsCorrupted(string filePathway)
+        {
+            if (!File.Exists(filePathway)) { return false; }
+            if (File.ReadAllLines(pathwayToSaveFile).ElementAt(0).Length > 4)
+            {
+                string firstLine = File.ReadAllLines(pathwayToSaveFile).ElementAt(0);
+                if (firstLine.Substring(0, 4) == "HASH")
+                {
+                    List<string> _lines = File.ReadAllLines(pathwayToSaveFile).ToList();
+                    _lines.RemoveAt(0);
+                    string _totLines = "";
+                    foreach (string line in _lines) { _totLines += line; }
+                    DEBUGhashLog.Text = "Hash in file: " + firstLine + " Hash attempts " + _totLines.GetHashCode().ToString() + _totLines.GetHashCode().ToString() + _totLines.GetHashCode().ToString();
+                    return firstLine != "HASH" + _totLines.GetHashCode().ToString();
+                }
+            }
+            SetHash(true);
+            return false;
+        }
+
+        private void SetHash(bool createNew)
+        {
+            List<string> lines = File.ReadAllLines(pathwayToSaveFile).ToList();
+            if (!createNew)
+            {
+                lines.RemoveAt(0);
+            }
+            string totLines = "";
+            foreach (string line in lines) { totLines += line; }
+            lines.Insert(0, "HASH" + totLines.GetHashCode());
+            File.WriteAllLines(pathwayToSaveFile, lines);
+        }*/
 
         private string ReadLineOfFile(int lineNo)
         {
             string line = File.ReadLines(pathwayToSaveFile).ElementAt(lineNo);
             return line;
-        }
-
-        private void WriteLineOfFile(int lineNo, string changeTo)
-        {
-            string[] lines = File.ReadAllLines(pathwayToSaveFile);
-            lines[lineNo] = changeTo;
-            File.WriteAllLines(pathwayToSaveFile, lines);
         }
 
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
@@ -54,6 +133,7 @@ namespace TaskList
             File.WriteAllLines(pathwayToSaveFile, lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
+            UpdateCopyFile();
         }
 
         private void ReadEvent(int lineNo)
@@ -179,6 +259,15 @@ namespace TaskList
             lines[taskStartingLine + 2] = Task_Desc.Text;
             File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(false);
+            if (string.IsNullOrWhiteSpace(Task_Time.Text))
+            {
+                Task_Time_Label.Text = "";
+            }
+            else
+            {
+                Task_Time_Label.Text = "Time:";
+            }
+            UpdateCopyFile();
         }
 
         private void DeleteTask(object sender, RoutedEventArgs e)
@@ -190,6 +279,7 @@ namespace TaskList
             lines.RemoveRange(FindLine(taskNameToFind), 3);
             File.WriteAllLines(pathwayToSaveFile, lines);
             UpdateDropDown(true);
+            UpdateCopyFile();
         }
 
         private void TaskName_TextChanged(object sender, TextChangedEventArgs e)
@@ -207,9 +297,11 @@ namespace TaskList
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void Save_File_Pathway_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             pathwayToSaveFile = Save_File_Pathway.Text;
+            UpdateDropDown(true);
+            CheckFileIntegrity();
         }
     }
 }
