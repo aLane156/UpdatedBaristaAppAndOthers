@@ -26,7 +26,7 @@
 
 
         <Label Content="Descriptions" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="190,0,0,10" Foreground="#FFC6C6C6"/>
-        <ListBox x:Name="taskDescription" HorizontalAlignment="Left" Width="300" Margin="190,75,0,0" Height="475" VerticalAlignment="Top" Background="#FF6D7998">
+        <ListBox x:Name="taskDescription" HorizontalAlignment="Left" Width="300" Margin="190,75,0,10" Background="#FF6D7998">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -37,7 +37,7 @@
         </ListBox>
 
         <Label Content="Dates" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="500,0,0,10" Foreground="#FFC6C6C6"/>
-        <ListBox x:Name="taskDate" HorizontalAlignment="Left" Width="100" Margin="500,75,0,0" Height="475" VerticalAlignment="Top" Background="#FF6D7998">
+        <ListBox x:Name="taskDate" HorizontalAlignment="Left" Width="100" Margin="500,75,0,10" Background="#FF6D7998">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -52,11 +52,13 @@
         <TextBox x:Name="txtDate" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="500,31,0,0" />
         <Button x:Name="btnAdd" Content="Add Task" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="625,27,0,0"
         Click="ButtonAdd_Click"/>
-        <Button x:Name="btnImport" Content="Import" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,27,0,0"
-        Click="ButtonImport_Click"/>
         <Button x:Name="btnUpdate" Content="Update" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="730,27,0,0"
         Click="ButtonUpdate_Click"/>
-        <Button x:Name="btnDelete" Content="Delete" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="940,27,0,0"
+        <Button x:Name="btnDelete" Content="Delete" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,27,0,0"
         Click="ButtonDelete_Click"/>
+        <Button x:Name="btnImport" Content="Import" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="730,75,0,0"
+        Click="ButtonImport_Click"/>
+        <Button x:Name="btnExport" Content="Export" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,75,0,0"
+        Click="ButtonExport_Click"/>
     </Grid>
 </Window>
