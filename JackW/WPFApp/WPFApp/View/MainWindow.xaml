@@ -5,42 +5,106 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApp" xmlns:viewmodels="clr-namespace:WPFApp.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent">
 
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="9*"/>
-        </Grid.RowDefinitions>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="24" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"/>
+    </WindowChrome.WindowChrome>
 
-        <StackPanel Orientation="Horizontal"
-                    Margin="0,5,0,0">
-            <RadioButton Content="Todo List"
-                         Foreground="White"
-                         HorizontalContentAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Padding="5,0"
-                         IsChecked="True"
-                         Margin="10,0"
-                         Command="{Binding TodoCommand}"
-                         Style="{StaticResource RadioButtonTheme}"/>
-            <RadioButton Content="Archive List"
-                         Foreground="White"
-                         HorizontalContentAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Padding="5,0"
-                         Margin="10,0"
-                         Command="{Binding ArchiveCommand}"
-                         Style="{StaticResource RadioButtonTheme}"/>
-        </StackPanel>
-
-        <ContentControl Grid.Row="1"
-                        Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="White"/>
-    </Grid>
-    
+    <Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Height="24" Background="#000000" CornerRadius="10,10,0,0">
+                <Grid>
+                    <TextBlock Text="Todo List App"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               Margin="10,0"/>
+                    <Button Width="23"
+                            Height="23"
+                            Style="{StaticResource ChromeButtonTheme}"
+                            Command="{Binding MinimiseApp}"
+                            Margin="10,0,28,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Path Width="46"
+                              Height="24"
+                              Data="M 18,15 H 28"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                              StrokeThickness="1"
+                              Margin="-11,-4,0,0"/>
+                    </Button>
+                    <Button Width="23"
+                            Height="23"
+                            Style="{StaticResource ChromeButtonTheme}"
+                            Command="{Binding CloseApp}"
+                            Margin="10,0,5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Path
+			                Width="46"
+			                Height="24"
+			                Data="M 18,11 27,20 M 18,20 27,11"
+			                Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			                StrokeThickness="1"
+                            Margin="-11,-4,0,0"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <Grid Background="Transparent"
+                  Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!--#E68A2E-->
+                <StackPanel Orientation="Horizontal"
+                            Margin="0"
+                            Background="#E68A2E"
+                            Grid.Row="0">
+                    <RadioButton Content="Todo List"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 Padding="5,0"
+                                 IsChecked="True"
+                                 Margin="10,5,10,0"
+                                 Command="{Binding TodoCommand}"
+                                 Style="{StaticResource RadioButtonTheme}"/>
+                    <RadioButton Content="Archive List"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 Padding="5,0"
+                                 Margin="10,5,10,0"
+                                 Command="{Binding ArchiveCommand}"
+                                 Style="{StaticResource RadioButtonTheme}"/>
+                    <Button Content="Debug Log"
+                            VerticalContentAlignment="Center"
+                            Background="Transparent"
+                            Cursor="Hand"
+                            Command="{Binding OpenConsole}"
+                            BorderThickness="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="10,5,10,0"
+                            IsEnabled="{Binding ConsoleStatus}"/>
+                </StackPanel>
+                <ContentControl Grid.Row="1"
+                                Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"
+                                Foreground="White"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

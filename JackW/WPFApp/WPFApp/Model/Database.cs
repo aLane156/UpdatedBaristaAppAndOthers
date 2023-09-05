@@ -1,33 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
-using System.Threading.Tasks;
-using System.Xml;
 using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WPFApp.Model
 {
     public class Database
     {
-        public static string FolderPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/jwTodoApp";
+        public Database() { }
 
-        public string FilePath = $"{FolderPath}/todo.json";
-
-        private readonly JsonSerializerOptions JsonSerializeOptions = new JsonSerializerOptions() { WriteIndented = true };
+        private static readonly string FolderPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/jwTodoApp";
+        private string FilePath = $"{FolderPath}/todo.json";
 
         public void CreateJson()
         {
             if (Directory.Exists(FolderPath))
             {
-                return;
+                if (File.Exists(FilePath))
+                {
+                    return;
+                }
+                else
+                {
+                    try
+                    {
+                        File.Create(FilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                }
             }
             else
             {
@@ -43,12 +48,18 @@ namespace WPFApp.Model
             }
         }
 
-        public async void WriteJson(TodoItems TodoList)
+        public void WriteJson(TodoItems TodoList)
         {
-            using (FileStream stream = new FileStream(FilePath, FileMode.Create, FileAccess.Write))
+            try
             {
+                using FileStream stream = new FileStream(FilePath, FileMode.Create, FileAccess.Write);
                 using StreamWriter writer = new StreamWriter(stream);
-                await writer.WriteAsync(System.Text.Json.JsonSerializer.Serialize<TodoItems>(TodoList, JsonSerializeOptions));
+                writer.Write(JsonConvert.SerializeObject(TodoList, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Database.cs] Writing Json Failed: '{ex.Message}'");
+                throw new Exception("Failed to write to Json file.");
             }
         }
 
@@ -61,7 +72,6 @@ namespace WPFApp.Model
                     using StreamReader reader = new StreamReader(stream);
 
                     var json = reader.ReadToEnd();
-                    Debug.WriteLine(json);
 
                     TodoItems TempList = JsonConvert.DeserializeObject<TodoItems>(json);
 
@@ -73,11 +83,9 @@ namespace WPFApp.Model
                 Debug.WriteLine(ex.Message);
                 return new TodoItems();
             }
-
-            
         }
 
-        public static string GenUUID()
+        public string GenUUID()
         {
             Guid guid = Guid.NewGuid();
             return guid.ToString();
