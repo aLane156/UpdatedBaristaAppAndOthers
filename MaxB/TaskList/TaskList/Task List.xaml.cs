@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using System.Collections.Immutable;
-using System.Xml.Linq;
 
 namespace TaskList
 {
@@ -93,12 +84,11 @@ namespace TaskList
 
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
         {
-            CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
+            CreateNewTask(Task_Name_Input.Text, Task_Time_Input.Text);
             UpdateDropDown();
-            
         }
 
-        private void CreateNewEvent(string name, string time)
+        private void CreateNewTask(string name, string time)
         {
             if (string.IsNullOrWhiteSpace(name) || (time.Length > 5 && time.Substring(0, 5) == "Event")) { return; }
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
@@ -106,6 +96,7 @@ namespace TaskList
             File.WriteAllLines(pathwayToSaveFile, lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
+            Task_Date_Input.Text = "";
             UpdateCopyFile();
         }
 
@@ -165,7 +156,7 @@ namespace TaskList
                 lineNo++;
             }
             sr.Close();
-            return ListToArray(linesWithTaskOn);
+            return linesWithTaskOn.ToArray();
         }
         private int[] FindTasks(string mustContain)
         {
@@ -184,6 +175,7 @@ namespace TaskList
                 {
                     lastTaskLine = lineNo;
                     usedThisTask = false;
+                    line = line.Substring(8);
                 }
                 if (line.ToUpper().Contains(mustContain.ToUpper()) && !usedThisTask)
                 {
@@ -222,16 +214,6 @@ namespace TaskList
                     linesWithTaskOnNAME.AddRange(linesWithTaskOnTIME);
                     return linesWithTaskOnNAME.ToArray();
             }
-        }
-
-        private int[] ListToArray(List<int> list)
-        {
-            int[] array = new int[list.Count];
-            for (int i = 0; i < list.Count; i++)
-            {
-                array[i] = list[i];
-            }
-            return array;
         }
 
         private void UpdateDropDown(bool selectLast = true)
@@ -397,6 +379,7 @@ namespace TaskList
 
         private void Task_Date_Input_Changed(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Task_Date_Input.Text)) { return; }
             DateTime date = (DateTime)Task_Date_Input.SelectedDate;
             string dateText = Task_Date_Input.Text;
             TimeSpan dif = date - DateTime.Today;
