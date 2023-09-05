@@ -89,6 +89,7 @@ namespace TaskList
         {
             CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
             UpdateDropDown(true);
+            
         }
 
         private void CreateNewEvent(string name, string time)
@@ -262,6 +263,7 @@ namespace TaskList
             if (Task_List.SelectedItem == null) { Save_Edits.Background = Brushes.LightGray; return; } // not sure why this is here
             if (string.IsNullOrWhiteSpace(TaskName.Text) || (Task_Time.Text.Length > 5 && Task_Time.Text.Substring(0, 5) == "Event") || 
                 (Task_Desc.Text.Length > 5 && Task_Desc.Text.Substring(0, 5) == "Event")) { return; }
+
             string taskNameToFind = Task_List.SelectedItem.ToString();
             taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
             string[] lines = File.ReadAllLines(pathwayToSaveFile);
@@ -346,6 +348,28 @@ namespace TaskList
             {
                 UpdateDropDown(true, Search_Box.Text);
             }
+        }
+
+        private void Task_Date_Input_Changed(object sender, EventArgs e)
+        {
+            DateTime date = (DateTime)Task_Date_Input.SelectedDate;
+            string dateText = Task_Date_Input.Text;
+            TimeSpan dif = date - DateTime.Today;
+
+            switch (dif.Days)
+            {
+                case 0:
+                    dateText = "Later Today";
+                    break;
+                case < 7:
+                    dateText = date.DayOfWeek.ToString();
+                    break;
+                case < 14:
+                    dateText = "Next " + date.DayOfWeek.ToString();
+                    break;
+            }
+
+            Task_Time_Input.Text = dateText;
         }
     }
 }
