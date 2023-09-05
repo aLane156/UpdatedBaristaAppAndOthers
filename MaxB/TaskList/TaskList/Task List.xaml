@@ -33,6 +33,11 @@
         <Button x:Name="Duplicate_Button" Content="Duplicate" HorizontalAlignment="Left" Height="20" Margin="219,239,0,0" VerticalAlignment="Top" Width="80" Click="Duplicate_Task_Click"/>
         <TextBox x:Name="Search_Box" Margin="511,22,61,0" TextWrapping="Wrap" Height="18" VerticalAlignment="Top" TextChanged="Search_Box_TextChanged"/>
         <DatePicker x:Name="Task_Date_Input" Margin="153,392,0,0" VerticalAlignment="Top" SelectedDateChanged="Task_Date_Input_Changed" Height="23" HorizontalAlignment="Left" Width="106"/>
-
+        <ComboBox x:Name="Search_In" Margin="669,22,61,0" VerticalAlignment="Top" Height="18" SelectionChanged="Search_In_SelectionChanged" Padding="1">
+            <ComboBoxItem Content=" All"/>
+            <ComboBoxItem Content=" Name"/>
+            <ComboBoxItem Content=" Time"/>
+            <ComboBoxItem Content=" Desc"/>
+        </ComboBox>
     </Grid>
 </Window>

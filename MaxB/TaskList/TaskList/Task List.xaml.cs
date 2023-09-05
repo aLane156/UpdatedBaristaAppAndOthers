@@ -25,13 +25,14 @@ namespace TaskList
         public MainWindow()
         {
             InitializeComponent();
-            UpdateDropDown(true);
+            UpdateDropDown();
             CheckFileIntegrity();
+            Search_In.Text = " All";
         }
 
         private void CheckFileIntegrity()
         {
-            if (File.Exists(pathwayToSaveFile) && IsIntactSimple())
+            if (File.Exists(pathwayToSaveFile) && AreFileEditDatesEqual(pathwayToSaveFile) && IsIntactSimple())
             {
                 Corruptometer.Content = "File is intact";
                 Corruptometer.Foreground = Brushes.Gray;
@@ -69,6 +70,11 @@ namespace TaskList
             }
         }
 
+        private bool AreFileEditDatesEqual(string pathway)
+        {
+            return File.GetLastWriteTime(pathway) == File.GetLastWriteTime(pathway.Substring(0, pathway.Length - 4) + "COPY.txt");
+        }
+
         private void UpdateCopyFile()
         {
             string copyPathway = pathwayToSaveFile.Substring(0, pathwayToSaveFile.Length - 4) + "COPY.txt";
@@ -88,7 +94,7 @@ namespace TaskList
         private void SaveTaskName_Click(object sender, RoutedEventArgs e)
         {
             CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
-            UpdateDropDown(true);
+            UpdateDropDown();
             
         }
 
@@ -163,20 +169,59 @@ namespace TaskList
         }
         private int[] FindTasks(string mustContain)
         {
-            List<int> linesWithTaskOn = new List<int>();
+            List<int> linesWithTaskOnNAME = new List<int>();
+            List<int> linesWithTaskOnTIME = new List<int>();
+            List<int> linesWithTaskOnDESC = new List<int>();
+
             StreamReader sr = new StreamReader(pathwayToSaveFile);
             string line;
             int lineNo = 0;
+            int lastTaskLine = 0;
+            bool usedThisTask = false;
             while ((line = sr.ReadLine()) != null)
             {
-                if (line.Length > 8 && line.Substring(0, 5) == "Event" && line.ToUpper().Contains(mustContain.ToUpper()))
+                if (line.Length > 8 && line.Substring(0, 5) == "Event")
                 {
-                    linesWithTaskOn.Add(lineNo);
+                    lastTaskLine = lineNo;
+                    usedThisTask = false;
+                }
+                if (line.ToUpper().Contains(mustContain.ToUpper()) && !usedThisTask)
+                {
+                    usedThisTask= true;
+                    switch (lineNo - lastTaskLine)
+                    {
+                        case 0:
+                            linesWithTaskOnNAME.Remove(lastTaskLine);
+                            linesWithTaskOnNAME.Add(lastTaskLine);
+                            break;
+                        case 1:
+                            linesWithTaskOnTIME.Remove(lastTaskLine);
+                            linesWithTaskOnTIME.Add(lastTaskLine);
+                            break;
+                        case 2:
+                            linesWithTaskOnDESC.Remove(lastTaskLine);
+                            linesWithTaskOnDESC.Add(lastTaskLine);
+                            break;
+                    }
+                    
                 }
                 lineNo++;
             }
             sr.Close();
-            return ListToArray(linesWithTaskOn);
+
+            switch (Search_In.SelectedIndex)
+            {
+                case 1:
+                    return linesWithTaskOnNAME.ToArray();
+                case 2:
+                    return linesWithTaskOnTIME.ToArray();
+                case 3:
+                    return linesWithTaskOnDESC.ToArray();
+                default:
+                    linesWithTaskOnTIME.AddRange(linesWithTaskOnDESC);
+                    linesWithTaskOnNAME.AddRange(linesWithTaskOnTIME);
+                    return linesWithTaskOnNAME.ToArray();
+            }
         }
 
         private int[] ListToArray(List<int> list)
@@ -189,7 +234,7 @@ namespace TaskList
             return array;
         }
 
-        private void UpdateDropDown(bool selectLast)
+        private void UpdateDropDown(bool selectLast = true)
         {
             int[] TaskLines = FindTasks();
 
@@ -292,7 +337,7 @@ namespace TaskList
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.RemoveRange(FindLine(taskNameToFind), 3);// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
-            UpdateDropDown(true);
+            UpdateDropDown();
             UpdateCopyFile();
         }
 
@@ -318,7 +363,7 @@ namespace TaskList
             }
             if (!File.Exists(Save_File_Pathway.Text)) { return; }
             pathwayToSaveFile = Save_File_Pathway.Text;
-            UpdateDropDown(true);
+            UpdateDropDown();
             CheckFileIntegrity();
         }
 
@@ -335,7 +380,7 @@ namespace TaskList
             lines.AddRange(new List<string> { lines[startOfSelectedTask] + " copy", lines[startOfSelectedTask+1], lines[startOfSelectedTask+2] });// CHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
 
-            UpdateDropDown(true);
+            UpdateDropDown();
             UpdateCopyFile();
         }
 
@@ -370,6 +415,18 @@ namespace TaskList
             }
 
             Task_Time_Input.Text = dateText;
+        }
+
+        private void Search_In_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Search_Box.Text))
+            {
+                UpdateDropDown(false);
+            }
+            else
+            {
+                UpdateDropDown(true, Search_Box.Text);
+            }
         }
     }
 }
