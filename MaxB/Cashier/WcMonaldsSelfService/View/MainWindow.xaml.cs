@@ -31,6 +31,9 @@ namespace WcMonaldsSelfService
             SetTotal();
         }
 
+        /// <summary>
+        /// Adds all items to menu from vm items
+        /// </summary>
         private void InitialiseMenu()
         {
             try
@@ -85,6 +88,10 @@ namespace WcMonaldsSelfService
             catch { }
         }
 
+        /// <summary>
+        /// Changes the centeral display between menu mode and basket mode
+        /// </summary>
+        /// <param name="toUnadded">Should the menu be set to menu mode</param>
         public void ChangeItemDisplayFormat(bool toUnadded)
         {
             if (toUnadded)
@@ -103,6 +110,10 @@ namespace WcMonaldsSelfService
             }
         }
 
+        /// <summary>
+        /// Sets the total price of the basket
+        /// </summary>
+        /// <param name="total">The calculated total amount</param>
         public void SetTotal(float total = 0)
         {
             if (total == 0) 

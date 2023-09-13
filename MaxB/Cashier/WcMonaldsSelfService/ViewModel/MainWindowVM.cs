@@ -18,11 +18,24 @@ namespace WcMonaldsSelfService.ViewModel
             new MenuItem("Fries", 0.99f),
             new MenuItem("Larger Fries", 1.49f),
             new MenuItem("Mt Kilofryjaro", 1.99f),
+            new LooseMeats("Small Nuggets", 1.39f, 12),
+            new LooseMeats("Large Nuggets", 2.99f, 25),
+            new LooseMeats("Garlic Bread Slices", 1.49f, 6),
+            new Drink("Bottled Water", 0.99f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium, DrinkSize.large}),
+            new Drink("Pepsi Max", 1.50f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
+            new Drink("Oasis", 1.99f, new DrinkSize[] { DrinkSize.small}),
         };
 
         public List<MenuItem> basket { get; private set; } = new List<MenuItem>();
         public MainWindow? mw;
 
+        /// <summary>
+        /// Sets the current item from either of the lists
+        /// </summary>
+        /// <param name="index">The selected index</param>
+        /// <param name="_name">The name of the selected item</param>
+        /// <param name="_price">The price of the selected item</param>
+        /// <param name="isBasket">was the item selected from the basket</param>
         public void SetItemFromList(int index, out string _name, out float _price, bool isBasket = false)
         {
             try
@@ -55,6 +68,9 @@ namespace WcMonaldsSelfService.ViewModel
             return menu;
         }
 
+        /// <summary>
+        /// Adds an item to basket
+        /// </summary>
         public void AddItemToBasket()
         {
             try
@@ -68,6 +84,11 @@ namespace WcMonaldsSelfService.ViewModel
             } catch { }
         }
 
+        /// <summary>
+        /// calculates cost of a list of items
+        /// </summary>
+        /// <param name="_items">The items to search through</param>
+        /// <returns>The total cost/returns>
         public static float GetTotalCost(List<MenuItem> _items)
         {
             float totalCost = 0;
