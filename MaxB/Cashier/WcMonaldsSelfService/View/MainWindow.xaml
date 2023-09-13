@@ -1,0 +1,18 @@
+﻿<Window x:Class="WcMonaldsSelfService.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WcMonaldsSelfService"
+        mc:Ignorable="d"
+        Title="Main Select Menu" Height="450" Width="800">
+    <Grid>
+        <Rectangle HorizontalAlignment="Left" Height="212" Margin="223,30,0,0" Stroke="Black" VerticalAlignment="Top" Width="343"/>
+        <ListBox x:Name="Menu_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="26,30,622,26" SelectionChanged="ListBox_SelectionChanged"/>
+        <TextBlock x:Name="Item_Name" HorizontalAlignment="Left" Height="40" Margin="258,35,0,0" TextWrapping="Wrap" Text="Select an Item" VerticalAlignment="Top" Width="298" FontSize="30"/>
+        <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="237,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
+        <Button Content="Add To Order" HorizontalAlignment="Left" Height="37" Margin="400,194,0,0" VerticalAlignment="Top" Width="156" RenderTransformOrigin="0.5,0.5" FontSize="18" Click="Add_To_Order_Click">
+        </Button>
+
+    </Grid>
+</Window>
