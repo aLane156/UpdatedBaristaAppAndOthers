@@ -1,16 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.IO;
 using System.Windows;
-using System.Windows.Markup;
-using System.Xml.Linq;
 using System.Security.Cryptography;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text;
+
 
 namespace HelloWpfApp1
 {
@@ -26,8 +23,6 @@ namespace HelloWpfApp1
             Aes aes = Aes.Create();
             aes.KeySize = 256;
             aes.Mode = CipherMode.CBC;
-            aes.GenerateKey();
-            aes.GenerateIV();
             taskList.ItemsSource = tasks;
             taskDescription.ItemsSource = tasks;
             taskDate.ItemsSource = tasks;
@@ -82,6 +77,7 @@ namespace HelloWpfApp1
             if (result == true) // Test result.
             {
                 string file = openFileDialog1.FileName;
+                LastFile.file = file;
                 try
                 {
                     string encryptedJson = File.ReadAllText(file);
@@ -98,7 +94,6 @@ namespace HelloWpfApp1
                 {
                 }
             }
-            Console.WriteLine(result); // <-- For debugging use.
         }
 
         private void ButtonExport_Click(object sender, RoutedEventArgs e)
@@ -109,6 +104,24 @@ namespace HelloWpfApp1
             if (result == true)
             {
                 string file = saveFileDialog1.FileName;
+                LastFile.file = file;
+                try
+                {
+                    string json = JsonConvert.SerializeObject(tasks, Formatting.Indented);
+                    var encryptedJson = AesBody.Encrypt(json);
+                    File.WriteAllText(file, encryptedJson);
+                }
+                catch (IOException)
+                {
+                }
+            }
+        }
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Trace.WriteLine($"LastFile = {LastFile.file}");
+            if (File.Exists(LastFile.file))
+            {
+                string file = LastFile.file;
                 try
                 {
                     string json = JsonConvert.SerializeObject(tasks, Formatting.Indented);
@@ -130,8 +143,19 @@ namespace HelloWpfApp1
                 txtDate.Text = selectedTask.Date;
             }
         }
-    }
 
+        private void ColorComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            //if (selectedTask.Tags)
+            //{
+
+            //}
+        }
+    }
+    public static class LastFile
+    {
+        public static string? file;
+    }
     static class AESKey_IV
     {
         public static string Key = "12345678912345671234567891234565"; // field
@@ -147,7 +171,7 @@ namespace HelloWpfApp1
     }
     class AesBody
     {
-        // Initialising AES encryption by establishing a key and IV (Initialising Vector)
+        // Simple function to not bother user with selecting Key or IV (Initialising Vector)
         public static string Encrypt(string plainText)
         {
             using (Aes myAes = Aes.Create())
@@ -158,6 +182,7 @@ namespace HelloWpfApp1
                 return EncryptDataWithAesData;
             }
         }
+        // Simple function to not bother user with selecting Key or IV (Initialising Vector)
         public static string Decrypt(string encryptText)
         {
             using (Aes myAes = Aes.Create())
@@ -167,15 +192,18 @@ namespace HelloWpfApp1
                 return DecryptDataWithAes(encryptText, AESKey_IV.Key, base64IV);
             }
         }
+        /// <summary>
+        /// Encrypt with AES
+        /// </summary>
+        /// <param name="plainText">Enter the text to be encryped</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
         private static string EncryptDataWithAes(string plainText, string key, string iv)
         {
             using (Aes aesAlgorithm = Aes.Create())
             {
-                Console.WriteLine($"Aes Cipher Mode : {aesAlgorithm.Mode}");
-                Console.WriteLine($"Aes Padding Mode: {aesAlgorithm.Padding}");
-                Console.WriteLine($"Aes Key Size : {aesAlgorithm.KeySize}");
-                Console.WriteLine($"Aes Block Size : {aesAlgorithm.BlockSize}");
-
+                // Set the Key and IV to the shared one
                 aesAlgorithm.Key = Convert.FromBase64String(key);
                 aesAlgorithm.IV = Convert.FromBase64String(iv);
 
@@ -185,6 +213,12 @@ namespace HelloWpfApp1
                 byte[] encryptedData;
 
                 //Encryption will be done in a memory stream through a CryptoStream object
+                /* 1. Substitution of the bytes
+                 * 2. Shifting the rows
+                 * 3. Mixing the columns
+                 * 4. Adding the round key
+                 * Repeats this 10-14 times based on key size  */
+                 
                 using (MemoryStream ms = new MemoryStream())
                 {
                     using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
@@ -196,6 +230,7 @@ namespace HelloWpfApp1
                         encryptedData = ms.ToArray();
                     }
                 }
+                
 
                 return Convert.ToBase64String(encryptedData);
             }
@@ -206,11 +241,6 @@ namespace HelloWpfApp1
             {
                 aesAlgorithm.Key = Convert.FromBase64String(keyBase64);
                 aesAlgorithm.IV = Convert.FromBase64String(vectorBase64);
-
-                Console.WriteLine($"Aes Cipher Mode : {aesAlgorithm.Mode}");
-                Console.WriteLine($"Aes Padding Mode: {aesAlgorithm.Padding}");
-                Console.WriteLine($"Aes Key Size : {aesAlgorithm.KeySize}");
-                Console.WriteLine($"Aes Block Size : {aesAlgorithm.BlockSize}");
 
                 // Create decryptor object
                 ICryptoTransform decryptor = aesAlgorithm.CreateDecryptor();

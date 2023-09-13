@@ -10,6 +10,14 @@
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Theme/RadioButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/ChromeButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TitleBoxTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DescBoxTheme.xaml"/>
+                <ResourceDictionary Source="Theme/MainButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DataGridRowTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DataGridCellTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DataGridCellThemeEnd.xaml"/>
+                <ResourceDictionary Source="Theme/DataGridHeaderTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewmodel:TodoViewModel}">
@@ -18,6 +26,10 @@
 
             <DataTemplate DataType="{x:Type viewmodel:ArchiveViewModel}">
                 <view:ArchivedView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:MainWindowViewModel}">
+                <view:ConsoleWindow/>
             </DataTemplate>
 
         </ResourceDictionary>
