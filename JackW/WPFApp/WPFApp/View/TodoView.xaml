@@ -9,109 +9,21 @@
              xmlns:viewmodels="clr-namespace:WPFApp.ViewModel">
     
     <UserControl.DataContext>
-        <viewmodels:TodoViewModel  x:Name="ViewModel"/>
+        <viewmodels:TodoViewModel x:Name="ViewModel"/>
     </UserControl.DataContext>
 
-    <Grid>
-        <Border Background="Black">
-            <StackPanel Margin="10,5">
-                <Border Background="White">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="Todo List"
-                                       Padding="5"
-                                       FontSize="20"
-                                       VerticalAlignment="Center"
-                                       Foreground="Black"/>
-                            <TextBlock Text="{Binding ClockFace}"
-                                       Padding="5"
-                                       Grid.Column="1"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Right"
-                                       Foreground="Black"/>
-
-                            <Grid Grid.ColumnSpan="2"
-                                  Grid.Row="1"
-                                  HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="Title"
-                                           Margin="5,0,0,0"
-                                           Foreground="Black"/>
-
-                                <TextBlock Text="Description"
-                                           Grid.Column="1"
-                                           Margin="5,0,0,0"
-                                           Foreground="Black"/>
-
-                                <TextBlock Text="Deadline"
-                                           Grid.Column="2"
-                                           Foreground="Black"/>
-
-                                <TextBlock Text="Completed"
-                                           Grid.Column="3"
-                                           Foreground="Black"/>
-                            </Grid>
-                        </Grid>
-                        <ListView ItemsSource="{Binding GridItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              Foreground="Black"
-                              BorderThickness="0"
-                              Padding="0,0,0,5"
-                              SelectedItem="{Binding GridSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              >
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="{Binding Title}"/>
-
-                                        <TextBlock Text="{Binding Description}"
-                                               Grid.Column="1"/>
-
-                                        <TextBlock Text="{Binding Deadline}"
-                                               Grid.Column="2"/>
-
-                                        <TextBlock Text="{Binding Completed}"
-                                               Grid.Column="3"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </Border>
-                <Border Background="White"
+    <Border Background="#FFFFFF" CornerRadius="0,0,10,10">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4.5*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Background="#FF9933"
                     Padding="10"
-                    Margin="0,10,0,0">
+                    CornerRadius="10">
+                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
@@ -121,101 +33,113 @@
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBox Text="{Binding InputTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Text="Todo List"
+                                       Padding="5"
+                                       FontSize="20"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"/>
+                        <TextBlock Text="{Binding ClockFace}"
+                                       Padding="5"
+                                       Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       Foreground="White"/>
+                    </Grid>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  CanContentScroll="True"
+                                  MaxHeight="280">
+                        <DataGrid ItemsSource="{Binding GridItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  AutoGenerateColumns="False"
+                                  SelectionUnit="FullRow"
+                                  SelectedItem="{Binding GridSelected}"
+                                  ScrollViewer.CanContentScroll="True"
+                                  CanUserResizeColumns="False"
+                                  CanUserResizeRows="False"
+                                  RowStyle="{StaticResource DataGridRowTheme}"
+                                  BorderBrush="White"
+                                  Background="Transparent"
+                                  GridLinesVisibility="None"
+                                  HeadersVisibility="Column"
+                                  Padding="0"
+                                  BorderThickness="0"
+                                  ColumnHeaderStyle="{StaticResource DataGridHeaderTheme}"
+                                  CanUserSortColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Title, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="1.25*" CellStyle="{StaticResource DataGridCellTheme}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="4*" CellStyle="{StaticResource DataGridCellTheme}"/>
+                                <DataGridTextColumn Header="Deadline" Binding="{Binding Deadline, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="1*" CellStyle="{StaticResource DataGridCellTheme}"/>
+                                <DataGridCheckBoxColumn Header="Completed" Binding="{Binding Completed, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width=".75*" CellStyle="{StaticResource DataGridCellThemeEnd}">
+                                    <DataGridCheckBoxColumn.ElementStyle>
+                                        <Style TargetType="CheckBox">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridCheckBoxColumn.ElementStyle>
+                                </DataGridCheckBoxColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+            <Border Background="#FF9933"
+                    Padding="10"
+                    Margin="0,10,0,0"
+                    CornerRadius="10"
+                    Grid.Row="1">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Text="{Binding InputTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource TitleBoxTheme}"
                              Padding="5"
                              VerticalAlignment="Center"
-                             Margin="5,0">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                                    <Style.Resources>
-                                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                            <VisualBrush.Visual>
-                                                <Label Content="Todo Title" Foreground="LightGray" />
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Style.Resources>
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="Text" Value="{x:Null}">
-                                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="IsKeyboardFocused" Value="True">
-                                            <Setter Property="Background" Value="White" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                             Margin="5,0"/>
 
-                        <TextBox Text="{Binding InputDesc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding InputDesc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Padding="5"
                              Margin="5,0"
                              Grid.Column="1"
-                             VerticalAlignment="Center">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                                    <Style.Resources>
-                                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                            <VisualBrush.Visual>
-                                                <Label Content="Todo Description" Foreground="LightGray" />
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Style.Resources>
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="Text" Value="{x:Null}">
-                                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="IsKeyboardFocused" Value="True">
-                                            <Setter Property="Background" Value="White" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                             VerticalAlignment="Center"
+                             Style="{StaticResource DescBoxTheme}"
+                             Tag="Testing"/>
 
-                        <DatePicker Grid.Column="2"
-                                Padding="5"
+                    <DatePicker Grid.Column="2"
+                                Padding="3.95"
                                 Margin="5,0"
                                 SelectedDate="{Binding DeadlineDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                VerticalAlignment="Center"/>
+                                VerticalAlignment="Center"
+                                BorderBrush="White"
+                                BorderThickness="0,0,0,2"/>
 
-                        <Button Grid.Column="3"
-                            Content="Submit"
-                            Command="{Binding SubmitTodo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Padding="5"
-                            Margin="5,0"
-                            VerticalAlignment="Center"/>
+                    <Grid Grid.Column="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <Button Grid.Row="1"
-                            Grid.Column="3"
-                            Content="Delete"
-                            Margin="5"
-                            Padding="5"
-                            VerticalAlignment="Center"
-                            Command="{Binding SubmitDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Content="Submit"
+                                    Command="{Binding SubmitTodo}"
+                                    Padding="5"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MainButtonTheme}"/>
 
-                        <Button Grid.Row="1"
-                            Grid.Column="2"
-                            Content="Deselect"
-                            Margin="5"
-                            Padding="5"
-                            VerticalAlignment="Center"
-                            Command="{Binding SubmitClear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <Button Grid.Row="1"
-                            Content="Complete"
-                            Margin="5"
-                            Padding="5"
-                            VerticalAlignment="Center"
-                            Command="{Binding SubmitComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="1"
+                                    Content="Archive"
+                                    Margin="5"
+                                    Padding="5"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding SubmitArchive}"
+                                    Style="{StaticResource MainButtonTheme}"/>
                     </Grid>
-                </Border>
-            </StackPanel>
-        </Border>
-    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

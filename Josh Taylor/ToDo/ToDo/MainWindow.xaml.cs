@@ -17,6 +17,7 @@ namespace ToDo
     {
         // Declare a global variable to store the TaskList object
         TaskList tasks;
+        TaskList displayTasks;
 
         public MainWindow()
         {
@@ -33,6 +34,8 @@ namespace ToDo
         {
             string json = File.ReadAllText("myFile.json");
             tasks = JsonConvert.DeserializeObject<TaskList>(json);
+            // Create a deep copy of tasks
+            displayTasks = JsonConvert.DeserializeObject<TaskList>(json);//JsonConvert.DeserializeObject<TaskList>(JsonConvert.SerializeObject(tasks));
         }
 
         private void SaveTasks()
@@ -42,13 +45,14 @@ namespace ToDo
 
             // Write the updated JSON string back to the file
             File.WriteAllText("myFile.json", updatedJson);
+
+            string json = File.ReadAllText("myFile.json");
+            displayTasks = JsonConvert.DeserializeObject<TaskList>(json);
         }
 
 
         private void AddButton_clicked(object sender, RoutedEventArgs e)
         {
-            InitializeTasks();
-
             // Add empty object
             Task newTask = new Task();
             newTask.description = "";
@@ -57,7 +61,8 @@ namespace ToDo
 
             // Add to end of tasks
             tasks.Add((1+tasks.Count).ToString(), newTask);
-            
+            displayTasks.Add((1+displayTasks.Count).ToString(), newTask);
+
             SaveTasks();
 
             AddUI();
@@ -97,6 +102,7 @@ namespace ToDo
                             AddUI();
                         }
                     }
+                    
                 }
             }
         }
@@ -129,7 +135,6 @@ namespace ToDo
             }
 
             SaveTasks();
-
 
             AddUI();
         }
@@ -166,29 +171,10 @@ namespace ToDo
                     {
                         task.tag = newValue;
                     }
-                    /*
-                    switch (property)
-                    {
-                        case "Description":
-                            task.description = newValue;
-                            break;
-                        case "Date":
-                            task.date = newValue;
-                            UpdateDate(sender);
-                            break;
-                        case "Tag":
-                            task.tag = newValue;
-                            UpdateDate(sender);
-                            break;
-                        default:
-                            break;
-                    }
-                    */
 
                     SaveTasks();
                 }
             }
-            //AddUI();
         }
 
         private void TextBox_Clicked(object sender, MouseButtonEventArgs e)
@@ -208,7 +194,6 @@ namespace ToDo
                 }
                 currentTextBox.Background = Brushes.Crimson;
             }
-            //AddUI();
         }
         private void CheckBox_TaskChange(object sender, RoutedEventArgs e)
         {
@@ -221,7 +206,7 @@ namespace ToDo
                 string taskId = currentCheckBoxBox.Name.Replace("checkBox", "");
 
                 // For the task with this id
-                if (tasks.ContainsKey(taskId))
+                if (displayTasks.ContainsKey(taskId))
                 {
                     Task task = tasks[taskId];
 
@@ -230,7 +215,6 @@ namespace ToDo
 
                     SaveTasks();
                 }
-
             }
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -239,20 +223,39 @@ namespace ToDo
             object selectedItem = comboBox.SelectedItem;
             string selectedValue = selectedItem.ToString();
 
-            InitializeTasks();
+            InitializeTasks(); 
 
-            // Filter tasks to only contain Task objects with the same tag as selectedValue
-            var filteredTasks = tasks.Where(kvp => kvp.Value.tag == selectedValue)
+            if (selectedItem != "All")
+            {
+                // Filter tasks to only contain Task objects with the same tag as selectedValue
+                var filteredTasks = displayTasks.Where(kvp => kvp.Value.tag == selectedValue)
                                      .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            // Create a new instance of TaskList using the filtered tasks
-            tasks = new TaskList();
-            foreach (var kvp in filteredTasks)
-            {
-                tasks.Add(kvp.Key, kvp.Value);
+                // Create a new instance of TaskList using the filtered tasks
+                displayTasks.Clear();
+                int key = 1;
+                foreach (var kvp in filteredTasks)
+                {
+                    displayTasks.Add(key.ToString(), kvp.Value);
+                    key++;
+                }
             }
-
             AddUI();
+        }
+
+        private void ComboBox_DropDown(object sender, EventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Task task = tasks[(i + 1).ToString()];
+
+                if (!comboBox.Items.Contains(task.tag))
+                {
+                    comboBox.Items.Add(task.tag);
+                }
+            }
         }
 
         private void UpdateDate(object box)
@@ -359,25 +362,27 @@ namespace ToDo
                     comboBox.Items.Add(task.tag);
                 }
             }
+            comboBox.Items.Add("All");
 
             comboBox.Height = 30;
             comboBox.Background = Brushes.Aquamarine;
             comboBox.Width = 100;
             comboBox.HorizontalAlignment = HorizontalAlignment.Right;
             comboBox.SelectionChanged += ComboBox_SelectionChanged;
+            comboBox.DropDownOpened += ComboBox_DropDown;
             Grid.SetRow(comboBox, 0);
             Grid.SetColumn(comboBox, 1);
             grid.Children.Add(comboBox);
 
             // Define RowDefinitions for each task
             int count;
-            if (tasks.Count < 13)
+            if (displayTasks.Count < 13)
             {
                 count = 13;
             }
             else
             {
-                count = tasks.Count;
+                count = displayTasks.Count;
             }
             for (int i = 0; i < count + 1; i++)
             {
@@ -385,9 +390,9 @@ namespace ToDo
             }
 
             // Loop though and create a textbox for each task
-            for (int i = 0; i < tasks.Count; i++)
+            for (int i = 0; i < displayTasks.Count; i++)
             {
-                Task task = tasks[(i + 1).ToString()];
+                Task task = displayTasks[(i + 1).ToString()];
 
                 CheckBox checkBox = new CheckBox();
                 checkBox.IsChecked = task.complete;
@@ -480,7 +485,5 @@ namespace ToDo
             this.Content = scrollViewer;
  
         }
-
-
     }
 }
