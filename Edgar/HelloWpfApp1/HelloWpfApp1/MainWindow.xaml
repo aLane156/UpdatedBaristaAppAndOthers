@@ -8,6 +8,9 @@
         Title="Task Manager" Height="600" Width="1060">
 
     <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.Background>
             <ImageBrush ImageSource="/85-original.png-1000h.png"/>
         </Grid.Background>
@@ -25,7 +28,7 @@
         </ListBox>
 
 
-        <Label Content="Descriptions" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="190,0,0,10" Foreground="#FFC6C6C6"/>
+        <Label Content="Descriptions" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="190,0,0,0" Foreground="#FFC6C6C6"/>
         <ListBox x:Name="taskDescription" HorizontalAlignment="Left" Width="300" Margin="190,75,0,10" Background="#FF6D7998">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -36,8 +39,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Label Content="Dates" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="500,0,0,10" Foreground="#FFC6C6C6"/>
-        <ListBox x:Name="taskDate" HorizontalAlignment="Left" Width="100" Margin="500,75,0,10" Background="#FF6D7998">
+        <Label Content="Dates" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="500,0,0,0" Foreground="#FFC6C6C6"/>
+        <ListBox x:Name="taskDate" HorizontalAlignment="Left" Width="60" Margin="500,75,0,10" Background="#FF6D7998">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -47,18 +50,32 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
+        <Label Content="Tags" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="570,0,0,0" Foreground="#FFC6C6C6"/>
+        <ComboBox x:Name="Tags" SelectionChanged="ColorComboBox_SelectionChanged" Margin="570,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Height="26" Text="Tag">
+            <ComboBox.Background>
+                <LinearGradientBrush EndPoint="0,1">
+                    <GradientStop Color="#FFF0F0F0"/>
+                    <GradientStop Color="#FFB6B6B6" Offset="1"/>
+                </LinearGradientBrush>
+            </ComboBox.Background>
+            <ListBoxItem Content="Important" Cursor="Hand"/>
+        </ComboBox>
+
+
         <TextBox x:Name="txtName" VerticalAlignment="Top" HorizontalAlignment="Left" Width="170" Margin="10,31,0,0" />
         <TextBox x:Name="txtDescription" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="190,31,0,0" />
-        <TextBox x:Name="txtDate" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="500,31,0,0" />
-        <Button x:Name="btnAdd" Content="Add Task" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="625,27,0,0"
-        Click="ButtonAdd_Click"/>
-        <Button x:Name="btnUpdate" Content="Update" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="730,27,0,0"
-        Click="ButtonUpdate_Click"/>
-        <Button x:Name="btnDelete" Content="Delete" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,27,0,0"
-        Click="ButtonDelete_Click"/>
-        <Button x:Name="btnImport" Content="Import" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="730,75,0,0"
-        Click="ButtonImport_Click"/>
-        <Button x:Name="btnExport" Content="Export" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="835,75,0,0"
-        Click="ButtonExport_Click"/>
+        <TextBox x:Name="txtDate" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" Margin="500,31,0,0" />
+        <Button x:Name="btnAdd" Content="Add Task" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="645,27,0,0"
+        Click="ButtonAdd_Click" Cursor="Hand"/>
+        <Button x:Name="btnUpdate" Content="Update" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="750,27,0,0"
+        Click="ButtonUpdate_Click" Cursor="Hand"/>
+        <Button x:Name="btnDelete" Content="Delete" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="855,27,0,0"
+        Click="ButtonDelete_Click" Cursor="Hand"/>
+        <Button x:Name="btnSave" Content="Save" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="645,75,0,0"
+        Click="ButtonSave_Click" Cursor="Hand"/>
+        <Button x:Name="btnImport" Content="Import" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="750,75,0,0"
+        Click="ButtonImport_Click" Cursor="Hand"/>
+        <Button x:Name="btnExport" Content="Export" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="30" Margin="855,75,0,0"
+        Click="ButtonExport_Click" Cursor="Hand"/>
     </Grid>
 </Window>
