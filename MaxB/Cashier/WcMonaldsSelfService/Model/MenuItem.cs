@@ -47,7 +47,7 @@ namespace WcMonaldsSelfService.Model
 
         public override string ToString()
         {
-            return $"{name} for £{price}";
+            return $"{name}";
         }
 
     }

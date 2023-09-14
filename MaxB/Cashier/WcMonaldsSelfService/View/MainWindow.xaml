@@ -4,18 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WcMonaldsSelfService"
+        xmlns:viewmodels="clr-namespace:WcMonaldsSelfService.ViewModel"
         mc:Ignorable="d"
         Title="Main Select Menu" Height="450" Width="800">
+    <Window.DataContext>
+        <viewmodels:MainWindowVM/>
+    </Window.DataContext>
+
     <Grid>
         <Rectangle HorizontalAlignment="Left" Height="212" Margin="223,30,0,0" Stroke="Black" VerticalAlignment="Top" Width="343"/>
-        <ListBox x:Name="Menu_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="26,30,622,26" SelectionChanged="ListBox_SelectionChanged"/>
-        <TextBlock x:Name="Item_Name" HorizontalAlignment="Left" Height="40" Margin="246,35,0,0" TextWrapping="Wrap" Text="Select an Item" VerticalAlignment="Top" Width="298" FontSize="30"/>
-        <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="246,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
-        <Button x:Name="Add_To_Order" Content="Add To Order" HorizontalAlignment="Left" Height="37" Margin="400,193,0,0" VerticalAlignment="Top" Width="156" RenderTransformOrigin="0.5,0.5" FontSize="18" Click="Add_To_Order_Click"/>
-        <ListBox x:Name="Basket_List" HorizontalAlignment="Left" Height="212" Margin="614,30,0,0" VerticalAlignment="Top" Width="143" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="Basket_List_SelectionChanged"/>
-        <Button x:Name="Duplicate_Button" Content="Add Another" HorizontalAlignment="Left" Height="37" Margin="246,193,0,0" VerticalAlignment="Top" Width="117" FontSize="18" Click="Add_Another_Button_Click" Visibility="Collapsed"/>
-        <Button x:Name="Remove_Button" Content="Remove" HorizontalAlignment="Left" Height="37" Margin="380,193,0,0" VerticalAlignment="Top" Width="90" FontSize="18" Click="Remove_Button_Click" Visibility="Collapsed"/>
+        <ListBox x:Name="Menu_List" ItemsSource="{Binding Menu}" Margin="26,30,622,26" SelectedIndex="{Binding selectedIndex}"/>
+        <TextBlock x:Name="Item_Name" HorizontalAlignment="Left" Height="40" Margin="246,35,0,0" TextWrapping="Wrap" Text="{Binding CurrentItem.Name}" VerticalAlignment="Top" Width="298" FontSize="30"/>
+        <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="246,75,0,0" TextWrapping="Wrap" Text="{Binding CurrentItem.Price}" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
+        <Button x:Name="Add_To_Order" Content="Add To Order" HorizontalAlignment="Left" Height="37" Margin="400,193,0,0" VerticalAlignment="Top" Width="156" RenderTransformOrigin="0.5,0.5" FontSize="18"/>
+        <ListBox x:Name="Basket_List" HorizontalAlignment="Left" Height="212" Margin="614,30,0,0" VerticalAlignment="Top" Width="143" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <Button x:Name="Duplicate_Button" Content="Add Another" HorizontalAlignment="Left" Height="37" Margin="246,193,0,0" VerticalAlignment="Top" Width="117" FontSize="18" Visibility="Collapsed"/>
+        <Button x:Name="Remove_Button" Content="Remove" HorizontalAlignment="Left" Height="37" Margin="380,193,0,0" VerticalAlignment="Top" Width="90" FontSize="18" Visibility="Collapsed"/>
         <TextBlock x:Name="Total_Cost" HorizontalAlignment="Left" Height="41" Margin="614,247,0,0" TextWrapping="Wrap" Text="Total: £" VerticalAlignment="Top" Width="143" FontSize="16"/>
-        <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113" Click="To_CheckOut_Click"/>
+        <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113"/>
     </Grid>
 </Window>
