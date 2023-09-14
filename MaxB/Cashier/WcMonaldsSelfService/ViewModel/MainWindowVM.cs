@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WcMonaldsSelfService.Model;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace WcMonaldsSelfService.ViewModel
 {
@@ -21,17 +23,54 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
-        public int selectedIndex
+        private int? _selectedIndex;
+        public int? selectedIndex
         {
             get => _selectedIndex;
             set
             {
                 _selectedIndex = value;
-                NotifyPropertyChanged(nameof(selectedIndex));
-                CurrentItem = menu[selectedIndex];
+                NotifyPropertyChanged(nameof(_selectedIndex));
+                if (value != null) 
+                {
+                    SetCenterButtonStatus(true);
+                    selectedIndexBasket = null;
+                    try
+                    {
+                        CurrentItem = menu[(int)_selectedIndex];
+                    } catch { }
+                    finally
+                    {
+                        CurrentItem = menu[0];
+                    }
+                }
             }
         }
-        private int _selectedIndex;
+
+        private int? _selectedIndexBasket;
+        public int? selectedIndexBasket
+        {
+            get => _selectedIndexBasket;
+            set
+            {
+                _selectedIndexBasket = value;
+                NotifyPropertyChanged(nameof(_selectedIndexBasket));
+                if (value != null)
+                {
+                    SetCenterButtonStatus(false);
+                    selectedIndex = null;
+                    try
+                    {
+                        CurrentItem = Basket[(int)_selectedIndexBasket];
+                    }
+                    catch { }
+                    finally
+                    {
+                        CurrentItem = Basket[Basket.Count - 1];
+                    }
+                }
+            }
+        }
 
         private List<MenuItem> menu = new()
         {
@@ -58,8 +97,81 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
-        public List<MenuItem> basket { get; private set; } = new List<MenuItem>();
+        private ObservableCollection<MenuItem> basket = new();
+        public ObservableCollection<MenuItem> Basket
+        {
+            get => basket;
+            set
+            {
+                basket = value;
+                NotifyPropertyChanged(nameof(basket));
+            }
+        }
 
+        private Visibility centerButtonVisibility = Visibility.Visible;
+        public Visibility CenterButtonVisibility
+        {
+            get { return centerButtonVisibility; }
+            set 
+            { 
+                centerButtonVisibility = value;
+                NotifyPropertyChanged(nameof(centerButtonVisibility));
+            }
+        }
 
+        private Visibility basketButtonVisibility = Visibility.Collapsed;
+        public Visibility BasketButtonVisibility
+        {
+            get { return basketButtonVisibility; }
+            set
+            {
+                basketButtonVisibility = value;
+                NotifyPropertyChanged(nameof(basketButtonVisibility));
+            }
+        }
+
+        public ICommand AddToBasket { get; set; }
+        public ICommand RemoveFromBasket { get; set; }
+        public ICommand AddAnotherToBasket { get; set; }
+
+        public MainWindowVM()
+        {
+            AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+            RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(CurrentItem));
+            AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+        }
+
+        public void AddCurrentItemToBasket(MenuItem item)
+        {
+            try
+            {
+                if (currentItem != null)
+                {
+                    Basket.Add(item);
+                }
+            } catch { }
+        }
+
+        public void RemoveCurrentItemFromBasket(MenuItem item)
+        {
+            try
+            {
+                Basket.Remove(item);
+            } catch { }
+        }
+
+        private void SetCenterButtonStatus(bool MenuSide)
+        {
+            if (MenuSide)
+            {
+                CenterButtonVisibility = Visibility.Visible;
+                BasketButtonVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                CenterButtonVisibility = Visibility.Collapsed;
+                BasketButtonVisibility = Visibility.Visible;
+            }
+        }
     }
 }
