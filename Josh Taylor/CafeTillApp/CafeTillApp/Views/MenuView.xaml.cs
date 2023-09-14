@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeTillApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,18 +11,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace cafeTill.Views
+namespace CafeTillApp.Views
 {
     /// <summary>
-    /// Interaction logic for MainMenu.xaml
+    /// Interaction logic for MenuView.xaml
     /// </summary>
-    public partial class MainMenu : Window
+    public partial class MenuView : UserControl
     {
-        public MainMenu()
+        public MenuView()
         {
             InitializeComponent();
+
+            // Needed for data binding
+            this.DataContext = new MenuViewModel();
         }
+
     }
 }

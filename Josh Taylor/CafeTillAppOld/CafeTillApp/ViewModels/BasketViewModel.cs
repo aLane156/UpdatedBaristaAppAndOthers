@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace cafeTill.ViewModels
+namespace CafeTillApp.ViewModels
 {
-    internal class basketViewModel
+    class BasketViewModel
     {
     }
 }

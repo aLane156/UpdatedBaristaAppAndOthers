@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace cafeTill.Views
+namespace CafeTillApp.Views
 {
     /// <summary>
-    /// Interaction logic for basketView.xaml
+    /// Interaction logic for MenuView.xaml
     /// </summary>
-    public partial class basketView : Window
+    public partial class MenuView : UserControl
     {
-        public basketView()
+        public MenuView()
         {
             InitializeComponent();
         }

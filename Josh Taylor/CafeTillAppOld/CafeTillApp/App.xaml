@@ -1,8 +1,8 @@
-﻿<Application x:Class="cafeTill.App"
+﻿<Application x:Class="CafeTillApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:cafeTill"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:CafeTillApp"
+             StartupUri="Views\MainWindowView.xaml">
     <Application.Resources>
          
     </Application.Resources>
