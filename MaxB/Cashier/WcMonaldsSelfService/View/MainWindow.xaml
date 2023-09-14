@@ -15,7 +15,7 @@
         <Rectangle HorizontalAlignment="Left" Height="212" Margin="223,30,0,0" Stroke="Black" VerticalAlignment="Top" Width="343"/>
         <ListBox x:Name="Menu_List" ItemsSource="{Binding Menu}" Margin="26,55,622,26" SelectedIndex="{Binding selectedIndex, Mode=TwoWay}"/>
         <TextBlock x:Name="Item_Name" HorizontalAlignment="Left" Height="40" Margin="246,35,0,0" TextWrapping="Wrap" Text="{Binding CurrentItem.Name}" VerticalAlignment="Top" Width="298" FontSize="30"/>
-        <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="246,75,0,0" TextWrapping="Wrap" Text="{Binding CurrentItem.Price}" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
+        <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="246,75,0,0" TextWrapping="Wrap" Text="{Binding CurPrice}" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
         <Button x:Name="Add_To_Order" Content="Add To Order" HorizontalAlignment="Left" Height="37" Margin="400,193,0,0" VerticalAlignment="Top" Width="156" FontSize="18" Command="{Binding AddToBasket}" Visibility="{Binding CenterButtonVisibility}"/>
         <ListBox x:Name="Basket_List" HorizontalAlignment="Left" Height="187" Margin="614,55,0,0" VerticalAlignment="Top" Width="143" ItemsSource="{Binding Basket}" SelectedIndex="{Binding selectedIndexBasket}"/>
         <Button x:Name="Duplicate_Button" Content="Add Another" HorizontalAlignment="Left" Height="37" Margin="246,193,0,0" VerticalAlignment="Top" Width="117" FontSize="18" Visibility="{Binding BasketButtonVisibility}" Command="{Binding AddAnotherToBasket}"/>

@@ -7,11 +7,14 @@ using WcMonaldsSelfService.Model;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace WcMonaldsSelfService.ViewModel
 {
     internal class MainWindowVM : BaseVM
     {
+        private readonly MenuItem nopeItem = new MenuItem("Select an item", 0f);
+
         private MenuItem? currentItem;
         public MenuItem CurrentItem
         {
@@ -20,6 +23,7 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 currentItem = value;
                 NotifyPropertyChanged(nameof(currentItem));
+                SetPriceText(currentItem.Price);
             }
         }
 
@@ -35,14 +39,7 @@ namespace WcMonaldsSelfService.ViewModel
                 {
                     SetCenterButtonStatus(true);
                     selectedIndexBasket = null;
-                    try
-                    {
-                        CurrentItem = menu[(int)_selectedIndex];
-                    } catch { }
-                    finally
-                    {
-                        CurrentItem = menu[0];
-                    }
+                    CurrentItem = menu[(int)_selectedIndex];
                 }
             }
         }
@@ -63,10 +60,16 @@ namespace WcMonaldsSelfService.ViewModel
                     {
                         CurrentItem = Basket[(int)_selectedIndexBasket];
                     }
-                    catch { }
-                    finally
+                    catch 
                     {
-                        CurrentItem = Basket[Basket.Count - 1];
+                        if (value > 0)
+                        {
+                            CurrentItem = Basket.Last<MenuItem>();
+                        } else
+                        {
+                            CurrentItem = nopeItem;
+                        }
+
                     }
                 }
             }
@@ -130,6 +133,17 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        private string curPrice;
+        public string CurPrice
+        {
+            get => curPrice;
+            set
+            {
+                curPrice = value;
+                NotifyPropertyChanged(nameof(curPrice));
+            }
+        }
+
         public ICommand AddToBasket { get; set; }
         public ICommand RemoveFromBasket { get; set; }
         public ICommand AddAnotherToBasket { get; set; }
@@ -137,7 +151,7 @@ namespace WcMonaldsSelfService.ViewModel
         public MainWindowVM()
         {
             AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
-            RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(CurrentItem));
+            RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
         }
 
@@ -152,11 +166,11 @@ namespace WcMonaldsSelfService.ViewModel
             } catch { }
         }
 
-        public void RemoveCurrentItemFromBasket(MenuItem item)
+        public void RemoveCurrentItemFromBasket(int item)
         {
             try
             {
-                Basket.Remove(item);
+                Basket.RemoveAt(item);
             } catch { }
         }
 
@@ -172,6 +186,17 @@ namespace WcMonaldsSelfService.ViewModel
                 CenterButtonVisibility = Visibility.Collapsed;
                 BasketButtonVisibility = Visibility.Visible;
             }
+        }
+
+        private void SetPriceText(float price)
+        {
+            if (price == 0)
+            {
+                CurPrice = string.Empty;
+            } else if (price > 0)
+            {
+                CurPrice = "£" + price.ToString();
+            } 
         }
     }
 }
