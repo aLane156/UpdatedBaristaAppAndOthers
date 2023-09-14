@@ -24,5 +24,8 @@
         <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113"/>
         <TextBlock HorizontalAlignment="Left" Height="28" Margin="26,22,0,0" TextWrapping="Wrap" Text="Menu:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
         <TextBlock HorizontalAlignment="Left" Height="28" Margin="614,22,0,0" TextWrapping="Wrap" Text="Basket:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
+        <ComboBox HorizontalAlignment="Left" Margin="236,266,0,0" VerticalAlignment="Top" Width="120" Visibility="{Binding DrinkMenuVisibility}"/>
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="223,288,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="76" Visibility="{Binding LooseMeatsMenuVisibility}"/>
+        
     </Grid>
 </Window>

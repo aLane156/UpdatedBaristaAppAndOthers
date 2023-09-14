@@ -24,6 +24,7 @@ namespace WcMonaldsSelfService.ViewModel
                 currentItem = value;
                 NotifyPropertyChanged(nameof(currentItem));
                 SetPriceText(currentItem.Price);
+                ShowItemSpecificMenu(currentItem);
             }
         }
 
@@ -133,6 +134,39 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        private Visibility drinkMenuVisibility = Visibility.Collapsed;
+        public Visibility DrinkMenuVisibility
+        {
+            get { return drinkMenuVisibility; }
+            set
+            {
+                drinkMenuVisibility = value;
+                NotifyPropertyChanged(nameof(drinkMenuVisibility));
+            }
+        }
+
+        private Visibility burgerMenuVisibility = Visibility.Collapsed;
+        public Visibility BurgerMenuVisibility
+        {
+            get { return burgerMenuVisibility; }
+            set
+            {
+                burgerMenuVisibility = value;
+                NotifyPropertyChanged(nameof(burgerMenuVisibility));
+            }
+        }
+
+        private Visibility looseMeatsMenuVisibility = Visibility.Collapsed;
+        public Visibility LooseMeatsMenuVisibility
+        {
+            get { return looseMeatsMenuVisibility; }
+            set
+            {
+                looseMeatsMenuVisibility = value;
+                NotifyPropertyChanged(nameof(looseMeatsMenuVisibility));
+            }
+        }
+
         private string curPrice;
         public string CurPrice
         {
@@ -155,17 +189,25 @@ namespace WcMonaldsSelfService.ViewModel
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
         }
 
+        /// <summary>
+        /// Adds an item to basket
+        /// </summary>
+        /// <param name="item">The item to be added</param>
         public void AddCurrentItemToBasket(MenuItem item)
         {
             try
             {
-                if (currentItem != null)
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
                 {
                     Basket.Add(item);
                 }
             } catch { }
         }
 
+        /// <summary>
+        /// Removes an item from basket
+        /// </summary>
+        /// <param name="item">The item index to remove</param>
         public void RemoveCurrentItemFromBasket(int item)
         {
             try
@@ -174,6 +216,10 @@ namespace WcMonaldsSelfService.ViewModel
             } catch { }
         }
 
+        /// <summary>
+        /// Sets the mode of the centeral buttons to menu mode or basket mode
+        /// </summary>
+        /// <param name="MenuSide">Put centeral buttons into menu mode?</param>
         private void SetCenterButtonStatus(bool MenuSide)
         {
             if (MenuSide)
@@ -188,6 +234,10 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        /// <summary>
+        /// Sets the text showing the price of the selected item
+        /// </summary>
+        /// <param name="price">The raw price of the product</param>
         private void SetPriceText(float price)
         {
             if (price == 0)
@@ -197,6 +247,37 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 CurPrice = "£" + price.ToString();
             } 
+        }
+
+        /// <summary>
+        /// Shows the appropriate additional menu below the main item menu
+        /// </summary>
+        /// <param name="item">The current item to be checked</param>
+        private void ShowItemSpecificMenu(MenuItem item)
+        {
+            if (item.GetType() == typeof(Drink))
+            {
+                DrinkMenuVisibility = Visibility.Visible;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            } else if (item.GetType() == typeof(Burger))
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Visible;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            }
+            else if (item.GetType() == typeof(LooseMeats))
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Visible;
+
+            } else
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            }
         }
     }
 }
