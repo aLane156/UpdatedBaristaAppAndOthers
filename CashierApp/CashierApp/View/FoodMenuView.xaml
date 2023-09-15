@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="CashierApp.View.FoodMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CashierApp.View"
+             xmlns:viewmodel="clr-namespace:CashierApp.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <viewmodel:FoodMenuViewModel/>
+    </UserControl.DataContext>
+    
+    <Border HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Grid>
+            <ListBox Background="Transparent"
+                     ItemsSource="{Binding FoodMenuItems}" 
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     SelectedItem="{Binding FoodSelected}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center"
+                                   Margin="10"
+                                   MaxWidth="520" 
+                                   ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="Black"
+                                Opacity="0.5"
+                                Padding="10,5"
+                                Width="90">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}"
+                                           Foreground="White"
+                                           FontSize="24"/>
+                                <TextBlock Text="{Binding Price}"
+                                           Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="White"
+                    Padding="10">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Add Item"
+                            Style="{StaticResource OrderButtonTheme}"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Command="{Binding AddItemCommand}"/>
+                    <Button Content="Deselect"
+                            Style="{StaticResource OrderButtonTheme}"
+                            Grid.Column="5"
+                            Grid.ColumnSpan="2"
+                            Command="{Binding DeselectCommand}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

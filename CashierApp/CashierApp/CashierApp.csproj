@@ -8,7 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
+    <None Remove="Resources\Images\closeSymbol.png" />
+    <None Remove="Resources\Images\minimiseSymbol.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\closeSymbol.png" />
+    <Resource Include="Resources\Images\minimiseSymbol.png" />
   </ItemGroup>
 
 </Project>

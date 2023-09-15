@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\App.xaml
-1-487866684
+6-528841619
 
-71333832964
-198-759771931
-View\MainWindow.xaml;
+1984233692
+199-117544429
+Resources\ChromeButtonTheme.xaml;Resources\ItemTemplate.xaml;Resources\MenuButtonTheme.xaml;Resources\OrderButtonTheme.xaml;View\FoodMenuView.xaml;View\MainWindow.xaml;
 
 True
 

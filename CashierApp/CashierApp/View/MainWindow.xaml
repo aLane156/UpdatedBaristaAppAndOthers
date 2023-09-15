@@ -3,15 +3,232 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CashierApp.Model"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:viewmodel="clr-namespace:CashierApp.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize">
 
     <Window.DataContext>
         <viewmodel:MainWindowViewModel/>
     </Window.DataContext>
-    
-    <Grid>
 
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="16"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16px"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.ColumnSpan="3"
+                Background="DarkGreen">
+            <Grid>
+                <TextBlock Text="Till App"
+                           HorizontalAlignment="Left" 
+                           VerticalAlignment="Center" 
+                           Foreground="Black" 
+                           FontWeight="DemiBold" 
+                           Margin="1,-1,0,1"/>
+                <Button DockPanel.Dock="Top"
+                        ToolTip="Minimise" Width="16"
+                        HorizontalAlignment="Right"
+                        Margin="0,0,18,0"
+                        Style="{StaticResource ChromeButtonTheme}"
+                        Command="{Binding MinimiseApp}">
+                    <Image Source="/Resources/Images/minimiseSymbol.png"/>
+                </Button>
+                <Button DockPanel.Dock="Top"
+                        ToolTip="Close" Width="16"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource ChromeButtonTheme}"
+                        Command="{Binding CloseApp}">
+                    <Image Source="/Resources/Images/closeSymbol.png"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <DockPanel Grid.Row="1"
+              Grid.RowSpan="2"
+              Grid.ColumnSpan="2"
+              Background="#D3D3D3">
+            <Border Background="Green"
+                    Height="45"
+                    DockPanel.Dock="Top">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Food Menu"
+                            Margin="10,0,0,0"
+                            Style="{StaticResource MenuButtonTheme}"/>
+                    <Button Content="Drinks Menu"
+                            Margin="10,0,0,0"
+                            Style="{StaticResource MenuButtonTheme}"/>
+                    <Button Content="Dessert Menu"
+                            Margin="10,0,0,0"
+                            Style="{StaticResource MenuButtonTheme}"/>
+                </StackPanel>
+            </Border>
+            <!-- different menu views here -->
+            <Grid>
+                <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="1"/>
+            </Grid>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    Background="White"
+                    >
+            <Border BorderThickness="0,0,0,1"
+                    BorderBrush="Black"
+                    Height="45"
+                    DockPanel.Dock="Top">
+                <TextBlock Text="Order"
+                           FontSize="24"
+                           VerticalAlignment="Center"
+                           Padding="10,0"/>
+            </Border>
+            <Border BorderThickness="0,0,0,1"
+                    BorderBrush="Black"
+                    Height="45"
+                    DockPanel.Dock="Top">
+                <ComboBox Margin="10"
+                          SelectedIndex="0">
+                    <ComboBoxItem>Eat In</ComboBoxItem>
+                    <ComboBoxItem>Takeaway</ComboBoxItem>
+                </ComboBox>
+            </Border>
+            <Border DockPanel.Dock="Top"
+                    Padding="10">
+                <StackPanel>
+                    <ListView BorderThickness="0"
+                              Padding="-6,0,-6,0"
+                              ItemsSource="{Binding CurrentOrder.OrderItems}" MaxHeight="185" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch">
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock HorizontalAlignment="Right"
+                                               Text="{Binding Price}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Focusable" Value="False"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <Border BorderBrush="Black"
+                            BorderThickness="0,1,0,1"
+                            Margin="0,10"
+                            Padding="0,10">
+                        <Grid>
+                            <TextBlock Text="Tax"/>
+                            <TextBlock Text="{Binding CurrentOrder.TaxAmount}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                    <Border>
+                        <Grid>
+                            <TextBlock Text="Total" 
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding CurrentOrder.FinalPrice}"
+                                       HorizontalAlignment="Right"
+                                       FontWeight="Bold"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+            <Border HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content="Save Order"
+                            Style="{StaticResource OrderButtonTheme}"/>-->
+                    <Button Content="Pay for Order"
+                            Style="{StaticResource OrderButtonTheme}"/>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+
+        <!--<Menu>
+            <MenuItem Header="test"/>
+            <MenuItem Header="test"/>
+            <MenuItem Header="test"/>
+            <MenuItem Header="test"/>
+        </Menu>-->
+
+        <!-- List Box Grid -->
+
+        <!--<Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox ItemsSource="{Binding ProductsSource}"
+                     Grid.Column="0"
+                     SelectionMode="Multiple"
+                     ItemTemplate="{StaticResource ResourceKey=ListBoxTemplate}"/>
+
+            <ListBox ItemsSource="{Binding ProductsSource}"
+                     Grid.Column="1"
+                     SelectionMode="Multiple"
+                     ItemTemplate="{StaticResource ResourceKey=ListBoxTemplate}"/>
+
+        </Grid>-->
+
+        <!-- List Box -->
+
+        <!--<ListBox ItemsSource="{Binding ProductsSource}"
+                 Grid.Row="1"
+                 SelectionMode="Multiple">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="Bisque"
+                            Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Description}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>-->
+
+        <!-- Normal Data Grid -->
+
+        <!--<DataGrid Grid.Row="1"
+                  ItemsSource="{Binding ProductsSource}"
+                  SelectionMode="Extended"
+                  SelectionUnit="Cell"></DataGrid>-->
+
+        <!-- Custom Data Grid -->
+
+        <!--<local:CustomDataGrid Grid.Row="1"
+                              ItemsSource="{Binding ProductsSource}"
+                              SelectedItemsList="{Binding ProductsSelected}"/>
+
+        <ListBox Grid.Row="2"
+                 ItemsSource="{Binding ProductsSelected}"
+                 />-->
     </Grid>
 </Window>

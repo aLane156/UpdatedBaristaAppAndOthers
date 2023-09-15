@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "0K47JCbjf0KY8h1OeZYSiOaxMPp4oE/STs+Ny4yywi7BqIZ7iM2ilsHcY8iPW2WZVQZ2MYb1g7A6OQIvTVa/kg==",
+  "dgSpecHash": "7Z26TN7EuYoqkPB927JvxH6D0ks8eP30qNi3ZGIJgaELERVhUVxRHVGS89iGQxhKt8fAPEA40BTYZ222w6UVrA==",
   "success": true,
   "projectFilePath": "C:\\Users\\jw153369\\source\\repos\\AzureRepo\\CashierApp\\CashierApp\\CashierApp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\jw153369\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
   "logs": []
 }
