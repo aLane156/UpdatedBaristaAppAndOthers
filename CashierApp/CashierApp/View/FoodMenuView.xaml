@@ -73,6 +73,13 @@
                             Grid.Column="5"
                             Grid.ColumnSpan="2"
                             Command="{Binding DeselectCommand}"/>
+                    <Button Content="Load Data"
+                            Style="{StaticResource OrderButtonTheme}"
+                            Grid.Column="7"
+                            Grid.ColumnSpan="2"
+                            Command="{Binding LoadCommand}"/>
+                    <TextBox Grid.Column="1"
+                             Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
         </Grid>

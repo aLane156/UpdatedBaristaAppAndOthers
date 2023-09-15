@@ -37,9 +37,11 @@ namespace CashierApp.Model
             {
                 await using FileStream stream = File.Create(dateLog);
                 stream.Close();
-                
+
                 await WriteLogLine(new("Created log file.", "MainWindowViewModel.cs", LogType.INFO));
             }
+
+            await Task.Delay(5000);
         }
 
         public static async Task WriteLogLine(LogEntry logEntry)
@@ -100,7 +102,7 @@ namespace CashierApp.Model
         /// </summary>
         /// <param name="productType">The specific products file to access. Takes ProductType enum.</param>
         /// <returns>Returns an observable collection of Products.</returns>
-        public static async Task<ObservableCollection<Product>> ReadJson(ProductType productType)
+        public static async Task<ObservableCollection<FoodProduct>> ReadJson(ProductType productType)
         {
             string filePath = string.Empty;
 
@@ -109,23 +111,25 @@ namespace CashierApp.Model
                 case ProductType.Dessert:
                     filePath = $"{ProductPath}\\dessert-products.json";
                     //string[] allLines = await File.ReadAllLinesAsync(filePath);
-                    return new ObservableCollection<Product>();
+                    return new ObservableCollection<FoodProduct>();
                 case ProductType.Food:
                     filePath = $"{ProductPath}\\food-products.json";
                     FoodProducts tempList = await ReadJsonFood(filePath);
 
+                    await Task.Delay(5000);
+
                     // Generics are not covariant (learn more about this!!!)
-                    if (tempList != null) return new ObservableCollection<Product>(tempList.FoodProductsList);
+                    if (tempList != null) return tempList.FoodProductsList;
                     else 
                     { 
                         await WriteLogLine($"File: {filePath} was empty no values have been fetched", "Database.cs", LogType.WARNING); 
-                        return new ObservableCollection<Product>(); 
+                        return new ObservableCollection<FoodProduct>(); 
                     } 
                 case ProductType.Drink:
                     filePath = $"{ProductPath}\\drink-products.json";
-                    return new ObservableCollection<Product>();
+                    return new ObservableCollection<FoodProduct>();
                 default:
-                    return new ObservableCollection<Product>();
+                    return new ObservableCollection<FoodProduct>();
             }
         }
 

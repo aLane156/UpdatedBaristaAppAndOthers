@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Shell;
 
 namespace CashierApp.ViewModel
 {
@@ -29,9 +30,12 @@ namespace CashierApp.ViewModel
             app.Dispatcher.InvokeAsync(f);
         }
 
-        public static void HandleAwait(Application app, Action f, ref ObservableCollection<Product> collectionData)
+        public static void HandleAwait(Application app, Func<object, ObservableCollection<Product>> f, ref ObservableCollection<FoodProduct> collectionData)
         {
-            app.Dispatcher.InvokeAsync(f);
+            app.Dispatcher.InvokeAsync(async () => 
+            {
+                var result = await Task.Run(() => f(new()));
+            });
         }
     }
 }
