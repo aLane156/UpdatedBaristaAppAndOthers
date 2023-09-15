@@ -1,13 +1,7 @@
 ﻿using CafeTillApp.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Prism.Mvvm;
 using Prism.Commands;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Prism.Events;
 using CafeTillApp.Views;
 
@@ -24,24 +18,17 @@ namespace CafeTillApp.ViewModels
             set { SetProperty(ref _content, value); }
         }
         */
+
         private DelegateCommand<string> _buttonCommand;
         public DelegateCommand<string> ButtonCommand =>
             _buttonCommand ?? (_buttonCommand = new DelegateCommand<string>(ExecuteButtonCommand));
 
         // Binding the current dictionary to the buttons they relate to
-        private Dictionary<string, string[]> _currentDictionary;
-        public Dictionary<string, string[]> CurrentDictionary
+        private Dictionary<string, Dictionary<string, double>> _currentDictionary;
+        public Dictionary<string, Dictionary<string, double>> CurrentDictionary
         {
             get { return _currentDictionary; }
             set { SetProperty(ref _currentDictionary, value); }
-        }
-
-        public MenuViewModel()
-        {
-            Inventory inventory = new Inventory();
-
-            CurrentDictionary = new Dictionary<string, string[]>();
-            CurrentDictionary = inventory.dict;
         }
 
         private readonly IEventAggregator _eventAggregator;
@@ -49,18 +36,23 @@ namespace CafeTillApp.ViewModels
         public MenuViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
+
+            Inventory inventory = new Inventory();
+
+            CurrentDictionary = new Dictionary<string, Dictionary<string, double>>();
+            CurrentDictionary = inventory.dict;
         }
 
-        public void ChangeView()
+        /// <summary>
+        /// Carries option on and pushes to next subMenuView
+        /// </summary>
+        /// <param name="option"></param>
+        void ExecuteButtonCommand(string option)
         {
+            MainWindowViewModel.SharedOption.Option = option;
+
             var newView = new SubMenuView();
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
-        }
-
-        void ExecuteButtonCommand(string parameter)
-        {
-            Console.WriteLine($"Button clicked: {parameter}");
-            ChangeView();
         }
     }
 }

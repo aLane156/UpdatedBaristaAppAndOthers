@@ -1,4 +1,5 @@
 ﻿using CafeTillApp.Views;
+using Prism.Events;
 using Prism.Ioc;
 using System.Windows;
 
@@ -16,7 +17,8 @@ namespace CafeTillApp
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
         }
     }
+
 }

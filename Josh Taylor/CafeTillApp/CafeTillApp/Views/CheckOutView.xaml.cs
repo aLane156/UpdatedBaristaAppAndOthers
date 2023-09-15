@@ -1,5 +1,4 @@
-﻿using CafeTillApp.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +16,13 @@ using System.Windows.Shapes;
 namespace CafeTillApp.Views
 {
     /// <summary>
-    /// Interaction logic for MenuView.xaml
+    /// Interaction logic for CheckOutView.xaml
     /// </summary>
-    public partial class MenuView : UserControl
+    public partial class CheckOutView : UserControl
     {
-        public MenuView()
+        public CheckOutView()
         {
             InitializeComponent();
         }
-
     }
 }

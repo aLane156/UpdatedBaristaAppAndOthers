@@ -7,6 +7,10 @@ namespace CafeTillApp.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        public static SharedOption SharedOption = new SharedOption();
+        public static SharedBasket SharedBasket = new SharedBasket();
+
+        // Binding the title of the app
         private string _title = "Till App";
         public string Title
         {
@@ -16,6 +20,7 @@ namespace CafeTillApp.ViewModels
 
         private readonly IEventAggregator _eventAggregator;
 
+        // Binding the left and right sides of the UI
         private UserControl _leftSide;
         public UserControl LeftSide
         {

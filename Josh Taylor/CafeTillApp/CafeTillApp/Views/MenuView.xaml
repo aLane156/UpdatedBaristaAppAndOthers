@@ -5,12 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CafeTillApp.ViewModels"
              mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <!-- data context needed for data binding -->
-        <Grid.DataContext>
-            <local:MenuViewModel/>
-        </Grid.DataContext>
         <!-- ItemsControl for dictionary items -->
         <ItemsControl ItemsSource="{Binding CurrentDictionary}">
             <ItemsControl.ItemsPanel>
@@ -20,13 +18,12 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding Key}" Width="100" Height="100" Margin="25,25,25,25"
+                    <Button Content="{Binding Key}" Width="120" Height="120" 
+                    Margin="25,25,25,25" 
                     Command="{Binding Path=DataContext.ButtonCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                     CommandParameter="{Binding Key}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
     </Grid>
-
 </UserControl>
