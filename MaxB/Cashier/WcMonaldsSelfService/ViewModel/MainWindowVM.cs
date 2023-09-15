@@ -4,13 +4,79 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WcMonaldsSelfService.Model;
+using System.Windows.Input;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace WcMonaldsSelfService.ViewModel
 {
-    internal class MainWindowVM
+    internal class MainWindowVM : BaseVM
     {
-        public MenuItem? currentItem { get; private set; } = null;
-        public List<MenuItem> items { get; private set; } = new List<MenuItem>()
+        private readonly MenuItem nopeItem = new MenuItem("Select an item", 0f);
+
+        private MenuItem? currentItem;
+        public MenuItem CurrentItem
+        {
+            get => currentItem;
+            set
+            {
+                currentItem = value;
+                NotifyPropertyChanged(nameof(currentItem));
+                SetPriceText(currentItem.Price);
+                ShowItemSpecificMenu(currentItem);
+            }
+        }
+
+        private int? _selectedIndex;
+        public int? selectedIndex
+        {
+            get => _selectedIndex;
+            set
+            {
+                _selectedIndex = value;
+                NotifyPropertyChanged(nameof(_selectedIndex));
+                if (value != null) 
+                {
+                    SetCenterButtonStatus(true);
+                    selectedIndexBasket = null;
+                    CurrentItem = menu[(int)_selectedIndex];
+                }
+            }
+        }
+
+        private int? _selectedIndexBasket;
+        public int? selectedIndexBasket
+        {
+            get => _selectedIndexBasket;
+            set
+            {
+                _selectedIndexBasket = value;
+                NotifyPropertyChanged(nameof(_selectedIndexBasket));
+                if (value != null)
+                {
+                    SetCenterButtonStatus(false);
+                    selectedIndex = null;
+                    try
+                    {
+                        CurrentItem = Basket[(int)_selectedIndexBasket];
+                    }
+                    catch 
+                    {
+                        if (value > 0)
+                        {
+                            CurrentItem = Basket.Last<MenuItem>();
+                        } else
+                        {
+                            CurrentItem = nopeItem;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        private List<MenuItem> menu = new()
         {
             new Burger("The Regular", 2.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
             new Burger("The Big Max", 4.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
@@ -25,99 +91,193 @@ namespace WcMonaldsSelfService.ViewModel
             new Drink("Pepsi Max", 1.50f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
             new Drink("Oasis", 1.99f, new DrinkSize[] { DrinkSize.small}),
         };
-
-        public List<MenuItem> basket { get; private set; } = new List<MenuItem>();
-        public MainWindow? mw;
-
-        /// <summary>
-        /// Sets the current item from either of the lists
-        /// </summary>
-        /// <param name="index">The selected index</param>
-        /// <param name="_name">The name of the selected item</param>
-        /// <param name="_price">The price of the selected item</param>
-        /// <param name="isBasket">was the item selected from the basket</param>
-        public void SetItemFromList(int index, out string _name, out float _price, bool isBasket = false)
+        public List<MenuItem> Menu
         {
-            try
+            get => menu;
+            set
             {
-                if (isBasket)
-                {
-                    currentItem = basket[index];
-                }
-                else
-                {
-                    currentItem = items[index];
-                }
-
-                _name = currentItem.Name;
-                _price = currentItem.Price;
-            } catch 
-            {
-                _name = "";
-                _price = 0;
+                menu = value;
+                NotifyPropertyChanged(nameof(Menu));
             }
         }
 
-        public List<string> GetFullMenu()
+        private ObservableCollection<MenuItem> basket = new();
+        public ObservableCollection<MenuItem> Basket
         {
-            List<string> menu = new();
-            foreach (MenuItem item in items)
+            get => basket;
+            set
             {
-                menu.Add(item.Name);
+                basket = value;
+                NotifyPropertyChanged(nameof(basket));
             }
-            return menu;
+        }
+
+        private Visibility centerButtonVisibility = Visibility.Visible;
+        public Visibility CenterButtonVisibility
+        {
+            get { return centerButtonVisibility; }
+            set 
+            { 
+                centerButtonVisibility = value;
+                NotifyPropertyChanged(nameof(centerButtonVisibility));
+            }
+        }
+
+        private Visibility basketButtonVisibility = Visibility.Collapsed;
+        public Visibility BasketButtonVisibility
+        {
+            get { return basketButtonVisibility; }
+            set
+            {
+                basketButtonVisibility = value;
+                NotifyPropertyChanged(nameof(basketButtonVisibility));
+            }
+        }
+
+        private Visibility drinkMenuVisibility = Visibility.Collapsed;
+        public Visibility DrinkMenuVisibility
+        {
+            get { return drinkMenuVisibility; }
+            set
+            {
+                drinkMenuVisibility = value;
+                NotifyPropertyChanged(nameof(drinkMenuVisibility));
+            }
+        }
+
+        private Visibility burgerMenuVisibility = Visibility.Collapsed;
+        public Visibility BurgerMenuVisibility
+        {
+            get { return burgerMenuVisibility; }
+            set
+            {
+                burgerMenuVisibility = value;
+                NotifyPropertyChanged(nameof(burgerMenuVisibility));
+            }
+        }
+
+        private Visibility looseMeatsMenuVisibility = Visibility.Collapsed;
+        public Visibility LooseMeatsMenuVisibility
+        {
+            get { return looseMeatsMenuVisibility; }
+            set
+            {
+                looseMeatsMenuVisibility = value;
+                NotifyPropertyChanged(nameof(looseMeatsMenuVisibility));
+            }
+        }
+
+        private string curPrice;
+        public string CurPrice
+        {
+            get => curPrice;
+            set
+            {
+                curPrice = value;
+                NotifyPropertyChanged(nameof(curPrice));
+            }
+        }
+
+        public ICommand AddToBasket { get; set; }
+        public ICommand RemoveFromBasket { get; set; }
+        public ICommand AddAnotherToBasket { get; set; }
+
+        public MainWindowVM()
+        {
+            AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+            RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
+            AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
         }
 
         /// <summary>
         /// Adds an item to basket
         /// </summary>
-        public void AddItemToBasket()
+        /// <param name="item">The item to be added</param>
+        public void AddCurrentItemToBasket(MenuItem item)
         {
             try
             {
-                if (currentItem != null)
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
                 {
-                    basket.Add(currentItem);
-                    mw.AddItemToBasketList(currentItem.Name);
-                    mw.SetTotal(GetTotalCost(basket));
+                    Basket.Add(item);
                 }
             } catch { }
         }
 
         /// <summary>
-        /// calculates cost of a list of items
+        /// Removes an item from basket
         /// </summary>
-        /// <param name="_items">The items to search through</param>
-        /// <returns>The total cost/returns>
-        public static float GetTotalCost(List<MenuItem> _items)
-        {
-            float totalCost = 0;
-            foreach (MenuItem item in _items)
-            {
-                totalCost += item.Price;
-            }
-            return totalCost;
-        }
-
-        public void RemoveFromBasket()
+        /// <param name="item">The item index to remove</param>
+        public void RemoveCurrentItemFromBasket(int item)
         {
             try
             {
-                basket.Remove(currentItem);
-                currentItem = null;
-                mw.SetTotal(GetTotalCost(basket));
-                mw.RemoveItemFromBasketList();
-            }
-            catch { }
+                Basket.RemoveAt(item);
+            } catch { }
         }
 
-        public void CopyAdditionalToBasket()
+        /// <summary>
+        /// Sets the mode of the centeral buttons to menu mode or basket mode
+        /// </summary>
+        /// <param name="MenuSide">Put centeral buttons into menu mode?</param>
+        private void SetCenterButtonStatus(bool MenuSide)
         {
-            try
+            if (MenuSide)
             {
-                AddItemToBasket();
+                CenterButtonVisibility = Visibility.Visible;
+                BasketButtonVisibility = Visibility.Collapsed;
             }
-            catch { }
+            else
+            {
+                CenterButtonVisibility = Visibility.Collapsed;
+                BasketButtonVisibility = Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        /// Sets the text showing the price of the selected item
+        /// </summary>
+        /// <param name="price">The raw price of the product</param>
+        private void SetPriceText(float price)
+        {
+            if (price == 0)
+            {
+                CurPrice = string.Empty;
+            } else if (price > 0)
+            {
+                CurPrice = "£" + price.ToString();
+            } 
+        }
+
+        /// <summary>
+        /// Shows the appropriate additional menu below the main item menu
+        /// </summary>
+        /// <param name="item">The current item to be checked</param>
+        private void ShowItemSpecificMenu(MenuItem item)
+        {
+            if (item.GetType() == typeof(Drink))
+            {
+                DrinkMenuVisibility = Visibility.Visible;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            } else if (item.GetType() == typeof(Burger))
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Visible;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            }
+            else if (item.GetType() == typeof(LooseMeats))
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Visible;
+
+            } else
+            {
+                DrinkMenuVisibility = Visibility.Collapsed;
+                BurgerMenuVisibility = Visibility.Collapsed;
+                LooseMeatsMenuVisibility = Visibility.Collapsed;
+            }
         }
     }
 }
