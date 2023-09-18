@@ -27,42 +27,8 @@ namespace CashierApp.Model
         public DateTime ExpirationDate { get => _expirationDate; set => _expirationDate = value; }
     }
 
-    public class FoodProducts
+    public struct FoodProducts
     {
-        public FoodProducts() { }
-
         public ObservableCollection<FoodProduct> FoodProductsList { get; set; }
-
-        /// <summary>
-        /// Function for adding a whole collection to food products collection.
-        /// </summary>
-        /// <param name="list">The collection to be added.</param>
-        public void AddToList(ObservableCollection<FoodProduct> list)
-        {
-            foreach (FoodProduct item in list)
-            {
-                FoodProductsList.Add(item);
-            }
-        }
-
-        /// <summary>
-        /// Function for adding a whole list to food products collection.
-        /// </summary>
-        /// <param name="list">The collection to be added.</param>
-        public void AddToList(List<FoodProduct> list)
-        {
-            foreach (FoodProduct item in list)
-            {
-                FoodProductsList.Add(item);
-            }
-        }
-
-        /// <summary>
-        /// Function for clearing the class collection.
-        /// </summary>
-        public void ClearList()
-        {
-            FoodProductsList.Clear();
-        }
     }
 }

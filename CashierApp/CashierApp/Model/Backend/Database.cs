@@ -132,16 +132,51 @@ namespace CashierApp.Model.Backend
             return results;
         }
 
-        public static async Task WriteFile(ObservableCollection<FoodProduct> writeItems)
+        public static async Task<ObservableCollection<DrinkProduct>> ReadJsonDrink()
         {
-            using var stream = new FileStream($"{ProductPath}\\food-products.json", FileMode.Open, FileAccess.Write);
+            DrinkProducts result = new();
+            ObservableCollection<DrinkProduct> results = new();
+            string filePath = $"{ProductPath}\\drink-products.json";
+
+            try
+            {
+                using FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                using StreamReader reader = new StreamReader(stream);
+
+                string json = await reader.ReadToEndAsync();
+
+                if (json != null)
+                {
+                    result = JsonConvert.DeserializeObject<DrinkProducts>(json);
+
+                    foreach (DrinkProduct item in result.DrinkProductsList)
+                    {
+                        results.Add(item);
+                    }
+                }
+                else
+                {
+                    await WriteLogLine("Failed to deserialize DrinkProducts object", "Database.cs", LogType.ERROR);
+                    throw new FileLoadException($"Failed to load file: {filePath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                await WriteLogLine($"Failed to retrieve information from drink-products.json, exception: {ex.Message}", "Database.cs", LogType.ERROR);
+            }
+
+            return results;
+        }
+
+        public static async Task WriteFile(ObservableCollection<DrinkProduct> writeItems)
+        {
+            using var stream = new FileStream($"{ProductPath}\\drink-products.json", FileMode.Open, FileAccess.Write);
             using var writer = new StreamWriter(stream);
 
-            FoodProducts tempFoodProducts = new();
-            tempFoodProducts.FoodProductsList = writeItems;
+            DrinkProducts tempProducts = new();
+            tempProducts.DrinkProductsList = writeItems;
 
-            await writer.WriteAsync(JsonConvert.SerializeObject(tempFoodProducts, Formatting.Indented));
-
+            await writer.WriteAsync(JsonConvert.SerializeObject(tempProducts, Formatting.Indented));
         }
 
         #endregion

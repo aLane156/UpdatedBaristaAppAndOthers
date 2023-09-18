@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,16 @@ namespace CashierApp.Model
 {
     public class DrinkProduct : Product
     {
-        public DrinkProduct(string name, double price, DrinkSizes drinkSize) : base(name, price, ProductType.Drink)
+        public DrinkProduct(string name, double price) : base(name, price, ProductType.Drink)
         {
-            DrinkSize = drinkSize;
+            DrinkSize = DrinkSizes.Small;
         }
 
         public DrinkSizes DrinkSize { get; set; }
+    }
+
+    public struct DrinkProducts
+    {
+        public ObservableCollection<DrinkProduct> DrinkProductsList { get; set; }
     }
 }

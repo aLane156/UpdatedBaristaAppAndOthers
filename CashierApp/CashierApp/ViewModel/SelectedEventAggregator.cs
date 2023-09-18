@@ -8,13 +8,26 @@ using System.Windows;
 namespace CashierApp.ViewModel
 {
     /// <summary>
-    /// Class for sending products to the MainWindowViewModel using events.
+    /// Class for sending food products to the MainWindowViewModel using events.
     /// </summary>
-    public class SelectedEventAggregator
+    public class SelectedFoodEventAggregator
     {
         public static Action<Product> OnMessageTransmitted;
 
         public static void BroadCast(Product message) 
+        {
+            OnMessageTransmitted(message);
+        }
+    }
+
+    /// <summary>
+    /// Class for sending drink products to the MainWindowViewModel using events.
+    /// </summary>
+    public class SelectedDrinkEventAggregator
+    {
+        public static Action<Product> OnMessageTransmitted;
+
+        public static void BroadCast(Product message)
         {
             OnMessageTransmitted(message);
         }

@@ -28,6 +28,11 @@ namespace CashierApp.Model.Types
 
         public double Price { get => _price; set => _price = value; }
 
+        public string DisplayPrice
+        {
+            get { return $"£{Price.ToString("F2")}"; }
+        }
+
         public ProductType Type { get; set; }
 
         private string _id, _name, _desc;

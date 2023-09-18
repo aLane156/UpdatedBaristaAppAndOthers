@@ -4,16 +4,17 @@
         <ListBox Background="Transparent"
                  ItemsSource="{Binding MenuItems}" 
                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  SelectedItem="{Binding Selected}"
-                 SelectionMode="Single">
+                 SelectionMode="Single"
+                 x:Name="WrapParent">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel HorizontalAlignment="Center"
-                               Margin="10"
-                               MaxWidth="600" 
+                               Margin="10" 
                                ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                               MaxWidth="800"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
@@ -21,13 +22,13 @@
                     <Border Background="Black"
                             Opacity="0.5"
                             Padding="5,5"
-                            Width="100">
+                            Width="145">
                         <StackPanel>
                             <TextBlock Text="{Binding Name}"
                                        Foreground="White"
                                        FontSize="24"
                                        TextWrapping="NoWrap"/>
-                            <TextBlock Text="{Binding Price}"
+                            <TextBlock Text="{Binding DisplayPrice}"
                                        Foreground="White"/>
                         </StackPanel>
                     </Border>

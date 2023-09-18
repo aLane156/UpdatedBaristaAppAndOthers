@@ -10,32 +10,9 @@ namespace CashierApp.ViewModel
 		public FoodMenuViewModel()
 		{
 			MenuItems = new ObservableCollection<FoodProduct>();
-			ObservableCollection<FoodProduct> temp = new();
-
-			ObservableCollection<FoodProduct> tempFoodList = new()
-			{
-				new("Pizza", 13.52),
-				new("Pasta", 9.00),
-				new("Lasagna", 15.50),
-				new("Risotto", 8.00),
-				new("Gnocchi", 11.30),
-				new("Spaghetti Bolognese", 12.50)
-			};
-
 			AddItemCommand = new RelayCommand(AddItem, CanAdd);
 			DeselectCommand = new RelayCommand(DeselectFunction, CanDeselect);
-			//LoadCommand = new RelayCommand(async o => 
-			//{
-   //             var data = await Database.ReadJson(ProductType.Food);
 
-			//	foreach (var item in data)
-			//	{
-			//		// HAS TO BE .Add otherwise it messes up references
-			//		FoodMenuItems.Add(item);
-			//	}
-   //         });
-
-			DispatchHandler.HandleAwait(App.Current, async () => await Database.CreateJson());
 			DispatchHandler.HandleAwait(App.Current, async () => 
 			{ 
 				var data = await Database.ReadJsonFood(); 
@@ -86,7 +63,7 @@ namespace CashierApp.ViewModel
 		{
 			if (Selected != null)
 			{
-				SelectedEventAggregator.BroadCast(Selected);
+				SelectedFoodEventAggregator.BroadCast(Selected);
 			}
 		}
 

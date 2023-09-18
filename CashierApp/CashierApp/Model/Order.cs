@@ -26,8 +26,6 @@ namespace CashierApp.Model
             OrderItems = new ObservableCollection<Product>();
         }
 
-
-
         public string Id { get; set; }
 
         private ObservableCollection<Product> _orderItems;
@@ -66,12 +64,12 @@ namespace CashierApp.Model
 
         public string DisplayFinal
         {
-            get { return $"£{FinalPrice.ToString("#.##")}"; }
+            get { return $"£{FinalPrice.ToString("F2")}"; }
         }
 
         public string DisplayTax
         {
-            get { return $"£{TaxAmount.ToString("#.##")}"; }
+            get { return $"£{TaxAmount.ToString("F2")}"; }
         }
 
         #region Methods

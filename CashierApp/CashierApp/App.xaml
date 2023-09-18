@@ -15,8 +15,13 @@
                 <ResourceDictionary Source="Resources/MenuBottomBar.xaml"/>
                 <ResourceDictionary Source="Resources/MenuListBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
             <DataTemplate DataType="{x:Type viewmodel:FoodMenuViewModel}">
                 <view:FoodMenuView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewmodel:DrinkMenuViewModel}">
+                <view:DrinkMenuView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

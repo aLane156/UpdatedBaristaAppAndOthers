@@ -11,7 +11,7 @@
     <UserControl.DataContext>
         <viewmodel:DrinkMenuViewModel/>
     </UserControl.DataContext>
-    
+
     <Border HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
         <Grid>

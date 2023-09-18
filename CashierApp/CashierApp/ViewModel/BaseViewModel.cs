@@ -14,7 +14,6 @@ namespace CashierApp.ViewModel
 
         protected virtual void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) return;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 

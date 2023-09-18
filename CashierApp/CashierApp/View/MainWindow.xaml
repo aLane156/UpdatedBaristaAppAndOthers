@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:CashierApp.Model"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:viewmodel="clr-namespace:CashierApp.ViewModel"
+        xmlns:converters="clr-namespace:CashierApp.Resources.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="650" Width="1200"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -16,6 +17,10 @@
     <Window.DataContext>
         <viewmodel:MainWindowViewModel/>
     </Window.DataContext>
+
+    <Window.Resources>
+        <converters:PercentageConverter x:Key="PercentageConverter"/>
+    </Window.Resources>
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="16"/>
@@ -69,20 +74,25 @@
                     Height="45"
                     DockPanel.Dock="Top">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Food Menu"
-                            Margin="10,0,0,0"
-                            Style="{StaticResource MenuButtonTheme}"/>
-                    <Button Content="Drinks Menu"
-                            Margin="10,0,0,0"
-                            Style="{StaticResource MenuButtonTheme}"/>
-                    <Button Content="Dessert Menu"
-                            Margin="10,0,0,0"
-                            Style="{StaticResource MenuButtonTheme}"/>
+                    <RadioButton Content="Food Menu"
+                                 Margin="10,0,0,0"
+                                 Command="{Binding FoodViewCommand}"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 IsChecked="True"/>
+                    <RadioButton Content="Drinks Menu"
+                                 Margin="10,0,0,0"
+                                 Command="{Binding DrinkViewCommand}"
+                                 Style="{StaticResource MenuButtonTheme}"/>
+                    <!--<RadioButton Content="Dessert Menu"
+                                 Margin="10,0,0,0"
+                                 Style="{StaticResource MenuButtonTheme}"/>-->
                 </StackPanel>
             </Border>
             <!-- different menu views here -->
-            <Grid>
-                <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="1"/>
+            <Grid x:Name="GridParent">
+                <ContentControl Content="{Binding CurrentViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                HorizontalAlignment="Stretch"
+                                Grid.Column="1"/>
             </Grid>
         </DockPanel>
 
@@ -115,20 +125,23 @@
                 <StackPanel>
                     <ListView BorderThickness="0"
                               Padding="-6,0,-6,0"
-                              ItemsSource="{Binding CurrentOrder.OrderItems}" MaxHeight="185" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                              ItemsSource="{Binding CurrentOrder.OrderItems}" 
+                              MaxHeight="185"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              SelectedItem="{Binding OrderSelection}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid HorizontalAlignment="Stretch">
                                     <TextBlock Text="{Binding Name}"/>
                                     <TextBlock HorizontalAlignment="Right"
-                                               Text="{Binding Price}"/>
+                                               Text="{Binding DisplayPrice}"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="Focusable" Value="True"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>
@@ -137,7 +150,7 @@
                             Margin="0,10"
                             Padding="0,10">
                         <Grid>
-                            <TextBlock Text="Tax"/>
+                            <TextBlock Text="VAT"/>
                             <TextBlock Text="{Binding CurrentOrder.DisplayTax}"
                                        HorizontalAlignment="Right"/>
                         </Grid>
@@ -157,78 +170,14 @@
                     VerticalAlignment="Bottom"
                     Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal">
-                    <!--<Button Content="Save Order"
-                            Style="{StaticResource OrderButtonTheme}"/>-->
                     <Button Content="Pay for Order"
-                            Style="{StaticResource OrderButtonTheme}"/>
+                            Style="{StaticResource OrderButtonTheme}"
+                            IsEnabled="False"/>
+                    <Button Content="Remove Item"
+                            Style="{StaticResource OrderButtonTheme}"
+                            Command="{Binding RemoveOrderItem}"/>
                 </StackPanel>
             </Border>
         </DockPanel>
-
-        <!--<Menu>
-            <MenuItem Header="test"/>
-            <MenuItem Header="test"/>
-            <MenuItem Header="test"/>
-            <MenuItem Header="test"/>
-        </Menu>-->
-
-        <!-- List Box Grid -->
-
-        <!--<Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <ListBox ItemsSource="{Binding ProductsSource}"
-                     Grid.Column="0"
-                     SelectionMode="Multiple"
-                     ItemTemplate="{StaticResource ResourceKey=ListBoxTemplate}"/>
-
-            <ListBox ItemsSource="{Binding ProductsSource}"
-                     Grid.Column="1"
-                     SelectionMode="Multiple"
-                     ItemTemplate="{StaticResource ResourceKey=ListBoxTemplate}"/>
-
-        </Grid>-->
-
-        <!-- List Box -->
-
-        <!--<ListBox ItemsSource="{Binding ProductsSource}"
-                 Grid.Row="1"
-                 SelectionMode="Multiple">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="Bisque"
-                            Padding="5">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-                            <TextBlock Text="{Binding Description}"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>-->
-
-        <!-- Normal Data Grid -->
-
-        <!--<DataGrid Grid.Row="1"
-                  ItemsSource="{Binding ProductsSource}"
-                  SelectionMode="Extended"
-                  SelectionUnit="Cell"></DataGrid>-->
-
-        <!-- Custom Data Grid -->
-
-        <!--<local:CustomDataGrid Grid.Row="1"
-                              ItemsSource="{Binding ProductsSource}"
-                              SelectedItemsList="{Binding ProductsSelected}"/>
-
-        <ListBox Grid.Row="2"
-                 ItemsSource="{Binding ProductsSelected}"
-                 />-->
     </Grid>
 </Window>
