@@ -210,7 +210,7 @@ namespace WcMonaldsSelfService.ViewModel
                     if (int.TryParse(value, out num) && lm.ChangeNo(num))
                     {
                         curAmount = value;
-                        NotifyPropertyChanged(nameof(curAmount));
+                        NotifyPropertyChanged(nameof(CurAmount));
                     }
                 } else
                 {
@@ -242,8 +242,52 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        private Visibility payVis = Visibility.Visible;
+        public Visibility PayVis
+        {
+            get { return payVis; }
+            set
+            {
+                payVis = value;
+                NotifyPropertyChanged(nameof(PayVis));
+            }
+        }
+
+        private Visibility payedVis = Visibility.Collapsed;
+        public Visibility PayedVis
+        {
+            get { return payedVis; }
+            set
+            {
+                payedVis = value;
+                NotifyPropertyChanged(nameof(PayedVis));
+            }
+        }
+
         public bool MenuFocused;
         public bool BasketFocused;
+
+        private string payedText;
+        public string PayedText
+        {
+            get { return payedText; }
+            set
+            {
+                payedText = value;
+                NotifyPropertyChanged(nameof(PayedText));
+            }
+        }
+
+        public string debugLines;
+        public string DebugLines
+        {
+            get { return debugLines; }
+            set
+            {
+                debugLines = value;
+                NotifyPropertyChanged(nameof(DebugLines));
+            }
+        }
 
         public ICommand AddToBasket { get; set; }
         public ICommand RemoveFromBasket { get; set; }
@@ -251,6 +295,7 @@ namespace WcMonaldsSelfService.ViewModel
         public ICommand GoToCheckout { get; set; }
         public ICommand GoToMenu { get; set; }
         public ICommand NextCustomer { get; set; }
+        public ICommand SwaptoPayedScreen { get; set; }
 
         public MainWindowVM()
         {
@@ -260,6 +305,7 @@ namespace WcMonaldsSelfService.ViewModel
             GoToCheckout = new RelayCommand(o => CurrentTab = 1);
             GoToMenu = new RelayCommand(o => CurrentTab = 0);
             NextCustomer = new RelayCommand(o => ResetForNextCustomer());
+            SwaptoPayedScreen = new RelayCommand(o => SetCheckoutVisabilities(true));
         }
 
         /// <summary>
@@ -275,7 +321,10 @@ namespace WcMonaldsSelfService.ViewModel
                     Basket.Add(item);
                     UpdateTotalCost();
                 }
-            } catch { }
+            } catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
         }
 
         /// <summary>
@@ -288,7 +337,10 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 Basket.RemoveAt(item);
                 UpdateTotalCost();
-            } catch { }
+            } catch (Exception ex) 
+            {
+                AddErrorToErrorOutput(ex);
+            }
         }
 
         /// <summary>
@@ -390,6 +442,33 @@ namespace WcMonaldsSelfService.ViewModel
             SelectedItemBasket = null;
             SelectedItemMenu = null;
             CurrentItem = null;
+            SetCheckoutVisabilities(false);
+        }
+
+        private void SetCheckoutVisabilities(bool showPayed)
+        {
+            if (showPayed)
+            {
+                PayedVis = Visibility.Visible;
+                PayVis = Visibility.Collapsed;
+                int seconds = DateTime.Now.Second;
+                PayedText = $"Your order number is {MathF.Floor(seconds * MathF.PI)}, enjoy your meal!";
+            }
+            else
+            {
+                PayVis = Visibility.Visible;
+                PayedVis = Visibility.Collapsed;
+                PayedText = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Adds an error to the debug error list
+        /// </summary>
+        /// <param name="e"></param>
+        private void AddErrorToErrorOutput(Exception e)
+        {
+            DebugLines += $"ERROR: {e.Message} at: \n {e.StackTrace} \n";
         }
     }
 }
