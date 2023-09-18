@@ -13,19 +13,19 @@
 
     <Grid>
         <Rectangle HorizontalAlignment="Left" Height="212" Margin="223,30,0,0" Stroke="Black" VerticalAlignment="Top" Width="343"/>
-        <ListBox x:Name="Menu_List" ItemsSource="{Binding Menu}" Margin="26,55,622,26" SelectedIndex="{Binding selectedIndex, Mode=TwoWay}"/>
+        <ListBox x:Name="Menu_List" ItemsSource="{Binding Menu}" Margin="26,55,622,26" SelectedItem="{Binding SelectedItemMenu}"/>
         <TextBlock x:Name="Item_Name" HorizontalAlignment="Left" Height="40" Margin="246,35,0,0" TextWrapping="Wrap" Text="{Binding CurrentItem.Name}" VerticalAlignment="Top" Width="298" FontSize="30"/>
         <TextBlock x:Name="Item_Price" HorizontalAlignment="Left" Height="29" Margin="246,75,0,0" TextWrapping="Wrap" Text="{Binding CurPrice}" VerticalAlignment="Top" Width="53" FontSize="20" Cursor=""/>
         <Button x:Name="Add_To_Order" Content="Add To Order" HorizontalAlignment="Left" Height="37" Margin="400,193,0,0" VerticalAlignment="Top" Width="156" FontSize="18" Command="{Binding AddToBasket}" Visibility="{Binding CenterButtonVisibility}"/>
-        <ListBox x:Name="Basket_List" HorizontalAlignment="Left" Height="187" Margin="614,55,0,0" VerticalAlignment="Top" Width="143" ItemsSource="{Binding Basket}" SelectedIndex="{Binding selectedIndexBasket}"/>
+        <ListBox x:Name="Basket_List" HorizontalAlignment="Left" Height="187" Margin="614,55,0,0" VerticalAlignment="Top" Width="143" ItemsSource="{Binding Basket}" SelectedItem="{Binding SelectedItemBasket}"/>
         <Button x:Name="Duplicate_Button" Content="Add Another" HorizontalAlignment="Left" Height="37" Margin="246,193,0,0" VerticalAlignment="Top" Width="117" FontSize="18" Visibility="{Binding BasketButtonVisibility}" Command="{Binding AddAnotherToBasket}"/>
         <Button x:Name="Remove_Button" Content="Remove" HorizontalAlignment="Left" Height="37" Margin="380,193,0,0" VerticalAlignment="Top" Width="90" FontSize="18" Visibility="{Binding BasketButtonVisibility}" Command="{Binding RemoveFromBasket}"/>
-        <TextBlock x:Name="Total_Cost" HorizontalAlignment="Left" Height="41" Margin="614,247,0,0" TextWrapping="Wrap" Text="Total: £" VerticalAlignment="Top" Width="143" FontSize="16"/>
-        <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113"/>
+        <TextBlock x:Name="Total_Cost" HorizontalAlignment="Left" Height="41" Margin="614,247,0,0" TextWrapping="Wrap" Text="{Binding TotalCost, Mode=OneWay}" VerticalAlignment="Top" Width="143" FontSize="16"/>
+        <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113" Command="{Binding GoToCheckout}"/>
         <TextBlock HorizontalAlignment="Left" Height="28" Margin="26,22,0,0" TextWrapping="Wrap" Text="Menu:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
         <TextBlock HorizontalAlignment="Left" Height="28" Margin="614,22,0,0" TextWrapping="Wrap" Text="Basket:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
         <ComboBox HorizontalAlignment="Left" Margin="236,266,0,0" VerticalAlignment="Top" Width="120" Visibility="{Binding DrinkMenuVisibility}"/>
-        <TextBox HorizontalAlignment="Left" Height="20" Margin="223,288,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="76" Visibility="{Binding LooseMeatsMenuVisibility}"/>
-        
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="223,288,0,0" TextWrapping="Wrap" Text="{Binding CurAmount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="76" Visibility="{Binding LooseMeatsMenuVisibility}"/>
+        <CheckBox Content="MenuFocused" HorizontalAlignment="Left" Margin="200,392,0,0" VerticalAlignment="Top" IsChecked="{Binding ElementName=Add_To_Order, Path=IsFocused, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
     </Grid>
 </Window>
