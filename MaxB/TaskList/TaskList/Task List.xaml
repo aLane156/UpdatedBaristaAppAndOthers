@@ -7,27 +7,37 @@
         mc:Ignorable="d"
         Title="Task List" Height="475" Width="800" ResizeMode="NoResize">
     <Grid Margin="0,0,0,-30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="461*"/>
+            <RowDefinition Height="28*"/>
+        </Grid.RowDefinitions>
 
-        <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="18"/>
-        <Button x:Name="SaveTaskName" Content="Add" HorizontalAlignment="Left" Margin="164,391,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40"/>
+        <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22" Text="Eolo emk"/>
+        <Button x:Name="SaveTaskName" Content="Add" HorizontalAlignment="Left" Margin="274,395,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40" Height="20"/>
         <Rectangle HorizontalAlignment="Left" Height="248" Margin="21,22,0,0" Stroke="Black" VerticalAlignment="Top" Width="468"/>
-        <TextBlock HorizontalAlignment="Left" Margin="21,285,0,0" TextWrapping="Wrap" Text="Create new task" VerticalAlignment="Top" FontSize="24"/>
-        <TextBox x:Name="Task_Time_Input" HorizontalAlignment="Left" Margin="21,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.512,2.64" Height="17"/>
-        <TextBlock HorizontalAlignment="Left" Margin="21,323,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="21,371,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="21,285,0,0" TextWrapping="Wrap" Text="Create new task" VerticalAlignment="Top" FontSize="24" Height="32" Width="168"/>
+        <TextBox x:Name="Task_Time_Input" HorizontalAlignment="Left" Margin="21,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.512,2.64" Height="23"/>
+        <TextBlock HorizontalAlignment="Left" Margin="21,323,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Height="16" Width="32"/>
+        <TextBlock HorizontalAlignment="Left" Margin="21,371,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top" Height="16" Width="26"/>
         <TextBlock x:Name="Task_Time_Label" HorizontalAlignment="Left" Height="27" Margin="37,82,0,0" TextWrapping="Wrap" Text="Time: " VerticalAlignment="Top" Width="44" FontSize="18"/>
-        <ListBox x:Name="Task_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="511,22,61,194" MouseLeftButtonUp="ListBoxClick" RenderTransformOrigin="0.5,0.5"/>
-        <Button x:Name="Save_Edits" Content="Save Edits" HorizontalAlignment="Left" Margin="37,239,0,0" VerticalAlignment="Top" Width="70" Click="SaveEdits"/>
+        <ListBox x:Name="Task_List" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="511,43,61,0" MouseLeftButtonUp="ListBoxClick" RenderTransformOrigin="0.5,0.5" Height="227" VerticalAlignment="Top"/>
+        <Button x:Name="Save_Edits" Content="Save Edits" HorizontalAlignment="Left" Margin="37,239,0,0" VerticalAlignment="Top" Width="70" Click="SaveEdits" Height="20"/>
         <Button x:Name="Delete_Task" Content="Delete Task" HorizontalAlignment="Left" Height="20" Margin="124,239,0,0" VerticalAlignment="Top" Width="80" Click="DeleteTask"/>
         <TextBox x:Name="TaskName" HorizontalAlignment="Left" Height="51" Margin="33,31,0,0" TextWrapping="Wrap" Text="TaskName" VerticalAlignment="Top" Width="444" FontSize="30" Background="Transparent" BorderBrush="#00ABADB3" TextChanged="TaskName_TextChanged"/>
-        <TextBox x:Name="Task_Time" HorizontalAlignment="Left" Margin="81,82,0,0" TextWrapping="Wrap" Text="00:00pm" VerticalAlignment="Top" Width="365" Height="37" BorderBrush="#00ABADB3" FontSize="18" TextChanged="Task_Time_TextChanged"/>
+        <TextBox x:Name="Task_Time" HorizontalAlignment="Left" Margin="81,82,0,0" TextWrapping="Wrap" Text="00:00pm" VerticalAlignment="Top" Width="408" Height="37" BorderBrush="#00ABADB3" FontSize="18" TextChanged="Task_Time_TextChanged"/>
         <TextBox x:Name="Task_Desc" HorizontalAlignment="Left" Height="110" Margin="37,124,0,0" TextWrapping="Wrap" Text="Description, notes, etc..." VerticalAlignment="Top" Width="444" Foreground="#FF737373" BorderBrush="White" TextChanged="TextBox_TextChanged"/>
-        <TextBox x:Name="Save_File_Pathway" HorizontalAlignment="Left" Margin="525,313,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254"/>
-        <Label Content="Save file pathway" HorizontalAlignment="Left" Margin="525,285,0,0" VerticalAlignment="Top" Height="32" Width="108"/>
-        <Button Content="Select File" HorizontalAlignment="Left" Margin="525,342,0,0" VerticalAlignment="Top" Width="64" Click="Button_Click"/>
-        <Label x:Name="Corruptometer" Content="File is intact" HorizontalAlignment="Left" Height="36" Margin="525,387,0,0" VerticalAlignment="Top" Width="142"/>
+        <TextBox x:Name="Save_File_Pathway" Margin="511,313,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="268" Height="18"/>
+        <Label Content="Enter file pathway" HorizontalAlignment="Left" Margin="511,285,0,0" VerticalAlignment="Top" Height="32" Width="114"/>
+        <Button Content="Select File" HorizontalAlignment="Left" Margin="511,342,0,0" VerticalAlignment="Top" Width="68" Click="Button_Click" Height="20"/>
+        <Label x:Name="Corruptometer" Content="File is intact" HorizontalAlignment="Left" Height="36" Margin="511,387,0,0" VerticalAlignment="Top" Width="150"/>
         <Button x:Name="Duplicate_Button" Content="Duplicate" HorizontalAlignment="Left" Height="20" Margin="219,239,0,0" VerticalAlignment="Top" Width="80" Click="Duplicate_Task_Click"/>
-        <TextBlock x:Name="DEBUG_TEXT" HorizontalAlignment="Left" Margin="264,285,0,0" TextWrapping="Wrap" Text="DEBUG TEXT" VerticalAlignment="Top" Width="217" Height="138"/>
-
+        <TextBox x:Name="Search_Box" Margin="511,22,61,0" TextWrapping="Wrap" Height="18" VerticalAlignment="Top" TextChanged="Search_Box_TextChanged"/>
+        <DatePicker x:Name="Task_Date_Input" Margin="153,392,0,0" VerticalAlignment="Top" SelectedDateChanged="Task_Date_Input_Changed" Height="23" HorizontalAlignment="Left" Width="106"/>
+        <ComboBox x:Name="Search_In" Margin="669,22,61,0" VerticalAlignment="Top" Height="18" SelectionChanged="Search_In_SelectionChanged" Padding="1">
+            <ComboBoxItem Content=" All"/>
+            <ComboBoxItem Content=" Name"/>
+            <ComboBoxItem Content=" Time"/>
+            <ComboBoxItem Content=" Desc"/>
+        </ComboBox>
     </Grid>
 </Window>

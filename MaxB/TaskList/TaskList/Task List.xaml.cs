@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using System.Collections.Immutable;
-using System.Xml.Linq;
 
 namespace TaskList
 {
@@ -25,13 +16,17 @@ namespace TaskList
         public MainWindow()
         {
             InitializeComponent();
-            UpdateDropDown(true);
-            CheckFileIntegrity();
+            UpdateDropDown();
+            CheckFileIntegrity(pathwayToSaveFile);
+            Search_In.Text = " All";
         }
 
-        private void CheckFileIntegrity()
+        /// <summary>
+        /// Updates the UI to reflect the outcome of the corruption detectors
+        /// </summary>
+        public void CheckFileIntegrity(string pathway)
         {
-            if (File.Exists(pathwayToSaveFile) && IsIntactSimple())
+            if (File.Exists(pathway) && AreFileEditDatesEqual(pathway) && IsIntactSimple(pathway))
             {
                 Corruptometer.Content = "File is intact";
                 Corruptometer.Foreground = Brushes.Gray;
@@ -42,18 +37,23 @@ namespace TaskList
                 Corruptometer.Foreground = Brushes.Red;
                 //if (File.Exists(pathwayToSaveFile)) { SetHash(false); }
             }
-            UpdateCopyFile();
+            UpdateCopyFile(pathway);
         }
 
-        private bool IsIntactSimple()
+        /// <summary>
+        /// Compares the file to it's copy and checks for differences
+        /// </summary>
+        /// <param name="pathway">The pathway to the file to be checked</param>
+        /// <returns>True if intact, false for corrupt - defaults true if missing</returns>
+        public static bool IsIntactSimple(string pathway)
         {
-            string copyPathway = pathwayToSaveFile.Substring(0, pathwayToSaveFile.Length - 4) + "COPY.txt";
+            string copyPathway = pathway[..^4] + "COPY.txt";
             if (File.Exists(copyPathway))
             {
                 //check similarity
                 string[] LinesCopy = File.ReadAllLines(copyPathway);
                 string totalLinesCopy = "";
-                string[] LinesMain = File.ReadAllLines(pathwayToSaveFile);
+                string[] LinesMain = File.ReadAllLines(pathway);
                 string totalLinesMain = "";
                 if (LinesCopy.Length != LinesMain.Length) { return false; }
                 for (int i = 0; i < LinesCopy.Length; i++)
@@ -69,45 +69,77 @@ namespace TaskList
             }
         }
 
-        private void UpdateCopyFile()
+        /// <summary>
+        /// Compares the edit dates for security reasons
+        /// </summary>
+        /// <param name="pathway">The pathway to the file used</param>
+        /// <returns>True is last edit dates are equal, otherwise false</returns>
+        public static bool AreFileEditDatesEqual(string pathway)
         {
-            string copyPathway = pathwayToSaveFile.Substring(0, pathwayToSaveFile.Length - 4) + "COPY.txt";
+            return File.GetLastWriteTime(pathway) == File.GetLastWriteTime(pathway[..^4] + "COPY.txt");
+        }
+
+        /// <summary>
+        /// Makes the copy file the same as the master file
+        /// </summary>
+        /// <param name="pathway">The pathway to the master file</param>
+        public static void UpdateCopyFile(string pathway)
+        {
+            string copyPathway = pathway[..^4] + "COPY.txt";
             if (File.Exists(copyPathway))
             {
                 File.Delete(copyPathway);
             }
-            File.Copy(pathwayToSaveFile, copyPathway);
+            File.Copy(pathway, copyPathway);
         }
 
-        private string ReadLineOfFile(int lineNo)
+        /// <summary>
+        /// Reads the entirety of a line in a file
+        /// </summary>
+        /// <param name="lineNo">The line of a file to read, 0 based</param>
+        /// <returns>The whole line</returns>
+        public string ReadLineOfFile(int lineNo)
         {
             string line = File.ReadLines(pathwayToSaveFile).ElementAt(lineNo);
             return line;
         }
 
-        private void SaveTaskName_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void SaveTaskName_Click(object sender, RoutedEventArgs e)
         {
-            CreateNewEvent(Task_Name_Input.Text, Task_Time_Input.Text);
-            UpdateDropDown(true);
+            CreateNewTask(Task_Name_Input.Text, Task_Time_Input.Text);
+            UpdateDropDown();
         }
 
-        private void CreateNewEvent(string name, string time)
+        /// <summary>
+        /// Adds a new task entry to the master file with standard formatting, the updates the copy
+        /// </summary>
+        /// <param name="name">The name of the task</param>
+        /// <param name="time">The time of the task</param>
+        public void CreateNewTask(string name, string time)
         {
-            if (string.IsNullOrWhiteSpace(name) || (time.Length > 5 && time.Substring(0, 5) == "Event")) { return; }
+            if (string.IsNullOrWhiteSpace(name) || (time.Length > 5 && time[..5] == "Event")) { return; }
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
-            lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..." });// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
+            lines.AddRange(new List<string> { "Event - " + name, time, "Description, notes, etc..."}); // CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
             Task_Name_Input.Text = "";
             Task_Time_Input.Text = "";
-            UpdateCopyFile();
+            Task_Date_Input.Text = "";
+            UpdateCopyFile(pathwayToSaveFile);
         }
 
-        private void ReadEvent(int lineNo)
+        /// <summary>
+        /// Updates the task ui to show the details of the selected task
+        /// </summary>
+        /// <param name="lineNo">The line in the master file from which the task starts</param>
+        public void ReadEvent(int lineNo)
         {
             string lineContents = ReadLineOfFile(lineNo);
-            if (lineContents.Length > 8 && lineContents.Substring(0, 5) == "Event")
+            if (lineContents.Length > 8 && lineContents[..5] == "Event")
             {
-                TaskName.Text = lineContents.Substring(8, lineContents.Length - 8);
+                TaskName.Text = lineContents[8..];
                 Task_Time.Text = ReadLineOfFile(lineNo + 1);
                 if (string.IsNullOrWhiteSpace(Task_Time.Text))
                 {
@@ -124,11 +156,16 @@ namespace TaskList
             }
         }
 
-        private int FindLine(string line)
+        /// <summary>
+        /// Finds the first occurance of a line in the master file
+        /// </summary>
+        /// <param name="line">The exact line to search for</param>
+        /// <returns>The index of the first occurance of that line, 0 based, -1 if the line is absent</returns>
+        public int FindLine(string line)
         {
             if (string.IsNullOrWhiteSpace(line)) { return -1; }
             int lineNo = -1;
-            StreamReader sr = new StreamReader(pathwayToSaveFile);
+            StreamReader sr = new(pathwayToSaveFile);
             string CurLine;
             while ((CurLine = sr.ReadLine()) != null)
             {
@@ -143,35 +180,96 @@ namespace TaskList
             return lineNo;
         }
 
-        private int[] FindTasks()
+        /// <summary>
+        /// Finds every task with proper formatting in a file
+        /// </summary>
+        /// <returns>A list containing the starting index of every file</returns>
+        public int[] FindTasks()
         {
-            List<int> linesWithTaskOn = new List<int>();
-            StreamReader sr = new StreamReader(pathwayToSaveFile);
+            List<int> linesWithTaskOn = new();
+            StreamReader sr = new(pathwayToSaveFile);
             string line;
             int lineNo = 0;
             while ((line = sr.ReadLine()) != null)
             {
-                if (line.Length > 8 && line.Substring(0, 5) == "Event")
+                if (line.Length > 8 && line[..5] == "Event")
                 {
                     linesWithTaskOn.Add(lineNo);
                 }
                 lineNo++;
             }
             sr.Close();
-            return ListToArray(linesWithTaskOn);
+            return linesWithTaskOn.ToArray();
         }
 
-        private int[] ListToArray(List<int> list)
+        /// <summary>
+        /// Finds every task with proper formatting in a file which contains some text
+        /// </summary>
+        /// <param name="mustContain">The exact text to be searched for</param>
+        /// <returns>A list containing the starting index of every file which contains the text</returns>
+        public int[] FindTasks(string mustContain)
         {
-            int[] array = new int[list.Count];
-            for (int i = 0; i < list.Count; i++)
+            List<int> linesWithTaskOnNAME = new();
+            List<int> linesWithTaskOnTIME = new();
+            List<int> linesWithTaskOnDESC = new();
+
+            StreamReader sr = new(pathwayToSaveFile);
+            string line;
+            int lineNo = 0;
+            int lastTaskLine = 0;
+            bool usedThisTask = false;
+            while ((line = sr.ReadLine()) != null)
             {
-                array[i] = list[i];
+                if (line.Length > 8 && line[..5] == "Event")
+                {
+                    lastTaskLine = lineNo;
+                    usedThisTask = false;
+                    line = line[8..];
+                }
+                if (line.ToUpper().Contains(mustContain.ToUpper()) && !usedThisTask)
+                {
+                    usedThisTask= true;
+                    switch (lineNo - lastTaskLine)
+                    {
+                        case 0:
+                            linesWithTaskOnNAME.Remove(lastTaskLine);
+                            linesWithTaskOnNAME.Add(lastTaskLine);
+                            break;
+                        case 1:
+                            linesWithTaskOnTIME.Remove(lastTaskLine);
+                            linesWithTaskOnTIME.Add(lastTaskLine);
+                            break;
+                        case 2:
+                            linesWithTaskOnDESC.Remove(lastTaskLine);
+                            linesWithTaskOnDESC.Add(lastTaskLine);
+                            break;
+                    }
+                    
+                }
+                lineNo++;
             }
-            return array;
+            sr.Close();
+
+            switch (Search_In.SelectedIndex)
+            {
+                case 1:
+                    return linesWithTaskOnNAME.ToArray();
+                case 2:
+                    return linesWithTaskOnTIME.ToArray();
+                case 3:
+                    return linesWithTaskOnDESC.ToArray();
+                default:
+                    linesWithTaskOnTIME.AddRange(linesWithTaskOnDESC);
+                    linesWithTaskOnNAME.AddRange(linesWithTaskOnTIME);
+                    return linesWithTaskOnNAME.ToArray();
+            }
         }
 
-        private void UpdateDropDown(bool selectLast)
+        /// <summary>
+        /// Fully updates the task list on the right
+        /// </summary>
+        /// <param name="selectLast">Should the last item in the list be automatically selected? Set to true when creating a new task, which will become the last upon creation</param>
+        public void UpdateDropDown(bool selectLast = true)
         {
             int[] TaskLines = FindTasks();
 
@@ -193,32 +291,76 @@ namespace TaskList
             {
                 lbi = new ListBoxItem();
                 nameInList = ReadLineOfFile(TaskLines[i]);
-                lbi.Content = nameInList.Substring(8, nameInList.Length - 8);
+                lbi.Content = nameInList[8..];
                 Task_List.Items.Add(lbi);
             }
-            if (selectLast) { Task_List.SelectedItem = Task_List.Items[Task_List.Items.Count - 1]; SelectTask(); }
+            if (selectLast) { Task_List.SelectedItem = Task_List.Items[^1]; SelectTask(); }
         }
 
-        private void ListBoxClick(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Fully updates the task list on the right with only tasks which contains some text
+        /// </summary>
+        /// <param name="selectLast">Should the last item in the list be automatically selected? Set to true when creating a new task, which will become the last upon creation</param>
+        /// <param name="mustContain">The exact text to be searched for</param>
+        public void UpdateDropDown(bool selectLast, string mustContain)
+        {
+            int[] TaskLines = FindTasks(mustContain);
+
+            if (TaskLines.Length == 0)
+            {
+                TaskName.Text = "No tasks found containing " + mustContain;
+                Task_Time.Text = "";
+                Task_Time_Label.Text = "";
+                Task_Desc.Text = "";// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
+                Task_List.Items.Clear();
+                Save_Edits.Background = Brushes.LightGray;
+                return;
+            }
+
+            Task_List.Items.Clear();
+            ListBoxItem lbi;
+            string nameInList;
+            for (int i = 0; i < TaskLines.Length; i++)
+            {
+                lbi = new ListBoxItem();
+                nameInList = ReadLineOfFile(TaskLines[i]);
+                lbi.Content = nameInList[8..];
+                Task_List.Items.Add(lbi);
+            }
+            if (selectLast) { Task_List.SelectedItem = Task_List.Items[^1]; SelectTask(); }
+        }
+
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void ListBoxClick(object sender, MouseButtonEventArgs e)
         {
             SelectTask();
         }
 
-        private void SelectTask()
+        /// <summary>
+        /// Fully finds, loads and displays a task from the selected index of the task list on the right
+        /// </summary>
+        public void SelectTask()
         {
             if (Task_List.SelectedItem == null) { return; }
             string taskNameToFind = Task_List.SelectedItem.ToString();
-            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            taskNameToFind = "Event - " + taskNameToFind[37..];
             ReadEvent(FindLine(taskNameToFind));
             Save_Edits.Background = Brushes.LightGray;
         }
 
-        private void SaveEdits(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void SaveEdits(object sender, RoutedEventArgs e)
         {
             if (Task_List.SelectedItem == null) { Save_Edits.Background = Brushes.LightGray; return; } // not sure why this is here
-            if (string.IsNullOrWhiteSpace(TaskName.Text) || (Task_Time.Text.Length > 5 && Task_Time.Text.Substring(0, 5) == "Event")) { return; }
+            if (string.IsNullOrWhiteSpace(TaskName.Text) || (Task_Time.Text.Length > 5 && Task_Time.Text[..5] == "Event") || 
+                (Task_Desc.Text.Length > 5 && Task_Desc.Text[..5] == "Event")) { return; }
+
             string taskNameToFind = Task_List.SelectedItem.ToString();
-            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            taskNameToFind = "Event - " + taskNameToFind[37..];
             string[] lines = File.ReadAllLines(pathwayToSaveFile);
             int taskStartingLine = FindLine(taskNameToFind);
             lines[taskStartingLine] = "Event - " + TaskName.Text;
@@ -234,63 +376,135 @@ namespace TaskList
             {
                 Task_Time_Label.Text = "Time:";
             }
-            UpdateCopyFile();
+            UpdateCopyFile(pathwayToSaveFile);
         }
 
-        private void DeleteTask(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void DeleteTask(object sender, RoutedEventArgs e)
         {
             if (Task_List.SelectedItem == null) { return; } // same code as select task
             string taskNameToFind = Task_List.SelectedItem.ToString();
-            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            taskNameToFind = "Event - " + taskNameToFind[37..];
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.RemoveRange(FindLine(taskNameToFind), 3);// CHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
-            UpdateDropDown(true);
-            UpdateCopyFile();
+            UpdateDropDown();
+            UpdateCopyFile(pathwayToSaveFile);
         }
 
-        private void TaskName_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void TaskName_TextChanged(object sender, TextChangedEventArgs e)
         {
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void Task_Time_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Task_Time_TextChanged(object sender, TextChangedEventArgs e)
         {
             Save_Edits.Background = Brushes.LightSteelBlue;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) //update file pathway
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Button_Click(object sender, RoutedEventArgs e) //update file pathway
         {
-            if (string.IsNullOrWhiteSpace(Save_File_Pathway.Text)) { return; }
-            if (Save_File_Pathway.Text[0] == '"' && Save_File_Pathway.Text[Save_File_Pathway.Text.Length-1] == '"'){
-                Save_File_Pathway.Text = Save_File_Pathway.Text.Substring(1, Save_File_Pathway.Text.Length - 2);
+            if (Save_File_Pathway.Text[0] == '"' && Save_File_Pathway.Text[^1] == '"'){
+                Save_File_Pathway.Text = Save_File_Pathway.Text[1..^1];
             }
+            if (!File.Exists(Save_File_Pathway.Text)) { return; }
             pathwayToSaveFile = Save_File_Pathway.Text;
-            UpdateDropDown(true);
-            CheckFileIntegrity();
+            UpdateDropDown();
+            CheckFileIntegrity(pathwayToSaveFile);
         }
 
-        private void Duplicate_Task_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Duplicate_Task_Click(object sender, RoutedEventArgs e)
         {
             if (Task_List.SelectedItem == null) { return; }
 
             string taskNameToFind = Task_List.SelectedItem.ToString();
-            taskNameToFind = "Event - " + taskNameToFind.Substring(37, taskNameToFind.Length - 37);
+            taskNameToFind = "Event - " + taskNameToFind[37..];
             int startOfSelectedTask = FindLine(taskNameToFind);
             if (startOfSelectedTask == -1) { return; }
-            DEBUG_TEXT.Text = "startOfSelectedTask: " + startOfSelectedTask.ToString();
 
             List<string> lines = File.ReadLines(pathwayToSaveFile).ToList();
             lines.AddRange(new List<string> { lines[startOfSelectedTask] + " copy", lines[startOfSelectedTask+1], lines[startOfSelectedTask+2] });// CHANGECHANGECHNAGECHANGECHANGECHNAGE
             File.WriteAllLines(pathwayToSaveFile, lines);
 
-            UpdateDropDown(true);
-            UpdateCopyFile();
+            UpdateDropDown();
+            UpdateCopyFile(pathwayToSaveFile);
+        }
+
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Search_Box_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Search_Box.Text))
+            {
+                UpdateDropDown(false);
+            } else
+            {
+                UpdateDropDown(true, Search_Box.Text);
+            }
+        }
+
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Task_Date_Input_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Task_Date_Input.Text)) { return; }
+            DateTime date = (DateTime)Task_Date_Input.SelectedDate;
+            string dateText;
+            TimeSpan dif = date - DateTime.Today;
+
+            switch (dif.Days)
+            {
+                case 0:
+                    dateText = "Later Today";
+                    break;
+                case < 7:
+                    dateText = date.DayOfWeek.ToString();
+                    break;
+                default:
+                    dateText = $"{date.DayOfWeek} the {date.Day}";
+                    break;
+            }
+
+            Task_Time_Input.Text = dateText;
+        }
+
+        /// <summary>
+        /// To be used a by a button click
+        /// </summary>
+        public void Search_In_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Search_Box.Text))
+            {
+                UpdateDropDown(false);
+            }
+            else
+            {
+                UpdateDropDown(true, Search_Box.Text);
+            }
         }
     }
 }

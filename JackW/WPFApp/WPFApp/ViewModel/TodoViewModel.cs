@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WPFApp.Model;
@@ -15,6 +18,7 @@ namespace WPFApp.ViewModel
         public TodoViewModel()
         {
             GridItems = new ObservableCollection<TodoItem>();
+            CompleteList = new TodoItems();
             var Program = new Database();
 
             Program.CreateJson();
@@ -27,19 +31,31 @@ namespace WPFApp.ViewModel
             UpdateGrid();
 
             SubmitTodo = new RelayCommand(AddTodo, CanSubmit);
-            SubmitDelete = new RelayCommand(DelTodo, CanDelete);
+            SubmitArchive = new RelayCommand(DelTodo, CanDelete);
             SubmitClear = new RelayCommand((object obj) => GridSelected = null, CanDeselect);
-            SubmitComplete = new RelayCommand(CompleteTodo);
-            DeadlineDate = DateOnly.FromDateTime(DateTime.Now);
+            
+            DeadlineDate = DateTime.Now;
+
+            // registering property changed event
+            ReRegisterEvents();
         }
+
+        private void GridChangedHandler(object? sender, PropertyChangedEventArgs e)
+        {
+            // TODO: fix being called every character.
+            var DatabaseProgram = new Database();
+
+            DatabaseProgram.WriteJson(CompleteList);
+            //Debug.WriteLine(e.PropertyName);
+        }
+
+        public event EventHandler GridChanged;
 
         public ICommand SubmitTodo { get; set; }
 
-        public ICommand SubmitDelete { get; set; }
+        public ICommand SubmitArchive { get; set; }
 
         public ICommand SubmitClear { get; set; }
-
-        public ICommand SubmitComplete { get; set; }
 
         public TodoItem? GridSelected
         {
@@ -57,9 +73,10 @@ namespace WPFApp.ViewModel
             set
             {
                 _gridItems = value;
-                NotifyPropertyChanged(nameof(GridItems));
             }
         }
+
+        public TodoItems CompleteList { get; set; }
 
         private string _title, _description, _clockFace;
 
@@ -93,7 +110,7 @@ namespace WPFApp.ViewModel
             }
         }
 
-        public DateOnly DeadlineDate
+        public DateTime DeadlineDate
         {
             get => _deadlineDate;
             set
@@ -103,7 +120,7 @@ namespace WPFApp.ViewModel
             }
         }
 
-        private DateOnly _deadlineDate;
+        private DateTime _deadlineDate;
 
         private TodoItem _gridSelected;
 
@@ -112,51 +129,61 @@ namespace WPFApp.ViewModel
         private void AddTodo(object obj)
         {
             var DatabaseProgram = new Database();
-            var TodoProgram = new TodoItems();
 
-            GridItems.Add(new TodoItem(InputTitle, InputDesc, DeadlineDate));
+            TodoItem TempTodo = new TodoItem(InputTitle, InputDesc, DateOnly.FromDateTime(DeadlineDate));
 
-            DatabaseProgram.WriteJson(TodoProgram.ConvertTodoList(GridItems));
+            GridItems.Add(TempTodo);
+            CompleteList.Todos.Add(TempTodo);
+
+            DatabaseProgram.WriteJson(CompleteList);
 
             InputTitle = "";
             InputDesc = "";
-            DeadlineDate = DateOnly.FromDateTime(DateTime.Now);
+            DeadlineDate = DateTime.Now;
+
+            ReRegisterEvents();
         }
 
         private void DelTodo(object obj)
         {
             var DatabaseProgram = new Database();
-            var TodoProgram = new TodoItems();
+            TodoItem temp = GridSelected;
 
-            GridItems.Remove(GridSelected);
-            DatabaseProgram.WriteJson(TodoProgram.ConvertTodoList(GridItems));
-        }
+            TodoItem GridFound = GridItems.FirstOrDefault(x => x.Id == temp.Id);
+            TodoItem ListFound = CompleteList.Todos.FirstOrDefault(x => x.Id == temp.Id);
 
-        private void CompleteTodo(object obj)
-        {
-            var DatabaseProgram = new Database();
-            var TodoProgram = new TodoItems();
+            GridFound.Archived = true;
+            ListFound.Archived = true;
 
-            GridSelected.Completed = !GridSelected.Completed;
-            DatabaseProgram.WriteJson(TodoProgram.ConvertTodoList(GridItems));
-
-            GridItems.Clear();
+            DatabaseProgram.WriteJson(CompleteList);
             UpdateGrid();
+
+            ReRegisterEvents();
         }
 
         private void UpdateGrid()
         {
             var DatabaseProgram = new Database();
-
             TodoItems FetchedItems = DatabaseProgram.ReadJson();
+
+            GridItems.Clear();
+            CompleteList.Todos.Clear();
 
             if (FetchedItems != null)
             {
                 foreach (TodoItem item in FetchedItems.Todos)
                 {
+                    if (item.Archived == true)
+                    {
+                        CompleteList.Todos.Add(item);
+                        continue;
+                    }
                     GridItems.Add(item);
+                    CompleteList.Todos.Add(item);
                 }
             }
+
+            ReRegisterEvents();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -197,6 +224,36 @@ namespace WPFApp.ViewModel
                 return true;
             }
             return false;
+        }
+
+        //private void WriteJsonWrapper(ObservableCollection<TodoItem> JsonItems)
+        //{
+        //    Database DatabaseProgram = new Database();
+        //    TodoItems TodoProgram = new TodoItems();
+
+        //    try
+        //    {
+        //        DatabaseProgram.WriteJson(TodoProgram.ConvertTodoList(JsonItems));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine($"[TodoViewModel] caught writing failure: {e.Message}");
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //}
+
+        private void ReRegisterEvents()
+        {
+            foreach (TodoItem item in CompleteList.Todos)
+            {
+                if (item != null)
+                {
+                    item.PropertyChanged += GridChangedHandler;
+                }
+            }
         }
     }
 

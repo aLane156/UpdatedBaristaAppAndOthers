@@ -11,10 +11,12 @@
                               HorizontalAlignment="Stretch">
                             <Border Margin="0"
                                     Background="{TemplateBinding Background}"
-                                    CornerRadius="10">
+                                    CornerRadius="10,10,0,0"
+                                    Padding="5,0">
                                 <TextBlock Text="{TemplateBinding Property=Content}"
                                            VerticalAlignment="Center"
-                                           Padding="5"/>
+                                           Padding="5"
+                                           Foreground="{TemplateBinding Property=Foreground}"/>
                             </Border>
                         </Grid>
                     </ControlTemplate>
@@ -23,14 +25,30 @@
 
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
 
         </Style.Setters>
 
         <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="False"/>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Cursor" Value="Hand"/>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="True"/>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Cursor" Value="No"/>
+            </MultiTrigger>
             <Trigger Property="IsChecked" Value="True" >
-                <Setter Property="Background" Value="#282828" />
+                <!--#FF9933-->
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="Foreground" Value="Black"/>
             </Trigger>
         </Style.Triggers>
-                
     </Style>
 </ResourceDictionary>

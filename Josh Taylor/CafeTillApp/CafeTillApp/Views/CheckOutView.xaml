@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="CafeTillApp.Views.CheckOutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CafeTillApp"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="550">
+    <Grid>
+        <TextBox HorizontalAlignment="Left" Margin="120,92,0,263" TextWrapping="Wrap" Visibility="Visible" Text="{Binding YourProperty, UpdateSourceTrigger=PropertyChanged}" Width="315">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
+            </TextBox.InputBindings>
+        </TextBox>
+        <Button Content="Card" HorizontalAlignment="Left" Margin="94,216,0,0" 
+                VerticalAlignment="Top" Command="{Binding PayCommand}" Height="155" Width="166"/>
+        <Button Content="Cash" HorizontalAlignment="Left" Margin="301,207,0,0" 
+                VerticalAlignment="Top" Command="{Binding PayCommand}" Height="173" Width="169"/>
+        <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+Height="30" Width="55" Margin="0,0,5,0"
+Command="{Binding BackCommand}"/>
+    </Grid>
+</UserControl>
