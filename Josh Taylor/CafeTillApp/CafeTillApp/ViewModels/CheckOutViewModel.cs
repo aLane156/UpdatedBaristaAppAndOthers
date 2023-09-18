@@ -2,14 +2,7 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CafeTillApp.ViewModels
@@ -20,14 +13,14 @@ namespace CafeTillApp.ViewModels
         public ICommand PayCommand { get; private set; }
         public ICommand EnterKeyCommand { get; private set; }
 
-        private string _yourProperty = "";
-        public string YourProperty
+        private string _tips = "";
+        public string Tips
         {
-            get { return _yourProperty; }
+            get { return _tips; }
             set
             {
-                _yourProperty = value;
-                OnPropertyChanged("YourProperty");
+                _tips = value;
+                OnPropertyChanged("Tips");
             }
         }
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -56,14 +49,16 @@ namespace CafeTillApp.ViewModels
             var newView = new MenuView();
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
-        private void EnterKeyPressed(object obj)
+        private void EnterKeyPressed()
         {
             // Clear the property
-            YourProperty = string.Empty;
+            Tips = "";
         }
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+
 }

@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="550">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Margin="120,92,0,263" TextWrapping="Wrap" Visibility="Visible" Text="{Binding YourProperty, UpdateSourceTrigger=PropertyChanged}" Width="315">
+        <TextBox HorizontalAlignment="Left" Margin="120,92,0,263" TextWrapping="Wrap" Visibility="Visible" Text="{Binding Tips, UpdateSourceTrigger=PropertyChanged}" Width="315">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
             </TextBox.InputBindings>

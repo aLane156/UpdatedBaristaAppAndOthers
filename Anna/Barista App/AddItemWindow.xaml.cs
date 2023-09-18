@@ -50,7 +50,7 @@ namespace Barista_App
             Grid grid = new()
             {
                 Height = 800,
-                Width = 1920,
+                Width = 6000,
                 VerticalAlignment = VerticalAlignment.Bottom,
             };
 
@@ -77,8 +77,9 @@ namespace Barista_App
                             Name = "Button" + PurchaseableItems[i.ToString()].ItemID,
                             Content = PurchaseableItems[i.ToString()].Name,
                             Height = 200,
-                            Width = 400,
+                            Width = 600,
                             FontSize = 40,
+                            Margin = new Thickness(10, 10, 10, 10)
                         };
                         button.Click += ButtonClicked;
 
