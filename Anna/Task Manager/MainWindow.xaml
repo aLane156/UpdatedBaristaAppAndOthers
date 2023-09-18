@@ -7,10 +7,11 @@
         mc:Ignorable="d"
         Height="1080" Width="1920"
         WindowState="Maximized" WindowStyle="None">
+
     <Grid>
-        <Grid Height="135" VerticalAlignment="Bottom" Name="ButtonBar">
+        <Grid Height="135" VerticalAlignment="Bottom" Name="ButtonBar" >
             <Image Source="/Images/BarBackground.jpg" Stretch="UniformToFill" />
-            <Button Height="80" Width="500" VerticalAlignment="Bottom" Margin="-1200,0,0,25" Content="Add Task"  Name="AddTaskButton" Click="AddTask" FontSize="48"/>
+            <Button Height="80" Width="500" VerticalAlignment="Bottom" Margin="0,0,1200,25" Content="Add Task"  Name="AddTaskButton" Click="AddTask" FontSize="48"/>
             <Button Height="80" Width="500" VerticalAlignment="Bottom" Margin="0,0,0,25" Content="Edit Task" Name="EditTaskButton" Click="EditTask" FontSize="48"/>
             <Button Height="80" Width="500" VerticalAlignment="Bottom" Margin="1200,0,0,25" Content="Delete Task" Name="DeleteDaskButton" Click="DeleteTask" FontSize="48"/>
         </Grid>
@@ -19,11 +20,6 @@
 
         <Grid Name="TopScreen" VerticalAlignment="Top" Height="200">
             <Button Height="100" Width="200" Margin="0,0,1600,0" Name="ExitProgramButton" Content="Exit" FontSize="52" Click="ExitProgram"/>
-        </Grid>
-
-        <Grid Height="795" Margin="0,20,0,0" Name="TasksGrid">
-            <ScrollBar Height="795" Width="20" VerticalAlignment="Top" Margin="1900,0,0,0"/>
-            
         </Grid>
     </Grid>
 </Window>

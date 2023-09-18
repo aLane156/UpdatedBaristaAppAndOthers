@@ -80,77 +80,71 @@ namespace Task_Manager
                 // Reads file to create a copy of its contents as a TaskList
                 try
                 {
-                    using (StreamReader r = new("Tasks.json"))
+                    using StreamReader r = new("Tasks.json");
+                    string json = r.ReadToEnd();
+                    TaskList taskList = JsonConvert.DeserializeObject<dynamic>(json);
+
+                    r.Close();
+
+                    if ((ToggleDate.IsChecked == true) && (ToggleTime.IsChecked == false))
                     {
-                        string json = r.ReadToEnd();
-                        TaskList taskList = JsonConvert.DeserializeObject<TaskList>(json);
+                        // Gives a value for the date, but leaves the time as null as it is unchecked.
 
-                        r.Close();
-
-                        if ((ToggleDate.IsChecked == true) && (ToggleTime.IsChecked == false))
+                        Task newTask = new()
                         {
-                            // Gives a value for the date, but leaves the time as null as it is unchecked.
+                            Title = TitleText.Text,
+                            Description = DescriptionText.Text,
+                            Date = DueDateCalendar.SelectedDate.Value.ToShortDateString(),
+                            Time = ""
+                        };
 
-                            Task newTask = new()
-                            {
-                                Title = TitleText.Text,
-                                Description = DescriptionText.Text,
-                                Date = DueDateCalendar.SelectedDate.Value.ToShortDateString(),
-                                Time = ""
-                            };
+                        taskList.Add((1 + taskList.Count).ToString(), newTask);
 
-                            taskList.Add((1 + taskList.Count).ToString(), newTask);
-
-                            var UpdatedTasks = JsonConvert.SerializeObject(taskList);
-                            File.WriteAllText("Tasks.json", UpdatedTasks);
-                        }
-
-                        else if (ToggleTime.IsChecked == true)
-                        {
-                            // As ToggleTime can only be checked when ToggleDate is checked, we don't need to have the program see if it is checked.
-
-                            var newTask = new List<Task>
-                            {
-                                new Task
-                                {
-                                    Title = TitleText.Text,
-                                    Description = DescriptionText.Text,
-                                    Date = DueDateCalendar.SelectedDate.Value.ToShortDateString(),
-                                    Time = DueTimeHours.SelectedValue + ":" + DueTimeMinutes.SelectedValue
-                                },
-                            };
-
-                            var TaskJson = JsonConvert.SerializeObject(newTask);
-                            var UpdatedTasks = taskList + TaskJson;
-                            File.WriteAllText(@"Tasks.json", UpdatedTasks);
-                        }
-
-                        else
-                        {
-                            // Neither  a date nor time has been provided, so they are both null.
-                            var newTask = new List<Task>
-                            {
-                                new Task
-                                {
-                                    Title = TitleText.Text,
-                                    Description = DescriptionText.Text,
-                                    Date = "",
-                                    Time = ""
-                                },
-                            };
-
-                            var TaskJson = JsonConvert.SerializeObject(newTask);
-                            var UpdatedTasks = taskList + TaskJson;
-                            File.WriteAllText(@"Tasks.json", UpdatedTasks);
-
-                        }
-
-                        MessageBox.Show("Task Added");
-
-                        MainWindow MainWindow = new();
-                        MainWindow.Show();
-                        this.Close();
+                        var UpdatedTasks = JsonConvert.SerializeObject(taskList);
+                        File.WriteAllText("Tasks.json", UpdatedTasks);
                     }
+
+                    else if (ToggleTime.IsChecked == true)
+                    {
+                        // As ToggleTime can only be checked when ToggleDate is checked, we don't need to have the program see if it is checked.
+
+                        Task newTask = new()
+                        {
+                            Title = TitleText.Text,
+                            Description = DescriptionText.Text,
+                            Date = DueDateCalendar.SelectedDate.Value.ToShortDateString(),
+                            Time = DueTimeHours.SelectedValue + ":" + DueTimeMinutes.SelectedValue
+                        };
+
+                        taskList.Add((1 + taskList.Count).ToString(), newTask);
+
+                        var UpdatedTasks = JsonConvert.SerializeObject(taskList);
+                        File.WriteAllText("Tasks.json", UpdatedTasks);
+                    }
+
+                    else
+                    {
+                        // Neither  a date nor time has been provided, so they are both null.
+                        Task newTask = new()
+                        {
+                            Title = TitleText.Text,
+                            Description = DescriptionText.Text,
+                            Date = "",
+                            Time = ""
+                        };
+
+                        taskList.Add((1 + taskList.Count).ToString(), newTask);
+
+                        var UpdatedTasks = JsonConvert.SerializeObject(taskList);
+                        File.WriteAllText("Tasks.json", UpdatedTasks);
+
+                    }
+
+                    MessageBox.Show("Task Added");
+
+                    MainWindow MainWindow = new();
+                    MainWindow.Show();
+                    this.Close();
                 }
                 catch (Exception ex)
                 {

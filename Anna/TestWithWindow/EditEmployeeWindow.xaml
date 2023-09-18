@@ -1,0 +1,29 @@
+﻿<Window x:Class="TestWithWindow.EditEmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestWithWindow"
+        mc:Ignorable="d"
+        Title="EditEmployeeWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="150" Width="1500" Margin="350,0,0,800" Text="Placeholder" FontSize="100" TextAlignment="Center" Name="EditingEmployeeTitle"/>
+        <TextBlock Height="100" Width="300" Margin="0,0,1400,200" Text="First name:" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="300" Margin="0,100,1400,0" Text="Surname:" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="300" Margin="0,400,1400,0" Text="ID:" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="300" Margin="0,700,1400,0" Text="Position:" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="500" Margin="800,0,0,400" Text="New password:" FontSize="60" TextAlignment="Center" Name="NewPasswordText" Visibility="Visible" IsEnabled="False"/>
+        <TextBlock Height="100" Width="500" Margin="800,100,0,0" Text="Confirm password:" FontSize="60" TextAlignment="Center" Name="NewConfirmPasswordText" Visibility="Visible" IsEnabled="False"/>
+
+        <TextBox Height="100" Width="500" Margin="0,0,500,200" FontSize="60" Name="EditFirstNameText"/>
+        <TextBox Height="100" Width="500" Margin="0,100,500,0" FontSize="60" Name="EditSurnameText"/>
+        <TextBox Height="100" Width="500" Margin="0,400,500,0" FontSize="60" Name="EditIDText" IsEnabled="False"/>
+        <TextBox Height="100" Width="500" Margin="0,700,500,0" FontSize="60" Name="EditPositionText"/>
+        <TextBox Height="100" Width="500" Margin="800,0,0,200" FontSize="60" Name="EditPasswordText" Visibility="Visible" IsEnabled="False"/>
+        <TextBox Height="100" Width="500" Margin="800,300,0,0" FontSize="60" Name="EditConfirmPasswordText" Visibility="Visible" IsEnabled="False"/>
+
+        <Button Height="200" Width="400" Margin="1000,700,0,0" Content="Submit" FontSize="60" Name="SubmitChangesButton" Click="SubmitChangesButton_Click"/>
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
+    </Grid>
+</Window>

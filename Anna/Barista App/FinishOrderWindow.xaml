@@ -1,0 +1,31 @@
+﻿<Window x:Class="Barista_App.FinishOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Barista_App"
+        mc:Ignorable="d"
+        Title="FinishOrderWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="150" Width="600" Margin="0,0,0,800" Text="Finish Order" FontSize="100" TextAlignment="Center"/>
+
+        <TextBlock Height="100" Width="300" Margin="0,0,1400,400" Text="Total: " FontSize="80" Name="TotalPriceText"/>
+        <TextBlock Height="100" Width="200" Margin="0,0,1400,100" Text="Cash" FontSize="60" TextAlignment="Center"/>
+        <TextBlock Height="100" Width="200" Margin="700,0,0,100" Text="Card" FontSize="60" TextAlignment="Center"/>
+
+        <Viewbox Height="100" Width="100" Margin="0,100,1400,0">
+            <RadioButton Name="UsingCashRadioButton" Checked="UsingCashRadioButton_Checked"/>
+        </Viewbox>
+        <Viewbox Height="100" Width="100" Margin="700,100,0,0">
+            <RadioButton Name="UsingCardRadioButton" Checked="UsingCardRadioButton_Checked"/>
+        </Viewbox>
+
+        <Border BorderThickness="1" BorderBrush="Black"  Height="1080" Width="400" HorizontalAlignment="Right">
+            <TextBlock Text=" Current order:&#10;" FontSize="36" Name="OrderDisplayText" />
+        </Border>
+
+        <Button Height="300" Width="600" Margin="0,600,350,0" Content=" Complete&#10;Transaction" FontSize="80" Name="TransactionButton" Click="TransactionButton_Click"/>
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
+    </Grid>
+</Window>

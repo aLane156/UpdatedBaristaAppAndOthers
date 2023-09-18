@@ -1,0 +1,19 @@
+﻿<Window x:Class="TestWithWindow.LoggedInWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestWithWindow"
+        mc:Ignorable="d"
+        Title="LoggedInWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="200" Width="1920" HorizontalAlignment="Center" Margin="0,0,0,400" FontSize="120" TextAlignment="Center" Name="LoggedInText" Text="Placeholder"/>
+        
+        <Button Height="200" Width="400" Margin="0,200,800,0" Content="Create new employee" FontSize="40" Name="NewEmployeeButton" Click="NewEmployeeButton_Click"/>
+        <Button Height="200" Width="400" Margin="800,200,0,0" Content="Delete employee" FontSize="40" Name="DeleteEmployeeButton" Click="DeleteEmployeeButton_Click"/>
+        <Button Height="200" Width="400" Margin="0,800,0,0" Content="Edit employee details" FontSize="40" Name="EditEmployeeButton" Click="EditEmployeeButton_Click"/>
+        
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Log Out" FontSize="60" Name="LogOutButton" Click="LogOutButton_Click"/>
+    </Grid>
+</Window>

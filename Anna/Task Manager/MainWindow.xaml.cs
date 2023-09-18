@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -59,7 +60,11 @@ namespace Task_Manager
 
         private void DeleteTask(object sender, RoutedEventArgs e)
         {
-            Console.Write("Task deleted");
+            //A message appears prompting the user to click on the task they want to delete. For now, its key will be entered instead.
+
+            DeleteTaskWIndow DeleteTaskWindow = new();
+            DeleteTaskWindow.Show();
+            this.Close();
         }
 
         private void ExitProgram(object sender, RoutedEventArgs e)
@@ -67,7 +72,7 @@ namespace Task_Manager
             Environment.Exit(0);
         }
 
-        static void ReadFile()
+        public void ReadFile()
         {
             // file reader here
 
@@ -77,70 +82,103 @@ namespace Task_Manager
             {
                 try
                 {
-                    using (StreamReader r = new("Tasks.json"))
+                    using StreamReader r = new("Tasks.json");
+
+                    string json = File.ReadAllText("Tasks.json");
+                    TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+
+                    Grid TaskGrid = new()
                     {
-                        string json = File.ReadAllText("Tasks.json");
-                        TaskList tasks = JsonConvert.DeserializeObject<TaskList>(json);
+                        Name = "TaskGrid",
+                        Height = 795,
+                        Margin = new Thickness(0, 20, 0, 0)
+                    };
 
-                        for (int i = 1; i < tasks.Count + 1; i++)
+                    ScrollBar ScrollBar = new()
+                    {
+                        Name = "TaskScrollbar",
+                        Height = 795,
+                        Width = 20,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(1900, 0, 0, 0)
+                    };
+
+                    TaskGrid.Children.Add(ScrollBar);
+
+                    for (int i = 1; i < tasks.Count + 1; i++)
+                    {
+                        Grid grid = new()
                         {
-                            Grid grid = new();
-                            grid.Name = "TaskGrid" + (i).ToString();
-                            grid.Height = 100;
-                            grid.Width = 1900;
-                            grid.Margin = new Thickness(10);
-
-                            ColumnDefinition ColumnT = new();
-                            ColumnT.Width = new GridLength(500);
-                            grid.ColumnDefinitions.Add(ColumnT);
-
-                            ColumnDefinition ColumnD = new();
-                            ColumnD.Width = new GridLength(1000);
-                            grid.ColumnDefinitions.Add(ColumnD);
-
-                            ColumnDefinition ColumnDT = new();
-                            ColumnDT.Width = new GridLength(400);
-                            grid.ColumnDefinitions.Add(ColumnDT);
-
-                            Task task = tasks[(i).ToString()];
-
-                            TextBlock Title = new()
-                            {
-                                Name = "TitleText" + (i).ToString(),
-                                Text = tasks[i.ToString()].Title.ToString(),
-                                Height = 30,
-                                Margin = new Thickness(1),
-                                FontSize = 60,
-                            };
-                            
-
-                            TextBlock Description = new()
-                            {
-                                Name = "DescriptionText" + (i).ToString(),
-                                Text = tasks[i.ToString()].Description.ToString(),
-                                Height = 30,
-                                Width = 600,
-                                Margin = new Thickness(1),
-                                FontSize = 60,
-                            };
-
-                            TextBlock DateAndTime = new()
-                            {
-                                Name = "DateAndTime" + (i).ToString(),
-                                Text = tasks[i.ToString()].Date.ToString() + "  " + tasks[i.ToString()].Time.ToString(),
-                                Height = 30,
-                                Margin = new Thickness(1),
-                                FontSize = 60,
-                            };
+                            Name = "TaskGrid" + (i).ToString(),
+                            Height = 100,
+                            Width = 1900,
+                            Margin = new Thickness(0, 0, 0, 900 - (200 * i))
+                        };
 
 
-                            Grid.SetColumn(Title, 0);
-                            Grid.SetColumn(Description, 1);
-                            Grid.SetColumn(DateAndTime, 2);
-                        }
+                        ColumnDefinition ColumnT = new()
+                        {
+                            Width = new GridLength(500)
+                        };
+                        grid.ColumnDefinitions.Add(ColumnT);
 
-                        r.Close();
+                        ColumnDefinition ColumnD = new()
+                        {
+                            Width = new GridLength(1000)
+                        };
+                        grid.ColumnDefinitions.Add(ColumnD);
+
+                        ColumnDefinition ColumnDT = new()
+                        {
+                            Width = new GridLength(400)
+                        };
+                        grid.ColumnDefinitions.Add(ColumnDT);
+
+                        Task task = tasks[(i).ToString()];
+
+                        TextBlock Title = new()
+                        {
+                            Name = "TitleText" + (i).ToString(),
+                            Text = tasks[i.ToString()].Title.ToString(),
+                            Height = 30,
+                            Margin = new Thickness(1),
+                            FontSize = 20,
+                        };
+
+
+                        TextBlock Description = new()
+                        {
+                            Name = "DescriptionText" + (i).ToString(),
+                            Text = tasks[i.ToString()].Description.ToString(),
+                            Height = 30,
+                            Width = 600,
+                            Margin = new Thickness(1),
+                            FontSize = 20,
+                        };
+
+                        TextBlock DateAndTime = new()
+                        {
+                            Name = "DateAndTime" + (i).ToString(),
+                            Text = tasks[i.ToString()].Date.ToString() + "  " + tasks[i.ToString()].Time.ToString(),
+                            Height = 30,
+                            Margin = new Thickness(1),
+                            FontSize = 20,
+                        };
+
+                        Grid.SetColumn(Title, 0);
+                        Grid.SetColumn(Description, 1);
+                        Grid.SetColumn(DateAndTime, 2);
+
+                        grid.Children.Add(Title);
+                        grid.Children.Add(Description);
+                        grid.Children.Add(DateAndTime);
+
+                        // Change to comment when showing program.
+                        //this.Content = grid;
+
                     }
+
+                    r.Close();
                 }
                 catch (Exception ex)
                 {
