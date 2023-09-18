@@ -22,56 +22,42 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 currentItem = value;
-                NotifyPropertyChanged(nameof(currentItem));
+                NotifyPropertyChanged(nameof(CurrentItem));
                 SetPriceText(currentItem.Price);
                 ShowItemSpecificMenu(currentItem);
             }
         }
 
-        private int? _selectedIndex;
-        public int? selectedIndex
+        private MenuItem? selectedItemMenu;
+        public MenuItem? SelectedItemMenu
         {
-            get => _selectedIndex;
+            get => selectedItemMenu;
             set
             {
-                _selectedIndex = value;
-                NotifyPropertyChanged(nameof(_selectedIndex));
-                if (value != null) 
+                selectedItemMenu = value;
+                NotifyPropertyChanged(nameof(SelectedItemMenu));
+                if(value != null)
                 {
                     SetCenterButtonStatus(true);
-                    selectedIndexBasket = null;
-                    CurrentItem = menu[(int)_selectedIndex];
+                    CurrentItem = selectedItemMenu;
+                    SelectedItemBasket = null;
                 }
             }
         }
 
-        private int? _selectedIndexBasket;
-        public int? selectedIndexBasket
+        private MenuItem? selectedItemBasket;
+        public MenuItem? SelectedItemBasket
         {
-            get => _selectedIndexBasket;
+            get => selectedItemBasket;
             set
             {
-                _selectedIndexBasket = value;
-                NotifyPropertyChanged(nameof(_selectedIndexBasket));
+                selectedItemBasket = value;
+                NotifyPropertyChanged(nameof(SelectedItemBasket));
                 if (value != null)
                 {
                     SetCenterButtonStatus(false);
-                    selectedIndex = null;
-                    try
-                    {
-                        CurrentItem = Basket[(int)_selectedIndexBasket];
-                    }
-                    catch 
-                    {
-                        if (value > 0)
-                        {
-                            CurrentItem = Basket.Last<MenuItem>();
-                        } else
-                        {
-                            CurrentItem = nopeItem;
-                        }
-
-                    }
+                    CurrentItem = selectedItemBasket;
+                    SelectedItemMenu = null;
                 }
             }
         }
@@ -116,8 +102,8 @@ namespace WcMonaldsSelfService.ViewModel
         public Visibility CenterButtonVisibility
         {
             get { return centerButtonVisibility; }
-            set 
-            { 
+            set
+            {
                 centerButtonVisibility = value;
                 NotifyPropertyChanged(nameof(centerButtonVisibility));
             }
@@ -140,7 +126,13 @@ namespace WcMonaldsSelfService.ViewModel
             get { return drinkMenuVisibility; }
             set
             {
-                drinkMenuVisibility = value;
+                if (BasketButtonVisibility == Visibility.Visible)
+                {
+                    drinkMenuVisibility = value;
+                } else
+                {
+                    drinkMenuVisibility = Visibility.Collapsed;
+                }
                 NotifyPropertyChanged(nameof(drinkMenuVisibility));
             }
         }
@@ -151,7 +143,14 @@ namespace WcMonaldsSelfService.ViewModel
             get { return burgerMenuVisibility; }
             set
             {
-                burgerMenuVisibility = value;
+                if (BasketButtonVisibility == Visibility.Visible)
+                {
+                    burgerMenuVisibility = value;
+                }
+                else
+                {
+                    burgerMenuVisibility = Visibility.Collapsed;
+                }
                 NotifyPropertyChanged(nameof(burgerMenuVisibility));
             }
         }
@@ -162,7 +161,20 @@ namespace WcMonaldsSelfService.ViewModel
             get { return looseMeatsMenuVisibility; }
             set
             {
-                looseMeatsMenuVisibility = value;
+                if (BasketButtonVisibility == Visibility.Visible)
+                {
+                    looseMeatsMenuVisibility = value;
+                    if (value == Visibility.Visible)
+                    {
+                        LooseMeats lm = (LooseMeats)CurrentItem;
+                        CurAmount = lm.Count.ToString();
+                        UpdateTotalCost();
+                    }
+                }
+                else
+                {
+                    looseMeatsMenuVisibility = Visibility.Collapsed;
+                }
                 NotifyPropertyChanged(nameof(looseMeatsMenuVisibility));
             }
         }
@@ -178,15 +190,57 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        private string curAmount;
+        public string CurAmount
+        {
+            get => curAmount;
+            set
+            {
+                if (LooseMeatsMenuVisibility == Visibility.Visible)
+                {
+                    LooseMeats lm = (LooseMeats)CurrentItem;
+                    int num;
+                    if (int.TryParse(value, out num) && lm.ChangeNo(num))
+                    {
+                        curAmount = value;
+                        NotifyPropertyChanged(nameof(curAmount));
+                    }
+                } else
+                {
+                    curAmount = value;
+                    NotifyPropertyChanged(nameof(curAmount));
+                }
+            }
+        }
+
+        private string totalCost;
+        public string TotalCost
+        {
+            get => totalCost;
+            set
+            {
+                totalCost = value;
+                NotifyPropertyChanged(nameof(totalCost));
+            }
+        }
+
+        public bool MenuFocused;
+        public bool BasketFocused;
+
         public ICommand AddToBasket { get; set; }
         public ICommand RemoveFromBasket { get; set; }
         public ICommand AddAnotherToBasket { get; set; }
+        public ICommand GoToCheckout { get; set; }
+
+        public ICommand ClickedMenu { get; set; }
 
         public MainWindowVM()
         {
             AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
             RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+            GoToCheckout = new RelayCommand(o => ToCheckout());
+            ClickedMenu = new RelayCommand(o => FocusListChanged());
         }
 
         /// <summary>
@@ -200,6 +254,7 @@ namespace WcMonaldsSelfService.ViewModel
                 if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
                 {
                     Basket.Add(item);
+                    UpdateTotalCost();
                 }
             } catch { }
         }
@@ -213,6 +268,7 @@ namespace WcMonaldsSelfService.ViewModel
             try
             {
                 Basket.RemoveAt(item);
+                UpdateTotalCost();
             } catch { }
         }
 
@@ -226,6 +282,7 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 CenterButtonVisibility = Visibility.Visible;
                 BasketButtonVisibility = Visibility.Collapsed;
+
             }
             else
             {
@@ -246,7 +303,7 @@ namespace WcMonaldsSelfService.ViewModel
             } else if (price > 0)
             {
                 CurPrice = "£" + price.ToString();
-            } 
+            }
         }
 
         /// <summary>
@@ -278,6 +335,27 @@ namespace WcMonaldsSelfService.ViewModel
                 BurgerMenuVisibility = Visibility.Collapsed;
                 LooseMeatsMenuVisibility = Visibility.Collapsed;
             }
+        }
+
+        private void ToCheckout()
+        {
+
+        }
+
+        private void UpdateTotalCost()
+        {
+            float runningTotal = 0f;
+            foreach (var item in Basket)
+            {
+                runningTotal += item.Price;
+            }
+            TotalCost = $"Total £{runningTotal}";
+        }
+
+        public void FocusListChanged()
+        {
+
+            IInputElement inputElement = FocusManager.GetFocusedElement(Application.Current.Windows[0]);
         }
     }
 }

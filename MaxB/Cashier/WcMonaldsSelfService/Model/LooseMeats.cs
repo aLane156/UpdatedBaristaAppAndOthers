@@ -9,7 +9,7 @@ namespace WcMonaldsSelfService.Model
 {
     public class LooseMeats : MenuItem
     {
-        public int maxCount;
+        private int maxCount;
         private int count;
         public int Count
         {
@@ -23,9 +23,25 @@ namespace WcMonaldsSelfService.Model
             }
         }
 
+        public float pricePerItem { get; private set; }
+
         public LooseMeats(string _name, float _price, int _count) : base(_name, _price)
         {
+            maxCount = _count * 2;
             Count = _count;
+            pricePerItem = _price / _count;
+        }
+
+        /// <summary>
+        /// Changes the number of items in this object and updates the price accordingly
+        /// </summary>
+        /// <param name="newCount">New number of items</param>
+        /// <returns>If the change was successful</returns>
+        public bool ChangeNo(int newCount)
+        {
+            Count = newCount;
+            Price = pricePerItem * count;
+            return (count == newCount);
         }
     }
 }
