@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -30,7 +31,7 @@ namespace CafeTillApp.ViewModels
         {
             BackCommand = new DelegateCommand(BackCommandExecute);
             PayCommand = new DelegateCommand(PayCommandExecute);
-            EnterKeyCommand = new RelayCommand(EnterKeyPressed);
+            EnterKeyCommand = new RelayCommand<object>(EnterKeyPressed);
             _eventAggregator = eventAggregator;
         }
 
@@ -49,10 +50,19 @@ namespace CafeTillApp.ViewModels
             var newView = new MenuView();
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
-        private void EnterKeyPressed()
+        private void EnterKeyPressed(object obj)
         {
-            // Clear the property
-            Tips = "";
+            if (float.TryParse(Tips, out _))
+            {
+                if (MainWindowViewModel.SharedBasket.Basket == null)
+                {
+                    MainWindowViewModel.SharedBasket.Basket = new ObservableCollection<string>();
+                }
+
+                MainWindowViewModel.SharedBasket.Basket.Add("£"+Tips);
+                // Clear the property
+                Tips = "";
+            }
         }
         protected virtual void OnPropertyChanged(string propertyName)
         {
