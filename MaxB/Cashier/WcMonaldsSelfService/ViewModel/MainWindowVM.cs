@@ -94,7 +94,7 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 basket = value;
-                NotifyPropertyChanged(nameof(basket));
+                NotifyPropertyChanged(nameof(Basket));
             }
         }
 
@@ -105,7 +105,7 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 centerButtonVisibility = value;
-                NotifyPropertyChanged(nameof(centerButtonVisibility));
+                NotifyPropertyChanged(nameof(CenterButtonVisibility));
             }
         }
 
@@ -116,7 +116,7 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 basketButtonVisibility = value;
-                NotifyPropertyChanged(nameof(basketButtonVisibility));
+                NotifyPropertyChanged(nameof(BasketButtonVisibility));
             }
         }
 
@@ -133,7 +133,7 @@ namespace WcMonaldsSelfService.ViewModel
                 {
                     drinkMenuVisibility = Visibility.Collapsed;
                 }
-                NotifyPropertyChanged(nameof(drinkMenuVisibility));
+                NotifyPropertyChanged(nameof(DrinkMenuVisibility));
             }
         }
 
@@ -151,7 +151,7 @@ namespace WcMonaldsSelfService.ViewModel
                 {
                     burgerMenuVisibility = Visibility.Collapsed;
                 }
-                NotifyPropertyChanged(nameof(burgerMenuVisibility));
+                NotifyPropertyChanged(nameof(BurgerMenuVisibility));
             }
         }
 
@@ -175,7 +175,7 @@ namespace WcMonaldsSelfService.ViewModel
                 {
                     looseMeatsMenuVisibility = Visibility.Collapsed;
                 }
-                NotifyPropertyChanged(nameof(looseMeatsMenuVisibility));
+                NotifyPropertyChanged(nameof(LooseMeatsMenuVisibility));
             }
         }
 
@@ -186,7 +186,7 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 curPrice = value;
-                NotifyPropertyChanged(nameof(curPrice));
+                NotifyPropertyChanged(nameof(CurPrice));
             }
         }
 
@@ -208,7 +208,7 @@ namespace WcMonaldsSelfService.ViewModel
                 } else
                 {
                     curAmount = value;
-                    NotifyPropertyChanged(nameof(curAmount));
+                    NotifyPropertyChanged(nameof(CurAmount));
                 }
             }
         }
@@ -220,7 +220,18 @@ namespace WcMonaldsSelfService.ViewModel
             set
             {
                 totalCost = value;
-                NotifyPropertyChanged(nameof(totalCost));
+                NotifyPropertyChanged(nameof(TotalCost));
+            }
+        }
+
+        private int currentTab;
+        public int CurrentTab
+        {
+            get => currentTab;
+            set
+            {
+                currentTab = value;
+                NotifyPropertyChanged(nameof(CurrentTab));
             }
         }
 
@@ -231,16 +242,15 @@ namespace WcMonaldsSelfService.ViewModel
         public ICommand RemoveFromBasket { get; set; }
         public ICommand AddAnotherToBasket { get; set; }
         public ICommand GoToCheckout { get; set; }
-
-        public ICommand ClickedMenu { get; set; }
+        public ICommand GoToMenu { get; set; }
 
         public MainWindowVM()
         {
             AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
             RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
-            GoToCheckout = new RelayCommand(o => ToCheckout());
-            ClickedMenu = new RelayCommand(o => FocusListChanged());
+            GoToCheckout = new RelayCommand(o => CurrentTab = 1);
+            GoToMenu = new RelayCommand(o => CurrentTab = 0);
         }
 
         /// <summary>
@@ -337,11 +347,9 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
-        private void ToCheckout()
-        {
-
-        }
-
+        /// <summary>
+        /// Updates the total cost by counting items in the basket
+        /// </summary>
         private void UpdateTotalCost()
         {
             float runningTotal = 0f;
@@ -350,12 +358,6 @@ namespace WcMonaldsSelfService.ViewModel
                 runningTotal += item.Price;
             }
             TotalCost = $"Total £{runningTotal}";
-        }
-
-        public void FocusListChanged()
-        {
-
-            IInputElement inputElement = FocusManager.GetFocusedElement(Application.Current.Windows[0]);
         }
     }
 }
