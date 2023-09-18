@@ -1,14 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using CashierApp.Model.Types;
 
 namespace CashierApp.Model
 {
-    public class Order
+    public class Order : INotifyPropertyChanged
     {
+        #region PropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
         private static double TaxPercentage = 0.2;
 
         public Order()
@@ -17,12 +26,14 @@ namespace CashierApp.Model
             OrderItems = new ObservableCollection<Product>();
         }
 
+
+
         public string Id { get; set; }
 
         private ObservableCollection<Product> _orderItems;
 
-        public ObservableCollection<Product> OrderItems 
-        { 
+        public ObservableCollection<Product> OrderItems
+        {
             get => _orderItems;
             set
             {
@@ -31,14 +42,44 @@ namespace CashierApp.Model
             }
         }
 
-        private double beforeTaxTotal;
+        private double beforeTaxTotal, _taxAmount, _finalPrice;
 
-        public double TaxAmount { get; private set; }
+        public double TaxAmount
+        {
+            get { return _taxAmount; }
+            private set
+            {
+                _taxAmount = value;
+                NotifyPropertyChanged(nameof(TaxAmount));
+            }
+        }
 
-        public double FinalPrice { get; set; }
+        public double FinalPrice
+        {
+            get { return _finalPrice; }
+            private set
+            {
+                _finalPrice = value;
+                NotifyPropertyChanged(nameof(FinalPrice));
+            }
+        }
+
+        public string DisplayFinal
+        {
+            get { return $"£{FinalPrice.ToString("#.##")}"; }
+        }
+
+        public string DisplayTax
+        {
+            get { return $"£{TaxAmount.ToString("#.##")}"; }
+        }
+
+        #region Methods
 
         private void CalculateTotal()
         {
+            beforeTaxTotal = 0;
+
             foreach (var item in OrderItems)
             {
                 beforeTaxTotal += item.Price;
@@ -55,6 +96,8 @@ namespace CashierApp.Model
         {
             CalculateTax();
             FinalPrice = Math.Truncate(100 * (beforeTaxTotal + TaxAmount)) / 100;
+            NotifyPropertyChanged(nameof(DisplayTax));
+            NotifyPropertyChanged(nameof(DisplayFinal));
         }
 
         public void Clear()
@@ -65,5 +108,7 @@ namespace CashierApp.Model
             TaxAmount = 0;
             FinalPrice = 0;
         }
+
+        #endregion
     }
 }

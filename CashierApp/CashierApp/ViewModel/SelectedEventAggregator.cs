@@ -1,15 +1,15 @@
-﻿using CashierApp.Model;
+﻿using CashierApp.Model.Types;
+using CashierApp.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Shell;
 
 namespace CashierApp.ViewModel
 {
+    /// <summary>
+    /// Class for sending products to the MainWindowViewModel using events.
+    /// </summary>
     public class SelectedEventAggregator
     {
         public static Action<Product> OnMessageTransmitted;

@@ -1,19 +1,15 @@
-﻿using CashierApp.Model;
-using System;
-using System.Collections.Generic;
+﻿using CashierApp.Model.Backend;
+using CashierApp.Model.Types;
+using CashierApp.Model;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CashierApp.ViewModel
 {
-	internal class FoodMenuViewModel : BaseViewModel
+    internal class FoodMenuViewModel : BaseViewModel
 	{
 		public FoodMenuViewModel()
 		{
-			FoodMenuItems = new ObservableCollection<FoodProduct>();
+			MenuItems = new ObservableCollection<FoodProduct>();
 			ObservableCollection<FoodProduct> temp = new();
 
 			ObservableCollection<FoodProduct> tempFoodList = new()
@@ -39,15 +35,15 @@ namespace CashierApp.ViewModel
 			//	}
    //         });
 
-			// TODO: Sort out general handling of async/await
-
 			DispatchHandler.HandleAwait(App.Current, async () => await Database.CreateJson());
-			//DispatchHandler.HandleAwait(App.Current, async () => await Database.WriteFile(tempFoodList));
-			// TODO: Fix this
-			//DispatchHandler.HandleAwait(App.Current, async o => await Database.ReadJson(ProductType.Food));
-
-			// TODO: Figure out returns
-			App.Current.Dispatcher.InvokeAsync(async () => await Database.ReadJson(ProductType.Food));
+			DispatchHandler.HandleAwait(App.Current, async () => 
+			{ 
+				var data = await Database.ReadJsonFood(); 
+				foreach (var item in data)
+				{
+					MenuItems.Add(item);
+				}
+			});
 		}
 
 		public RelayCommand Refresh { get; set; }
@@ -58,58 +54,58 @@ namespace CashierApp.ViewModel
 
 		public RelayCommand DeselectCommand { get; set; }
 
-		private ObservableCollection<FoodProduct> _foodMenu;
+		private ObservableCollection<FoodProduct> _menuItems;
 
-		private FoodProduct? _foodSelected;
+		private FoodProduct? _menuSelected;
 
-		public FoodProduct? FoodSelected 
+		public FoodProduct? Selected 
 		{ 
-			get => _foodSelected;
+			get => _menuSelected;
 			set
 			{
-				SetProperty(ref _foodSelected, value);
+				SetProperty(ref _menuSelected, value);
 			}
 		}
 
-		public ObservableCollection<FoodProduct> FoodMenuItems
+		public ObservableCollection<FoodProduct> MenuItems
 		{
-			get => _foodMenu;
+			get => _menuItems;
 			set 
 			{ 
-				_foodMenu = value;
-				NotifyPropertyChanged(nameof(FoodMenuItems)); 
+				_menuItems = value;
+				NotifyPropertyChanged(nameof(MenuItems)); 
 			}
 		}
 
 		private void DeselectFunction(object obj)
 		{
-			FoodSelected = null;
+			Selected = null;
 		}
 
 		private void AddItem(object obj)
 		{
-			if (FoodSelected != null)
+			if (Selected != null)
 			{
-				SelectedEventAggregator.BroadCast(FoodSelected);
+				SelectedEventAggregator.BroadCast(Selected);
 			}
 		}
 
 		private bool CanDeselect(object obj)
 		{
-			if (FoodSelected != null)
-			{
-				return true;
-			}
-			return false;
-		}
+            if (Selected != null)
+            {
+                return true;
+            }
+            return false;
+        }
 
 		private bool CanAdd(object obj)
 		{
-			if (FoodSelected == null)
-			{
-				return false;
-			}
-			return true;
-		}
+            if (Selected != null)
+            {
+                return true;
+            }
+            return false;
+        }
 	}
 }

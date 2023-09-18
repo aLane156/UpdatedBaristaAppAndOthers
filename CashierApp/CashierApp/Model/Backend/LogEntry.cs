@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CashierApp.Model.Types;
 
-namespace CashierApp.Model
+namespace CashierApp.Model.Backend
 {
     public class LogEntry
     {

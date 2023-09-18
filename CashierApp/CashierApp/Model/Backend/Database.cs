@@ -6,9 +6,10 @@ using System.IO;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using CashierApp.Model.Types;
 using Newtonsoft.Json;
 
-namespace CashierApp.Model
+namespace CashierApp.Model.Backend
 {
     public static class Database
     {
@@ -40,8 +41,6 @@ namespace CashierApp.Model
 
                 await WriteLogLine(new("Created log file.", "MainWindowViewModel.cs", LogType.INFO));
             }
-
-            await Task.Delay(5000);
         }
 
         public static async Task WriteLogLine(LogEntry logEntry)
@@ -97,45 +96,11 @@ namespace CashierApp.Model
             }
         }
 
-        /// <summary>
-        /// Asynchronously reads data from product data files.
-        /// </summary>
-        /// <param name="productType">The specific products file to access. Takes ProductType enum.</param>
-        /// <returns>Returns an observable collection of Products.</returns>
-        public static async Task<ObservableCollection<FoodProduct>> ReadJson(ProductType productType)
+        public static async Task<ObservableCollection<FoodProduct>> ReadJsonFood()
         {
-            string filePath = string.Empty;
-
-            switch (productType)
-            {
-                case ProductType.Dessert:
-                    filePath = $"{ProductPath}\\dessert-products.json";
-                    //string[] allLines = await File.ReadAllLinesAsync(filePath);
-                    return new ObservableCollection<FoodProduct>();
-                case ProductType.Food:
-                    filePath = $"{ProductPath}\\food-products.json";
-                    FoodProducts tempList = await ReadJsonFood(filePath);
-
-                    await Task.Delay(5000);
-
-                    // Generics are not covariant (learn more about this!!!)
-                    if (tempList != null) return tempList.FoodProductsList;
-                    else 
-                    { 
-                        await WriteLogLine($"File: {filePath} was empty no values have been fetched", "Database.cs", LogType.WARNING); 
-                        return new ObservableCollection<FoodProduct>(); 
-                    } 
-                case ProductType.Drink:
-                    filePath = $"{ProductPath}\\drink-products.json";
-                    return new ObservableCollection<FoodProduct>();
-                default:
-                    return new ObservableCollection<FoodProduct>();
-            }
-        }
-
-        private static async Task<FoodProducts> ReadJsonFood(string filePath)
-        {
-            FoodProducts result = new FoodProducts();
+            FoodProducts result = new();
+            ObservableCollection<FoodProduct> results = new();
+            string filePath = $"{ProductPath}\\food-products.json";
 
             try
             {
@@ -147,6 +112,11 @@ namespace CashierApp.Model
                 if (json != null)
                 {
                     result = JsonConvert.DeserializeObject<FoodProducts>(json);
+
+                    foreach (FoodProduct item in result.FoodProductsList)
+                    {
+                        results.Add(item);
+                    }
                 }
                 else
                 {
@@ -159,7 +129,7 @@ namespace CashierApp.Model
                 await WriteLogLine($"Failed to retrieve information from food-products.json, exception: {ex.Message}", "Database.cs", LogType.ERROR);
             }
 
-            return result;
+            return results;
         }
 
         public static async Task WriteFile(ObservableCollection<FoodProduct> writeItems)

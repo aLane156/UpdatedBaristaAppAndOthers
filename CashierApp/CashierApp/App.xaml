@@ -12,6 +12,8 @@
                 <ResourceDictionary Source="Resources/OrderButtonTheme.xaml"/>
                 <ResourceDictionary Source="Resources/MenuButtonTheme.xaml"/>
                 <ResourceDictionary Source="Resources/ChromeButtonTheme.xaml"/>
+                <ResourceDictionary Source="Resources/MenuBottomBar.xaml"/>
+                <ResourceDictionary Source="Resources/MenuListBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <DataTemplate DataType="{x:Type viewmodel:FoodMenuViewModel}">
                 <view:FoodMenuView/>

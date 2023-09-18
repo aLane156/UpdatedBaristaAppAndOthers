@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace CashierApp.Model
+namespace CashierApp.Model.Backend
 {
     public class RelayCommand : ICommand
     {
         #region Fields
+
         readonly Action<object> _execute;
         readonly Predicate<object> _canExecute;
+
         #endregion
 
         #region Constructors
+
         public RelayCommand(Action<object> execute) : this(execute, null) { }
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
@@ -20,9 +23,11 @@ namespace CashierApp.Model
             _execute = execute;
             _canExecute = canExecute;
         }
+
         #endregion
 
         #region ICommand Members
+
         public bool CanExecute(object parameter)
         {
             return _canExecute == null ? true : _canExecute(parameter);
@@ -38,6 +43,7 @@ namespace CashierApp.Model
         {
             _execute(parameter);
         }
+
         #endregion
     }
 }

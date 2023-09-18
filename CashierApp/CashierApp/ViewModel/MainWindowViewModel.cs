@@ -1,13 +1,8 @@
 ﻿using CashierApp.Model;
-using System;
-using System.Collections.Generic;
+using CashierApp.Model.Types;
+using CashierApp.Model.Backend;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace CashierApp.ViewModel
 {
@@ -26,14 +21,13 @@ namespace CashierApp.ViewModel
 
             SelectedEventAggregator.OnMessageTransmitted += FoodItemAdded_EventHandler;
 
-            
-
-            App.Current.Dispatcher.Invoke(() => { Database.CreateLog(); });
+            DispatchHandler.HandleAwait(App.Current, async () => { await Database.CreateLog(); });
         }
 
         private void FoodItemAdded_EventHandler(Product e)
         {
             CurrentOrder.OrderItems.Add(e);
+            CurrentOrder.CalculateFinal();
         }
 
         public RelayCommand MinimiseApp { get; set; }

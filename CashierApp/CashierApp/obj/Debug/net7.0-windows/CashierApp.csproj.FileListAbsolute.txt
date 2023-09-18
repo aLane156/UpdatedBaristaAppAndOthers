@@ -29,3 +29,7 @@ C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-
 C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\CashierApp.genruntimeconfig.cache
 C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\ref\CashierApp.dll
 C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\bin\Debug\net7.0-windows\Newtonsoft.Json.dll
+C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\Resources\MenuBottomBar.baml
+C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\Resources\MenuListBox.baml
+C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\View\DrinkMenuView.g.cs
+C:\Users\jw153369\source\repos\AzureRepo\CashierApp\CashierApp\obj\Debug\net7.0-windows\View\DrinkMenuView.baml

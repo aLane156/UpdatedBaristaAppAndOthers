@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CashierApp.Model
+﻿namespace CashierApp.Model.Types
 {
     /// <summary>
     /// Enum for storing all types of LogTypes.
