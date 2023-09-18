@@ -89,7 +89,8 @@ namespace Barista_App
                     } 
                 }   
             }
-            this.Content = grid;
+            ButtonsGrid.Children.Add(grid);
+            //this.Content = grid;
         }
 
         private int CalculateRows(Menu PurchaseableItems)
