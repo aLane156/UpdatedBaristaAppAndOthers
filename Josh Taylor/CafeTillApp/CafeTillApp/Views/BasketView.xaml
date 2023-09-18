@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CafeTillApp.Views"
+             xmlns:local="clr-namespace:CafeTillApp"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -25,7 +28,8 @@
                             <TextBlock Text="{Binding}" />
                             <!-- Add a button next to each item -->
                             <Button Content="Remove"
-                                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" />
+                                    Command="{Binding DataContext.RemoveItemCommand,
+                                RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -38,6 +42,8 @@
         <TextBlock Grid.Row="1" Text="{Binding TotalText}" />
 
         <!-- Button -->
-        <Button Grid.Row="2" Command="{Binding CheckOutCommand}" Content="{Binding ButtonText}"></Button>
+        <Button Grid.Row="2" Command="{Binding CheckOutCommand}" 
+                Content="{Binding ButtonText}"
+                IsEnabled="{Binding IsCheckOutView, Converter={StaticResource InverseBooleanConverter}}"></Button>
     </Grid>
 </UserControl>

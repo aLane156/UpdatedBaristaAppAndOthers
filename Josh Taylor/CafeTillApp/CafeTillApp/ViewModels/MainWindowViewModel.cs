@@ -2,6 +2,7 @@
 using Prism.Events;
 using Prism.Mvvm;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace CafeTillApp.ViewModels
 {

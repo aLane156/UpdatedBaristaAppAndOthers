@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CafeTillApp.Views;
 
 namespace CafeTillApp.ViewModels
 {
@@ -16,8 +18,26 @@ namespace CafeTillApp.ViewModels
         private ICommand _checkOutCommand;
         private ICommand _removeItemCommand;
 
-        public BasketViewModel()
+        // checking if the view next to it is ckecked out
+        private bool _isCheckOutView;
+        public bool IsCheckOutView
         {
+            get { return _isCheckOutView; }
+            set
+            {
+                _isCheckOutView = value;
+                OnPropertyChanged("IsCheckOutView");
+            }
+        }
+
+        private readonly IEventAggregator _eventAggregator;
+        public BasketViewModel(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+
+            // When the view changes 
+            _eventAggregator.GetEvent<ChangeViewEvent>().Subscribe(OnViewChanged);
+
             // Check if MainWindowViewModel.SharedBasket.Basket is not null
             if (MainWindowViewModel.SharedBasket.Basket == null)
             {
@@ -27,6 +47,12 @@ namespace CafeTillApp.ViewModels
 
             // Subscribe to the CollectionChanged event
             MainWindowViewModel.SharedBasket.Basket.CollectionChanged += BasketItems_CollectionChanged;
+        }
+
+        private void OnViewChanged(object view)
+        {
+            // Update IsCheckOutView based on the current view
+            IsCheckOutView = view is CheckOutView;
         }
 
         /// <summary>
@@ -78,10 +104,14 @@ namespace CafeTillApp.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// sending left view to chekout screen
+        /// </summary>
         private void CheckOut()
         {
-            // Add checkout logic here
+            var newView = new CheckOutView();
+            IsCheckOutView = newView is CheckOutView;
+            _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
