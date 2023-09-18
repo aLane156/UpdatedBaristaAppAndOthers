@@ -16,15 +16,22 @@ namespace WcMonaldsSelfService.ViewModel
         private readonly MenuItem nopeItem = new MenuItem("Select an item", 0f);
 
         private MenuItem? currentItem;
-        public MenuItem CurrentItem
+        public MenuItem? CurrentItem
         {
             get => currentItem;
             set
             {
                 currentItem = value;
                 NotifyPropertyChanged(nameof(CurrentItem));
-                SetPriceText(currentItem.Price);
-                ShowItemSpecificMenu(currentItem);
+                if (currentItem != null)
+                {
+                    SetPriceText(currentItem.Price);
+                    ShowItemSpecificMenu(currentItem);
+                } else
+                {
+                    SetPriceText(0);
+                    ShowItemSpecificMenu();
+                }
             }
         }
 
@@ -243,6 +250,7 @@ namespace WcMonaldsSelfService.ViewModel
         public ICommand AddAnotherToBasket { get; set; }
         public ICommand GoToCheckout { get; set; }
         public ICommand GoToMenu { get; set; }
+        public ICommand NextCustomer { get; set; }
 
         public MainWindowVM()
         {
@@ -251,6 +259,7 @@ namespace WcMonaldsSelfService.ViewModel
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
             GoToCheckout = new RelayCommand(o => CurrentTab = 1);
             GoToMenu = new RelayCommand(o => CurrentTab = 0);
+            NextCustomer = new RelayCommand(o => ResetForNextCustomer());
         }
 
         /// <summary>
@@ -317,6 +326,15 @@ namespace WcMonaldsSelfService.ViewModel
         }
 
         /// <summary>
+        /// Hides all menus
+        /// </summary>
+        private void ShowItemSpecificMenu()
+        {
+            DrinkMenuVisibility = Visibility.Collapsed;
+            BurgerMenuVisibility = Visibility.Collapsed;
+            LooseMeatsMenuVisibility = Visibility.Collapsed;
+        }
+        /// <summary>
         /// Shows the appropriate additional menu below the main item menu
         /// </summary>
         /// <param name="item">The current item to be checked</param>
@@ -357,7 +375,21 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 runningTotal += item.Price;
             }
-            TotalCost = $"Total £{runningTotal}";
+            runningTotal = MathF.Round(runningTotal * 100);
+            TotalCost = $"Total £{runningTotal / 100}";
+        }
+
+        /// <summary>
+        /// Resets all appropriate fields, making it as if the application was just opened.
+        /// </summary>
+        private void ResetForNextCustomer()
+        {
+            Basket.Clear();
+            UpdateTotalCost();
+            CurrentTab = 0;
+            SelectedItemBasket = null;
+            SelectedItemMenu = null;
+            CurrentItem = null;
         }
     }
 }
