@@ -9,25 +9,20 @@ namespace WcMonaldsSelfService.Model
 {
     public class LooseMeats : MenuItem
     {
-        private int maxCount;
         private int count;
         public int Count
         {
             get { return count; }
             set
             {
-                if (value <= maxCount)
-                {
-                    count = value;
-                }
+                count = value;
             }
         }
 
-        public float pricePerItem { get; private set; }
+        private float pricePerItem;
 
         public LooseMeats(string _name, float _price, int _count) : base(_name, _price)
         {
-            maxCount = _count * 2;
             Count = _count;
             pricePerItem = _price / _count;
         }

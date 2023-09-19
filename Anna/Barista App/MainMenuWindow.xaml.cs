@@ -1,18 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Barista_App
 {
@@ -41,6 +30,10 @@ namespace Barista_App
                 AddEmployeeButton.Visibility = Visibility.Hidden;
                 DeleteEmployeeButton.IsEnabled = false;
                 DeleteEmployeeButton.Visibility = Visibility.Hidden;
+                AddItemButton.IsEnabled = false;
+                AddItemButton.Visibility = Visibility.Hidden;
+                DeleteItemButton.IsEnabled = false;
+                DeleteItemButton.Visibility = Visibility.Hidden;
             }
         }    
 
@@ -53,19 +46,33 @@ namespace Barista_App
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            AddEmployeeWindow addEmployeeWindow = new();
+            NewEmployeeWindow addEmployeeWindow = new();
             addEmployeeWindow.Show();
             this.Close();
         }
 
         private void EditEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-
+            EditEmployeeSelectWindow editEmployeeSelectWindow = new();
+            editEmployeeSelectWindow.Show();
+            this.Close();
         }
 
         private void DeleteEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
+            // Delete employee
+        }
 
+        private void AddItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewItemWindow newItemWindow = new();
+            newItemWindow.Show();
+            this.Close();
+        }
+
+        private void DeleteItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Delete item
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

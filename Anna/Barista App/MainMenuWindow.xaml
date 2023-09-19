@@ -10,10 +10,14 @@
     <Grid>
         <TextBlock Height="110" Width="1500" Margin="0,0,20,800" FontSize="60" HorizontalAlignment="Right" TextAlignment="Center" Text="Currently signed in as: " Name="TitleText"/>
 
-        <Button Height="300" Width="600" Margin="0,0,0,100" Content="Start new order" FontSize="80" Name="NewOrderButton" Click="NewOrderButton_Click"/>
-        <Button Height="200" Width="400" Margin="0,600,1200,0" Content="Add employee" FontSize="40" Name="AddEmployeeButton" Click="AddEmployeeButton_Click"/>
-        <Button Height="200" Width="400" Margin="0,600,0,0" Content="Edit employee" FontSize="40" Name="EditEmployeeButton" Click="EditEmployeeButton_Click"/>
-        <Button Height="200" Width="400" Margin="1200,600,0,0" Content="Delete employee" FontSize="40" Name="DeleteEmployeeButton" Click="DeleteEmployeeButton_Click"/>
+        <Button Height="300" Width="600" Margin="0,0,0,300" Content="Start new order" FontSize="80" Name="NewOrderButton" Click="NewOrderButton_Click"/>
+
+        <Button Height="200" Width="400" Margin="0,300,600,0" Content="Add item" FontSize="40" Name="AddItemButton" Click="AddItemButton_Click"/>
+        <Button Height="200" Width="400" Margin="600,300,0,0" Content="Delete item" FontSize="40" Name="DeleteItemButton" Click="DeleteItemButton_Click"/>
+
+        <Button Height="200" Width="400" Margin="0,800,1200,0" Content="Add employee" FontSize="40" Name="AddEmployeeButton" Click="AddEmployeeButton_Click"/>
+        <Button Height="200" Width="400" Margin="0,800,0,0" Content="Edit employee" FontSize="40" Name="EditEmployeeButton" Click="EditEmployeeButton_Click"/>
+        <Button Height="200" Width="400" Margin="1200,800,0,0" Content="Delete employee" FontSize="40" Name="DeleteEmployeeButton" Click="DeleteEmployeeButton_Click"/>
 
         <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
     </Grid>

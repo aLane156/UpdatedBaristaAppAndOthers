@@ -1,0 +1,130 @@
+﻿<Window x:Class="UsingCompositeCommands.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/" 
+        xmlns:viewModel="clr-namespace:UsingCompositeCommands.ViewModels" 
+        xmlns:local="clr-namespace:UsingCompositeCommands.Views"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Height="600" Width="800"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:BurgerViewModel}">
+            <local:BurgerView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModel:DrinksViewModel}">
+            <local:DrinksView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModel:MainMenuViewModel}">
+            <local:MainMenuView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:SmileyMealViewModel}">
+            <local:SmileyMealView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:WrapsViewModel}">
+            <local:WrapsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:BaseListsViewModel}">
+            <local:BaseListsView/>
+        </DataTemplate>
+
+    </Window.Resources>
+    
+
+    <Grid Name="SplitGrid">
+        <!--SideBar-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Name="TitleGrid" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border>
+                <ContentControl Content="{Binding CurrentChildView}" Grid.Row ="1" />
+            </Border>
+            <Border>
+                <ContentControl Content="{Binding Title}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="36"/>
+            </Border>
+        </Grid>
+        <Border Grid.Column="0">
+            <Border.Background>
+                <SolidColorBrush Color="{StaticResource color1}"/>
+            </Border.Background>
+            <!--Logo-->
+            <StackPanel>
+                <StackPanel Margin="5,5,0,5">
+                    <Image x:Name="Logo" Source="/Views/Logo.png" Height="40" Margin="10,0,10,0"></Image>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <!--MenuSelect-->
+        <RadioButton Style="{StaticResource menuButton}" x:Name="MainMenu" Margin="0,70,0,250">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <prism:InvokeCommandAction Command="{Binding MainMenuCheckedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Main Menu" Foreground="{StaticResource titleColor1}"/>
+            </StackPanel>
+        </RadioButton>
+        <RadioButton Style="{StaticResource menuButton}" x:Name="SmileyMeals" Margin="0,120,0,200">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <prism:InvokeCommandAction Command="{Binding SmileyMealCheckedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Smiley Meals" Foreground="{StaticResource titleColor1}"/>
+            </StackPanel>
+        </RadioButton>
+        <RadioButton Style="{StaticResource menuButton}" x:Name="Burgers" Margin="0,170,0,150">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <prism:InvokeCommandAction Command="{Binding BurgersCheckedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Burgers" Foreground="{StaticResource titleColor1}"/>
+            </StackPanel>
+        </RadioButton>
+        <RadioButton Style="{StaticResource menuButton}" x:Name="Wraps" Margin="0,220,0,100">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <prism:InvokeCommandAction Command="{Binding WrapsCheckedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Wraps" Foreground="{StaticResource titleColor1}"/>
+            </StackPanel>
+        </RadioButton>
+        <RadioButton Style="{StaticResource menuButton}" x:Name="Drinks" Margin="0,270,0,50">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <prism:InvokeCommandAction Command="{Binding DrinksCheckedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Drinks" Foreground="{StaticResource titleColor1}"/>
+            </StackPanel>
+        </RadioButton>
+        <!--Main Screen-->
+
+
+        <Border Grid.Column ="1"> 
+            <Frame x:Name="Items" NavigationUIVisibility="Hidden"/>
+        </Border>
+       
+
+    </Grid>
+</Window>

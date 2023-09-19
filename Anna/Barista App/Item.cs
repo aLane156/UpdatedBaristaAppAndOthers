@@ -9,6 +9,7 @@ namespace Barista_App
     public class Item
     {
         public string Name;
+        public string Type;
         public string ItemID;
         public string Price;
     }

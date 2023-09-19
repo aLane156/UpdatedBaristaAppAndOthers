@@ -1,11 +1,11 @@
-﻿<Window x:Class="Barista_App.AddEmployeeWindow"
+﻿<Window x:Class="Barista_App.NewEmployeeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Barista_App"
         mc:Ignorable="d"
-        Title="AddEmployeeWindow" Height="1080" Width="1920"
+        Title="NewEmployeeWindow" Height="1080" Width="1920"
         WindowStyle="None" WindowState="Maximized">
     <Grid>
         <TextBlock Height="200" Width="1200" Text="Create New Employee" HorizontalAlignment="Center" Margin="0,0,0,700" FontSize="120" TextAlignment="Center"/>
@@ -26,7 +26,7 @@
             <ComboBoxItem x:Name="Level2" Content="2"/>
             <ComboBoxItem x:Name="Level3" Content="3" IsSelected="True"/>
         </ComboBox>
-        
+
         <Button Height="200" Width="400" Margin="800,600,0,0" Content="Enter" FontSize="100" Name="EnterButton" Click="CreateNewUser"/>
         <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
     </Grid>
