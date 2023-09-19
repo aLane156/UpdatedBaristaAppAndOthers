@@ -20,11 +20,11 @@ namespace Barista_App
     /// <summary>
     /// Interaction logic for AddEmployeeWindow.xaml
     /// </summary>
-    public partial class AddEmployeeWindow : Window
+    public partial class NewEmployeeWindow : Window
     {
         public string[] Levels { get; set; }
 
-        public AddEmployeeWindow()
+        public NewEmployeeWindow()
         {
             InitializeComponent();
 
@@ -37,7 +37,7 @@ namespace Barista_App
             if (LevelOfAccessAscii == 49)
             {
                 // An employee cannot give another employee the same level of access as them.
-                Level1.IsEnabled = false; 
+                Level1.IsEnabled = false;
             }
         }
 

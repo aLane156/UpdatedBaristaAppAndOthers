@@ -1,0 +1,29 @@
+﻿<Window x:Class="Barista_App.NewItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Barista_App"
+        mc:Ignorable="d"
+        Title="NewItemWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="200" Width="500" Margin="0,0,0,800" Text="Add Item" FontSize="120" TextAlignment="Center"/>
+
+        <TextBlock Height="120" Width="300" Margin="0,0,1100,400" Text="Name:" FontSize="80" TextAlignment="Right"/>
+        <TextBlock Height="120" Width="300" Margin="0,0,1100,100" Text="Type:" FontSize="80" TextAlignment="Right"/>
+        <TextBlock Height="120" Width="300" Margin="0,200,1100,0" Text="Price:" FontSize="80" TextAlignment="Right"/>
+        <TextBlock Height="120" Width="60" Margin="0,200,0,0" Text="p" FontSize="80"/>
+        <TextBlock Height="100" Width="1920" Margin="0,0,0,0" Text="" FontSize="60" TextAlignment="Center" Foreground="DarkRed" Name="ErrorText"/>
+
+        <TextBox Height="120" Width="1000" Margin="300,0,0,400" FontSize="80" Name="NameText" TextChanged="NameText_TextChanged"/>
+        <TextBox Height="120" Width="300" Margin="0,200,400,0" FontSize="80" Name="PriceText" TextChanged="PriceText_TextChanged"/>
+
+        <ComboBox Height="120" Width="400" Margin="0,0,300,100" FontSize="80" x:Name="ItemType">
+        </ComboBox>
+
+        <Button Height="200" Width="400" Margin="0,800,0,0" Content="Enter" FontSize="100" Name="EnterButton" Click="EnterButton_Click"/>
+
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
+    </Grid>
+</Window>

@@ -33,13 +33,13 @@ namespace Barista_App
 
             streamReader.Close();
 
-            LoadWindow();
+            LoadWindow(ItemTypeText);
         }
 
         /// <summary>
-        /// Creates a grid of buttons, one for each item in the menu. In future, change code to only show buttons for foods of a certain type.
+        /// Creates a grid of buttons, one for each item in the menu of the chosen type.
         /// </summary>
-        private void LoadWindow()
+        private void LoadWindow(string ItemType)
         {
             using StreamReader streamReader = new("Menu.json");
             string json = streamReader.ReadToEnd();
@@ -47,41 +47,64 @@ namespace Barista_App
 
             streamReader.Close();
 
+            // Initialises a grid for the buttons to appear on.
             Grid grid = new()
             {
-                Height = 800,
-                Width = 1920,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 1000,
+                Width = 6000,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
             };
 
-            int NumOfRows = CalculateRows(PurchaseableItems);
+            // ItemsToDisplay contains all of the items of the chosen type.
+            var ItemsToDisplay = new List<Item>();
+
+            for (int j = 1; j < PurchaseableItems.Count; j++)
+            {
+                if (PurchaseableItems[j.ToString()].Type == ItemType)
+                {
+                    ItemsToDisplay.Add(PurchaseableItems[j.ToString()]);
+                }
+            }
+
+            // NumOfRows is defined before the loop so the function doesn't have to be ran several times.
+            int NumOfRows = CalculateRows(ItemsToDisplay);
 
             int i = 1;
             for ( int r = 0; r <= NumOfRows; r++)
             {
-                RowDefinition rowDefinition = new();
-                rowDefinition.Name = "Row" + r.ToString();
+                // Creates a new row.
+                RowDefinition rowDefinition = new()
+                {
+                    Name = "Row" + r.ToString()
+                };
                 grid.RowDefinitions.Add(rowDefinition);
 
                 for (int c = 0; c < 3; c++)
                 {
-
-                    ColumnDefinition columnDefinition = new();
-                    columnDefinition.Name = "Column" + c.ToString();
+                    //Creates 3 columns for each row, since 3 buttons will be displayed on each row.
+                    ColumnDefinition columnDefinition = new()
+                    {
+                        Name = "Column" + c.ToString()
+                    };
                     grid.ColumnDefinitions.Add(columnDefinition);
 
-                    if (PurchaseableItems.Count >= i)
+                    // As there can be more rows and columns than items, some spaces will be empty.
+                    if (ItemsToDisplay.Count >= i)
                     {
+                        // Creates a new button.
                         Button button = new()
                         {
-                            Name = "Button" + PurchaseableItems[i.ToString()].ItemID,
-                            Content = PurchaseableItems[i.ToString()].Name,
+                            Name = "Button" + ItemsToDisplay[i - 1].ItemID,
+                            Content = ItemsToDisplay[i - 1].Name,
                             Height = 200,
                             Width = 400,
                             FontSize = 40,
+                            Margin = new Thickness(20, 20, 20, 20),
                         };
                         button.Click += ButtonClicked;
 
+                        // Set's the button to a specific part of the grid.
                         Grid.SetRow(button, r);
                         Grid.SetColumn(button, c);
                         grid.Children.Add(button);
@@ -90,19 +113,18 @@ namespace Barista_App
                 }   
             }
             ButtonsGrid.Children.Add(grid);
-            //this.Content = grid;
         }
 
-        private int CalculateRows(Menu PurchaseableItems)
+        static int CalculateRows(List<Item> ItemsToDisplay)
         {
             // There are 3 buttons per row, so the num of rows should be the number of buttons to be created / 3 + 1.
-            if (PurchaseableItems.Count % 3 == 0)
+            if (ItemsToDisplay.Count % 3 == 0)
             {
-                return  PurchaseableItems.Count / 3;
+                return ItemsToDisplay.Count / 3;
             }
             else
             {
-                return (PurchaseableItems.Count / 3) + 1;
+                return (ItemsToDisplay.Count / 3) + 1;
             }
         }
 
@@ -118,7 +140,7 @@ namespace Barista_App
 
             streamReader.Close();
 
-            for (int i = 1; i < PurchaseableItems.Count() + 1; i++)
+            for (int i = 1; i < PurchaseableItems.Count + 1; i++)
             {
                 if (ButtonID == PurchaseableItems[i.ToString()].ItemID)
                 {
@@ -126,6 +148,7 @@ namespace Barista_App
                     Item newItem = new()
                     {
                         Name = PurchaseableItems[u].Name,
+                        Type = PurchaseableItems[u].Type,
                         ItemID = PurchaseableItems[u].ItemID,
                         Price = PurchaseableItems[u].Price
                     };
@@ -136,7 +159,7 @@ namespace Barista_App
             }
         }
 
-        private void AddItem(Item ItemToAdd)
+        static void AddItem(Item ItemToAdd)
         {
             using StreamReader streamReader = new("CurrentOrder.json");
             string json = streamReader.ReadToEnd();
@@ -149,9 +172,10 @@ namespace Barista_App
             {
                 key = 1;
 
-                Order ItemsIsNull = new();
-
-                ItemsIsNull.Add(key.ToString(), ItemToAdd);
+                Order ItemsIsNull = new()
+                {
+                    { key.ToString(), ItemToAdd }
+                };
                 var UpdatedOrder1 = JsonConvert.SerializeObject(ItemsIsNull);
                 File.WriteAllText("CurrentOrder.json", UpdatedOrder1);
             }

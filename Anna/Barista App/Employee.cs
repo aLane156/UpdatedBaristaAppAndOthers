@@ -15,6 +15,15 @@ namespace Barista_App
         public string HashedPassword;
     }
 
+    public class EditingEmployee
+    {
+        public string EditFirstName;
+        public string EditSurname;
+        public string EditEmployeeID;
+        public string EditPosition;
+        public string EditHashedPassword;
+    }
+
     public class EmployeeList : Dictionary<string, Employee>
     {
 
