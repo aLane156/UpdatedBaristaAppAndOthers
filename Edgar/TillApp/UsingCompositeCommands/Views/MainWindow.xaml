@@ -31,16 +31,31 @@
             <local:WrapsView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModel:BaseListsViewModel}">
+            <local:BaseListsView/>
+        </DataTemplate>
+
     </Window.Resources>
     
 
-    <Grid>
+    <Grid Name="SplitGrid">
         <!--SideBar-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
+        <Grid Name="TitleGrid" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border>
+                <ContentControl Content="{Binding CurrentChildView}" Grid.Row ="1" />
+            </Border>
+            <Border>
+                <ContentControl Content="{Binding Title}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="36"/>
+            </Border>
+        </Grid>
         <Border Grid.Column="0">
             <Border.Background>
                 <SolidColorBrush Color="{StaticResource color1}"/>
@@ -105,9 +120,7 @@
         </RadioButton>
         <!--Main Screen-->
 
-        <Border Grid.Column="1">
-           <ContentControl Content="{Binding CurrentChildView}" Grid.Row ="1" />
-        </Border>
+
         <Border Grid.Column ="1"> 
             <Frame x:Name="Items" NavigationUIVisibility="Hidden"/>
         </Border>

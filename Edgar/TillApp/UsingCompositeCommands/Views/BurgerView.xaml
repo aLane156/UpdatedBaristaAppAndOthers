@@ -8,6 +8,6 @@
       d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        <TextBlock Text="Burger" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="36"/>
+        <TextBlock Text="Burgers" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="36"/>
     </Grid>
 </UserControl>
