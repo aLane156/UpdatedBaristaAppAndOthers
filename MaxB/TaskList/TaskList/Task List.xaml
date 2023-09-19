@@ -12,7 +12,7 @@
             <RowDefinition Height="28*"/>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <TextBox x:Name="Task_Name_Input" HorizontalAlignment="Left" Margin="21,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22" Text="Eolo emk"/>
         <Button x:Name="SaveTaskName" Content="Add" HorizontalAlignment="Left" Margin="274,395,0,0" VerticalAlignment="Top" Click="SaveTaskName_Click" Width="40" Height="20"/>
         <Rectangle HorizontalAlignment="Left" Height="248" Margin="21,22,0,0" Stroke="Black" VerticalAlignment="Top" Width="468"/>
         <TextBlock HorizontalAlignment="Left" Margin="21,285,0,0" TextWrapping="Wrap" Text="Create new task" VerticalAlignment="Top" FontSize="24" Height="32" Width="168"/>

@@ -6,10 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.IO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Security.AccessControl;
 
 namespace ToDo
 {

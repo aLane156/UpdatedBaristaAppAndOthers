@@ -1,0 +1,37 @@
+﻿{
+  "1": {
+    "Name": "Battenberg cake",
+    "ItemID": "1",
+    "Price": "2.0"
+  },
+  "2": {
+    "Name": "Croissant",
+    "ItemID": "2",
+    "Price": "1.3"
+  },
+  "3": {
+    "Name": "English breakfast tea",
+    "ItemID": "3",
+    "Price": "1.75"
+  },
+  "4": {
+    "Name": "Diet Coca Cola",
+    "ItemID": "4",
+    "Price": "1.5"
+  },
+  "5": {
+    "Name": "Cheese toastie",
+    "ItemID": "5",
+    "Price": "2.5"
+  },
+  "6": {
+    "Name": "Egg and cress sandwich",
+    "ItemID": "6",
+    "Price": "2"
+  },
+  "7": {
+    "Name": "Tomato soup",
+    "ItemID": "7",
+    "Price": "3.25"
+  }
+}

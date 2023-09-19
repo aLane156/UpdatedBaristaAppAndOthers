@@ -1,0 +1,29 @@
+﻿<Window x:Class="TestWithWindow.NewEmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestWithWindow"
+        mc:Ignorable="d"
+        Title="NewEmployeeWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="200" Width="1920" Text="Create New Employee" HorizontalAlignment="Center" Margin="0,0,0,700" FontSize="120" TextAlignment="Center"/>
+
+        <TextBlock Height="100" Width="300" Margin="0,0,1400,200" Text="First name: " FontSize="60"/>
+        <TextBlock Height="100" Width="300" Margin="200,0,0,200" Text="Surname: " FontSize="60"/>
+        <TextBlock Height="100" Width="300" Margin="0,200,1400,0" Text="Password: " FontSize="60"/>
+        <TextBlock Height="100" Width="500" Margin="0,600,1200,0" Text="Confirm Password: " FontSize="60"/>
+        <TextBlock Height="60" Width="350" Margin="200,150,0,0" Text="Level of Access: " FontSize="40" TextAlignment="Center"/>
+
+        <TextBox Height="100" Width="400" Margin="0,0,700,200" FontSize="60" Name="FirstnameText"/>
+        <TextBox Height="100" Width="400" Margin="820,0,0,200" FontSize="60" Name="SurnameText"/>
+        <TextBox Height="100" Width="400" Margin="0,200,700,0" FontSize="60" Name="PasswordText"/>
+        <TextBox Height="100" Width="400" Margin="0,600,300,0" FontSize="60" Name="ConfirmPasswordText"/>
+
+        <ListBox Height="100" Width="100" Margin="800,150,0,0" Name="LevelOfAccessNumber" FontSize="60"/>
+
+        <Button Height="200" Width="400" Margin="800,600,0,0" Content="Enter" FontSize="100" Name="EnterButton" Click="CreateNewUser"/>
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
+    </Grid>
+</Window>

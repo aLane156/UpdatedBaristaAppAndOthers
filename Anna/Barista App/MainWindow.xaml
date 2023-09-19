@@ -1,0 +1,24 @@
+﻿<Window x:Class="Barista_App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Barista_App"
+        mc:Ignorable="d"
+        Title="LoginWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <TextBlock Height="200" Width="300" Margin="0,0,0,800" FontSize="120" TextAlignment="Center" Text="Login"/>
+        <TextBlock Height="100" Width="440" Text="Employee ID:" Margin="0,0,1000,300" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="440" Text="Password:" Margin="0,100,1000,0" FontSize="60" TextAlignment="Right"/>
+        <TextBlock Height="100" Width="1920" Text="" Margin="0,400,0,0" FontSize="60" TextAlignment="Center" Foreground="DarkRed" Name="ValidText"/>
+
+        <TextBox Height="100" Width="600" Margin="400,0,0,300" FontSize="60" Name="EmployeeIDText" TextChanged="EmployeeIDText_TextChanged"/>
+        <TextBox Height="100" Width="600" Margin="400,100,0,0" FontSize="60" Name="PasswordText"/>
+
+        <Button Height="200" Width="400" Margin="0,800,0,0" Content="Enter" FontSize="100" Name="EnterButton" Click="EnterButton_Click" IsEnabled="False"/>
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Exit" FontSize="60" Name="ExitButton" Click="ExitButton_Click"/>
+        <Button Height="150" Width="300" Margin="1000,0,0,800" Content="Hash" FontSize="60" Name="HashButton" Click="HashButton_Click" IsEnabled="False" Visibility="Hidden"/>
+
+    </Grid>
+</Window>

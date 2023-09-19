@@ -1,0 +1,25 @@
+﻿<Window x:Class="Barista_App.OrderMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Barista_App"
+        mc:Ignorable="d"
+        Title="OrderMainWindow" Height="1080" Width="1920"
+        WindowStyle="None" WindowState="Maximized">
+    <Grid>
+        <Border BorderThickness="1" BorderBrush="Black"  Height="1080" Width="400" HorizontalAlignment="Right">
+            <TextBlock Text=" Current order:&#10;" FontSize="36" Name="OrderDisplayText" />
+        </Border>
+
+        <Button Height="200" Width="400" Margin="0,0,1000,200" Content="Cold Drinks" FontSize="75" Name="ColdDrinksButton" Click="ColdDrinksButton_Click"/>
+        <Button Height="200" Width="400" Margin="200,0,0,200" Content="Hot Drinks" FontSize="75" Name="HotDrinksButton" Click="HotDrinksButton_Click"/>
+        <Button Height="200" Width="400" Margin="0,300,1300,0" Content="Cold Food" FontSize="75" Name="ColdFoodButton" Click="ColdFoodButton_Click"/>
+        <Button Height="200" Width="400" Margin="0,300,400,0" Content="Hot Food" FontSize="75" Name="HotFoodButton" Click="HotFoodButton_Click"/>
+        <Button Height="200" Width="400" Margin="500,300,0,0" Content="Cakes and&#10;  Pastries" FontSize="75" Name="CakesAndPastriesButton" Click="CakesAndPastriesButton_Click"/>
+        <Button Height="200" Width="400" Margin="0,800,1000,0" Content="Search item" FontSize="75" Name="SearchButton" Background="CornflowerBlue" Click="SearchButton_Click"/>
+        <Button Height="200" Width="400" Margin="200,800,0,0" Content="Finish&#10;Order" FontSize="75" Name="FinishOrderButton" Background="LightGreen" Click="FinishOrderButton_Click"/>
+
+        <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Exit" FontSize="60" Name="ExitButton"  Background="LightYellow" Click="ExitButton_Click"/>
+    </Grid>
+</Window>
