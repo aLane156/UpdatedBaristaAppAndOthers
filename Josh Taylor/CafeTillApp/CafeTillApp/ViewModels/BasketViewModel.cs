@@ -43,6 +43,7 @@ namespace CafeTillApp.ViewModels
             {
                 // Initialize MainWindowViewModel.SharedBasket.Basket as an empty ObservableCollection<string>
                 MainWindowViewModel.SharedBasket.Basket = new ObservableCollection<string>();
+
             }
 
             // Subscribe to the CollectionChanged event
@@ -147,7 +148,7 @@ namespace CafeTillApp.ViewModels
             TotalText = CalculateTotal();
         }
 
-        private string CalculateTotal()
+        public string CalculateTotal()
         {
             // Check if BasketItems is not null
             if (BasketItems != null)
@@ -162,6 +163,8 @@ namespace CafeTillApp.ViewModels
                     {
                         // Remove everything before and including '£'
                         string substring = item.Substring(index + 1);
+                        // Remove newline characters
+                        substring = substring.Replace("\n", "");
                         // Try to parse the remaining string to an int
                         if (float.TryParse(substring, out float value))
                         {
@@ -171,7 +174,7 @@ namespace CafeTillApp.ViewModels
                     }
                 }
                 // Return the total as a string
-                return "Total: £"+total.ToString();
+                return "Total: £" + total.ToString("0.00");
             }
             else
             {
@@ -179,6 +182,7 @@ namespace CafeTillApp.ViewModels
                 return "";
             }
         }
+
 
     }
 }

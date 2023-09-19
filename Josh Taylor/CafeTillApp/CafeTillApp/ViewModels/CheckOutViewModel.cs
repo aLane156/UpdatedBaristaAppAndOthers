@@ -2,8 +2,10 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace CafeTillApp.ViewModels
@@ -14,7 +16,7 @@ namespace CafeTillApp.ViewModels
         public ICommand PayCommand { get; private set; }
         public ICommand EnterKeyCommand { get; private set; }
 
-        private string _tips = "";
+        private string _tips = null;
         public string Tips
         {
             get { return _tips; }
@@ -24,6 +26,7 @@ namespace CafeTillApp.ViewModels
                 OnPropertyChanged("Tips");
             }
         }
+
         public new event PropertyChangedEventHandler PropertyChanged;
 
         private readonly IEventAggregator _eventAggregator;
@@ -31,7 +34,7 @@ namespace CafeTillApp.ViewModels
         {
             BackCommand = new DelegateCommand(BackCommandExecute);
             PayCommand = new DelegateCommand(PayCommandExecute);
-            EnterKeyCommand = new RelayCommand<object>(EnterKeyPressed);
+            EnterKeyCommand = new RelayCommand(EnterKeyPressed);
             _eventAggregator = eventAggregator;
         }
 
@@ -47,10 +50,11 @@ namespace CafeTillApp.ViewModels
         private void PayCommandExecute()
         {
             MainWindowViewModel.SharedBasket.Basket.Clear();
+
             var newView = new MenuView();
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
-        private void EnterKeyPressed(object obj)
+        private void EnterKeyPressed()
         {
             if (float.TryParse(Tips, out _))
             {
@@ -59,9 +63,15 @@ namespace CafeTillApp.ViewModels
                     MainWindowViewModel.SharedBasket.Basket = new ObservableCollection<string>();
                 }
 
-                MainWindowViewModel.SharedBasket.Basket.Add("£"+Tips);
-                // Clear the property
-                Tips = "";
+                decimal tipValue;
+                if (Decimal.TryParse(Tips, out tipValue))
+                {
+                    string formattedTips = tipValue.ToString("F2");
+                    MainWindowViewModel.SharedBasket.Basket.Add("Tip \n£" + formattedTips);
+                }
+
+                var newView = new CheckOutView();
+                _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
             }
         }
         protected virtual void OnPropertyChanged(string propertyName)
