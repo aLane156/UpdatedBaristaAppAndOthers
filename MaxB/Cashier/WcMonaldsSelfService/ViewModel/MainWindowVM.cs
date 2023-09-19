@@ -65,24 +65,28 @@ namespace WcMonaldsSelfService.ViewModel
                     SetCenterButtonStatus(false);
                     CurrentItem = selectedItemBasket;
                     SelectedItemMenu = null;
+                    if (selectedItemBasket is Drink)
+                    {
+                        DrinkSizes = (selectedItemBasket as Drink).AcceptedSizes;
+                    }
                 }
             }
         }
 
         private List<MenuItem> menu = new()
         {
-            new Burger("The Regular", 2.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
-            new Burger("The Big Max", 4.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
-            new Burger("The King", 6.59f, new List<string>(){"Bun", "Beef Patty", "Bacon", "Chicken", "Ketchup", "Mayonaise", "BBQ sauce"}),
+            new Burger("The Regular", 1.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
+            new Burger("The Big Max", 2.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
+            new Burger("The King", 4.59f, new List<string>(){"Bun", "Beef Patty", "Bacon", "Chicken", "Ketchup", "Mayonaise", "BBQ sauce"}),
             new MenuItem("Fries", 0.99f),
             new MenuItem("Larger Fries", 1.49f),
             new MenuItem("Mt Kilofryjaro", 1.99f),
-            new LooseMeats("Small Nuggets", 1.39f, 12),
-            new LooseMeats("Large Nuggets", 2.99f, 25),
+            new LooseMeats("Chicken Nuggets", 1.39f, 12),
+            new LooseMeats("Chicken Wings", 2.99f, 25),
             new LooseMeats("Garlic Bread Slices", 1.49f, 6),
             new Drink("Bottled Water", 0.99f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium, DrinkSize.large}),
-            new Drink("Pepsi Max", 1.50f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
-            new Drink("Oasis", 1.99f, new DrinkSize[] { DrinkSize.small}),
+            new Drink("Pepsi Max", 1.49f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
+            new Drink("Sprite", 1.99f, new DrinkSize[] { DrinkSize.small}),
         };
         public List<MenuItem> Menu
         {
@@ -211,6 +215,8 @@ namespace WcMonaldsSelfService.ViewModel
                     {
                         curAmount = value;
                         NotifyPropertyChanged(nameof(CurAmount));
+                        UpdateTotalCost();
+                        CurPrice = lm.Price.ToString();
                     }
                 } else
                 {
@@ -239,6 +245,31 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 currentTab = value;
                 NotifyPropertyChanged(nameof(CurrentTab));
+            }
+        }
+
+        private DrinkSize[] drinkSizes = {DrinkSize.small};
+        public DrinkSize[] DrinkSizes
+        {
+            get => drinkSizes;
+            set
+            {
+                drinkSizes = value;
+                NotifyPropertyChanged(nameof(DrinkSizes));
+            }
+        }
+
+        private DrinkSize curDrinkSize;
+        public DrinkSize CurDrinkSize
+        {
+            get => curDrinkSize;
+            set
+            {
+                curDrinkSize = value;
+                NotifyPropertyChanged(nameof(CurDrinkSize));
+                ((Drink)CurrentItem).SetSize(curDrinkSize);
+                UpdateTotalCost();
+                CurPrice = CurrentItem.Price.ToString();
             }
         }
 
@@ -299,13 +330,33 @@ namespace WcMonaldsSelfService.ViewModel
 
         public MainWindowVM()
         {
-            AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+            AddToBasket = new RelayCommand(o => SelectAddCurrentItemToBasket(CurrentItem));
             RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
             GoToCheckout = new RelayCommand(o => CurrentTab = 1);
             GoToMenu = new RelayCommand(o => CurrentTab = 0);
             NextCustomer = new RelayCommand(o => ResetForNextCustomer());
             SwaptoPayedScreen = new RelayCommand(o => SetCheckoutVisabilities(true));
+        }
+
+        private void SelectAddCurrentItemToBasket(MenuItem item)
+        {
+            if (item == null) return;
+            if (item is LooseMeats)
+            {
+                AddCurrentItemToBasket(item as LooseMeats);
+            } else if (item is Burger)
+            {
+                AddCurrentItemToBasket(item as Burger);
+            }
+            else if (item is Drink)
+            {
+                AddCurrentItemToBasket(item as Drink);
+            }
+            else
+            {
+                AddCurrentItemToBasket(item);
+            }
         }
 
         /// <summary>
@@ -318,10 +369,70 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
                 {
-                    Basket.Add(item);
+                    MenuItem menuItem = item.Clone();
+
+                    Basket.Add(menuItem);
                     UpdateTotalCost();
                 }
             } catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        /// <summary>
+        /// Adds a LooseMeats to basket
+        /// </summary>
+        /// <param name="item">The item to be added</param>
+        public void AddCurrentItemToBasket(LooseMeats item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    LooseMeats menuItem = new(item.Name, item.Price, item.Count);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        public void AddCurrentItemToBasket(Burger item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    Burger menuItem = new(item.Name, item.Price, item.Layers);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        public void AddCurrentItemToBasket(Drink item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    Drink menuItem = new(item.Name, item.Price, item.AcceptedSizes);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
             {
                 AddErrorToErrorOutput(ex);
             }
