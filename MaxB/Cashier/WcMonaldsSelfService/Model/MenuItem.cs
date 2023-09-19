@@ -57,6 +57,5 @@ namespace WcMonaldsSelfService.Model
             menuItem.Price = Price;
             return menuItem;
         }
-
     }
 }
