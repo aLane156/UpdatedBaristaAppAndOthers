@@ -8,7 +8,9 @@ namespace UsingCompositeCommands.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-
+        /// <summary>
+        /// The current page to display
+        /// </summary>
         private ViewModelBase _currentChildView;
 
         public ViewModelBase CurrentChildView
@@ -21,6 +23,21 @@ namespace UsingCompositeCommands.ViewModels
             {
                 _currentChildView = value;
                 onPropertyChanged(nameof(CurrentChildView));
+            }
+        }
+
+        private string _title;
+
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                _title = value;
+                onPropertyChanged(nameof(Title));
             }
         }
 
@@ -43,26 +60,27 @@ namespace UsingCompositeCommands.ViewModels
         public void ExecuteShowBurgersViewCommand(RoutedEventArgs args)
         {
             CurrentChildView = new BurgerViewModel();
-            
+            Title = "Burgers";
         }
         public void ExecuteShowMainMenuViewCommand(RoutedEventArgs args)
         {
             CurrentChildView = new MainMenuViewModel();
-           
+            Title = "Main Menu";
         }
         public void ExecuteShowSmileyMealViewCommand(RoutedEventArgs args)
         {
             CurrentChildView = new SmileyMealViewModel();
-
+            Title = "Smiley Meal";
         }
         public void ExecuteShowWrapsViewCommand(RoutedEventArgs args)
         {
             CurrentChildView = new WrapsViewModel();
-
+            Title = "Wraps";
         }
         public void ExecuteShowDrinksViewCommand(RoutedEventArgs args)
         {
             CurrentChildView = new DrinksViewModel();
+            Title = "Drinks";
         }
     }
 }

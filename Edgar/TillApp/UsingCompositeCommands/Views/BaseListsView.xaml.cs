@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace UsingCompositeCommands.Views
 {
     /// <summary>
-    /// Interaction logic for Basket.xaml
+    /// Interaction logic for BaseLists.xaml
     /// </summary>
-    public partial class Basket : UserControl
+    public partial class BaseListsView
     {
-        public Basket()
+        public BaseListsView()
         {
             InitializeComponent();
         }
