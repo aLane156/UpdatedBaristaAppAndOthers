@@ -17,7 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <None Update="EditingEmployee.json">
+=======
+    <None Update="CurrentOrder.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CurrentUser.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="EmployeeData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Menu.json">
+>>>>>>> f9775b02d01ae66acbe3b1ccf7147ffec7ae70ee
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

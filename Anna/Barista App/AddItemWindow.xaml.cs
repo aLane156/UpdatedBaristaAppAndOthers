@@ -50,10 +50,16 @@ namespace Barista_App
             // Initialises a grid for the buttons to appear on.
             Grid grid = new()
             {
+<<<<<<< HEAD
                 Height = 1000,
                 Width = 6000,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
+=======
+                Height = 800,
+                Width = 6000,
+                VerticalAlignment = VerticalAlignment.Bottom,
+>>>>>>> f9775b02d01ae66acbe3b1ccf7147ffec7ae70ee
             };
 
             // ItemsToDisplay contains all of the items of the chosen type.
@@ -98,9 +104,13 @@ namespace Barista_App
                             Name = "Button" + ItemsToDisplay[i - 1].ItemID,
                             Content = ItemsToDisplay[i - 1].Name,
                             Height = 200,
-                            Width = 400,
+                            Width = 600,
                             FontSize = 40,
+<<<<<<< HEAD
                             Margin = new Thickness(20, 20, 20, 20),
+=======
+                            Margin = new Thickness(10, 10, 10, 10)
+>>>>>>> f9775b02d01ae66acbe3b1ccf7147ffec7ae70ee
                         };
                         button.Click += ButtonClicked;
 

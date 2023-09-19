@@ -2,14 +2,8 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CafeTillApp.ViewModels
@@ -20,14 +14,14 @@ namespace CafeTillApp.ViewModels
         public ICommand PayCommand { get; private set; }
         public ICommand EnterKeyCommand { get; private set; }
 
-        private string _yourProperty = "";
-        public string YourProperty
+        private string _tips = "";
+        public string Tips
         {
-            get { return _yourProperty; }
+            get { return _tips; }
             set
             {
-                _yourProperty = value;
-                OnPropertyChanged("YourProperty");
+                _tips = value;
+                OnPropertyChanged("Tips");
             }
         }
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -37,7 +31,7 @@ namespace CafeTillApp.ViewModels
         {
             BackCommand = new DelegateCommand(BackCommandExecute);
             PayCommand = new DelegateCommand(PayCommandExecute);
-            EnterKeyCommand = new RelayCommand(EnterKeyPressed);
+            EnterKeyCommand = new RelayCommand<object>(EnterKeyPressed);
             _eventAggregator = eventAggregator;
         }
 
@@ -58,12 +52,23 @@ namespace CafeTillApp.ViewModels
         }
         private void EnterKeyPressed(object obj)
         {
-            // Clear the property
-            YourProperty = string.Empty;
+            if (float.TryParse(Tips, out _))
+            {
+                if (MainWindowViewModel.SharedBasket.Basket == null)
+                {
+                    MainWindowViewModel.SharedBasket.Basket = new ObservableCollection<string>();
+                }
+
+                MainWindowViewModel.SharedBasket.Basket.Add("£"+Tips);
+                // Clear the property
+                Tips = "";
+            }
         }
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+
 }

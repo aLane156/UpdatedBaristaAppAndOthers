@@ -50,5 +50,12 @@ namespace WcMonaldsSelfService.Model
             return $"{name}";
         }
 
+        public MenuItem Clone()
+        {
+            MenuItem menuItem = new();
+            menuItem.Name = Name;
+            menuItem.Price = Price;
+            return menuItem;
+        }
     }
 }

@@ -1,0 +1,30 @@
+﻿{
+  "1": {
+    "FirstName": "Julia",
+    "Surname": "Graves",
+    "EmployeeID": "184136",
+    "Position": "Manager",
+    "HashedPassword": "7110EDA4D09E062AA5E4A390B0A572AC0D2C0220"
+  },
+  "2": {
+    "FirstName": "Simon",
+    "Surname": "Black",
+    "EmployeeID": "374726",
+    "Position": "Dishwasher",
+    "HashedPassword": "51EAC6B471A284D3341D8C0C63D0F1A286262A18"
+  },
+  "3": {
+    "FirstName": "Anna",
+    "Surname": "Lane",
+    "EmployeeID": "038211",
+    "Position": "CEO",
+    "HashedPassword": "A9993E364706816ABA3E25717850C26C9CD0D89D"
+  },
+  "4": {
+    "FirstName": "A",
+    "Surname": "L",
+    "EmployeeID": "236994",
+    "Position": "",
+    "HashedPassword": "589C22335A381F122D129225F5C0BA3056ED5811"
+  }
+}

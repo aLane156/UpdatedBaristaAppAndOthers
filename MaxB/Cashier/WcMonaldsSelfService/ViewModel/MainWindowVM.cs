@@ -16,15 +16,22 @@ namespace WcMonaldsSelfService.ViewModel
         private readonly MenuItem nopeItem = new MenuItem("Select an item", 0f);
 
         private MenuItem? currentItem;
-        public MenuItem CurrentItem
+        public MenuItem? CurrentItem
         {
             get => currentItem;
             set
             {
                 currentItem = value;
                 NotifyPropertyChanged(nameof(CurrentItem));
-                SetPriceText(currentItem.Price);
-                ShowItemSpecificMenu(currentItem);
+                if (currentItem != null)
+                {
+                    SetPriceText(currentItem.Price);
+                    ShowItemSpecificMenu(currentItem);
+                } else
+                {
+                    SetPriceText(0);
+                    ShowItemSpecificMenu();
+                }
             }
         }
 
@@ -58,24 +65,28 @@ namespace WcMonaldsSelfService.ViewModel
                     SetCenterButtonStatus(false);
                     CurrentItem = selectedItemBasket;
                     SelectedItemMenu = null;
+                    if (selectedItemBasket is Drink)
+                    {
+                        DrinkSizes = (selectedItemBasket as Drink).AcceptedSizes;
+                    }
                 }
             }
         }
 
         private List<MenuItem> menu = new()
         {
-            new Burger("The Regular", 2.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
-            new Burger("The Big Max", 4.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
-            new Burger("The King", 6.59f, new List<string>(){"Bun", "Beef Patty", "Bacon", "Chicken", "Ketchup", "Mayonaise", "BBQ sauce"}),
+            new Burger("The Regular", 1.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
+            new Burger("The Big Max", 2.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
+            new Burger("The King", 4.59f, new List<string>(){"Bun", "Beef Patty", "Bacon", "Chicken", "Ketchup", "Mayonaise", "BBQ sauce"}),
             new MenuItem("Fries", 0.99f),
             new MenuItem("Larger Fries", 1.49f),
             new MenuItem("Mt Kilofryjaro", 1.99f),
-            new LooseMeats("Small Nuggets", 1.39f, 12),
-            new LooseMeats("Large Nuggets", 2.99f, 25),
+            new LooseMeats("Chicken Nuggets", 1.39f, 12),
+            new LooseMeats("Chicken Wings", 2.99f, 25),
             new LooseMeats("Garlic Bread Slices", 1.49f, 6),
             new Drink("Bottled Water", 0.99f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium, DrinkSize.large}),
-            new Drink("Pepsi Max", 1.50f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
-            new Drink("Oasis", 1.99f, new DrinkSize[] { DrinkSize.small}),
+            new Drink("Pepsi Max", 1.49f, new DrinkSize[] {DrinkSize.small, DrinkSize.medium }),
+            new Drink("Sprite", 1.99f, new DrinkSize[] { DrinkSize.small}),
         };
         public List<MenuItem> Menu
         {
@@ -203,7 +214,9 @@ namespace WcMonaldsSelfService.ViewModel
                     if (int.TryParse(value, out num) && lm.ChangeNo(num))
                     {
                         curAmount = value;
-                        NotifyPropertyChanged(nameof(curAmount));
+                        NotifyPropertyChanged(nameof(CurAmount));
+                        UpdateTotalCost();
+                        CurPrice = lm.Price.ToString();
                     }
                 } else
                 {
@@ -235,22 +248,115 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        private DrinkSize[] drinkSizes = {DrinkSize.small};
+        public DrinkSize[] DrinkSizes
+        {
+            get => drinkSizes;
+            set
+            {
+                drinkSizes = value;
+                NotifyPropertyChanged(nameof(DrinkSizes));
+            }
+        }
+
+        private DrinkSize curDrinkSize;
+        public DrinkSize CurDrinkSize
+        {
+            get => curDrinkSize;
+            set
+            {
+                curDrinkSize = value;
+                NotifyPropertyChanged(nameof(CurDrinkSize));
+                ((Drink)CurrentItem).SetSize(curDrinkSize);
+                UpdateTotalCost();
+                CurPrice = CurrentItem.Price.ToString();
+            }
+        }
+
+        private Visibility payVis = Visibility.Visible;
+        public Visibility PayVis
+        {
+            get { return payVis; }
+            set
+            {
+                payVis = value;
+                NotifyPropertyChanged(nameof(PayVis));
+            }
+        }
+
+        private Visibility payedVis = Visibility.Collapsed;
+        public Visibility PayedVis
+        {
+            get { return payedVis; }
+            set
+            {
+                payedVis = value;
+                NotifyPropertyChanged(nameof(PayedVis));
+            }
+        }
+
         public bool MenuFocused;
         public bool BasketFocused;
+
+        private string payedText;
+        public string PayedText
+        {
+            get { return payedText; }
+            set
+            {
+                payedText = value;
+                NotifyPropertyChanged(nameof(PayedText));
+            }
+        }
+
+        public string debugLines;
+        public string DebugLines
+        {
+            get { return debugLines; }
+            set
+            {
+                debugLines = value;
+                NotifyPropertyChanged(nameof(DebugLines));
+            }
+        }
 
         public ICommand AddToBasket { get; set; }
         public ICommand RemoveFromBasket { get; set; }
         public ICommand AddAnotherToBasket { get; set; }
         public ICommand GoToCheckout { get; set; }
         public ICommand GoToMenu { get; set; }
+        public ICommand NextCustomer { get; set; }
+        public ICommand SwaptoPayedScreen { get; set; }
 
         public MainWindowVM()
         {
-            AddToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
+            AddToBasket = new RelayCommand(o => SelectAddCurrentItemToBasket(CurrentItem));
             RemoveFromBasket = new RelayCommand(o => RemoveCurrentItemFromBasket(Basket.IndexOf(CurrentItem)));
             AddAnotherToBasket = new RelayCommand(o => AddCurrentItemToBasket(CurrentItem));
             GoToCheckout = new RelayCommand(o => CurrentTab = 1);
             GoToMenu = new RelayCommand(o => CurrentTab = 0);
+            NextCustomer = new RelayCommand(o => ResetForNextCustomer());
+            SwaptoPayedScreen = new RelayCommand(o => SetCheckoutVisabilities(true));
+        }
+
+        private void SelectAddCurrentItemToBasket(MenuItem item)
+        {
+            if (item == null) return;
+            if (item is LooseMeats)
+            {
+                AddCurrentItemToBasket(item as LooseMeats);
+            } else if (item is Burger)
+            {
+                AddCurrentItemToBasket(item as Burger);
+            }
+            else if (item is Drink)
+            {
+                AddCurrentItemToBasket(item as Drink);
+            }
+            else
+            {
+                AddCurrentItemToBasket(item);
+            }
         }
 
         /// <summary>
@@ -263,10 +369,73 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
                 {
-                    Basket.Add(item);
+                    MenuItem menuItem = item.Clone();
+
+                    Basket.Add(menuItem);
                     UpdateTotalCost();
                 }
-            } catch { }
+            } catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        /// <summary>
+        /// Adds a LooseMeats to basket
+        /// </summary>
+        /// <param name="item">The item to be added</param>
+        public void AddCurrentItemToBasket(LooseMeats item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    LooseMeats menuItem = new(item.Name, item.Price, item.Count);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        public void AddCurrentItemToBasket(Burger item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    Burger menuItem = new(item.Name, item.Price, item.Layers);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
+        }
+
+        public void AddCurrentItemToBasket(Drink item)
+        {
+            try
+            {
+                if (currentItem != null && currentItem.GetHashCode() != nopeItem.GetHashCode())
+                {
+                    Drink menuItem = new(item.Name, item.Price, item.AcceptedSizes);
+
+                    Basket.Add(menuItem);
+                    UpdateTotalCost();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorToErrorOutput(ex);
+            }
         }
 
         /// <summary>
@@ -279,7 +448,10 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 Basket.RemoveAt(item);
                 UpdateTotalCost();
-            } catch { }
+            } catch (Exception ex) 
+            {
+                AddErrorToErrorOutput(ex);
+            }
         }
 
         /// <summary>
@@ -316,6 +488,15 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+        /// <summary>
+        /// Hides all menus
+        /// </summary>
+        private void ShowItemSpecificMenu()
+        {
+            DrinkMenuVisibility = Visibility.Collapsed;
+            BurgerMenuVisibility = Visibility.Collapsed;
+            LooseMeatsMenuVisibility = Visibility.Collapsed;
+        }
         /// <summary>
         /// Shows the appropriate additional menu below the main item menu
         /// </summary>
@@ -357,7 +538,48 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 runningTotal += item.Price;
             }
-            TotalCost = $"Total £{runningTotal}";
+            runningTotal = MathF.Round(runningTotal * 100);
+            TotalCost = $"Total £{runningTotal / 100}";
+        }
+
+        /// <summary>
+        /// Resets all appropriate fields, making it as if the application was just opened.
+        /// </summary>
+        private void ResetForNextCustomer()
+        {
+            Basket.Clear();
+            UpdateTotalCost();
+            CurrentTab = 0;
+            SelectedItemBasket = null;
+            SelectedItemMenu = null;
+            CurrentItem = null;
+            SetCheckoutVisabilities(false);
+        }
+
+        private void SetCheckoutVisabilities(bool showPayed)
+        {
+            if (showPayed)
+            {
+                PayedVis = Visibility.Visible;
+                PayVis = Visibility.Collapsed;
+                int seconds = DateTime.Now.Second;
+                PayedText = $"Your order number is {MathF.Floor(seconds * MathF.PI)}, enjoy your meal!";
+            }
+            else
+            {
+                PayVis = Visibility.Visible;
+                PayedVis = Visibility.Collapsed;
+                PayedText = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Adds an error to the debug error list
+        /// </summary>
+        /// <param name="e"></param>
+        private void AddErrorToErrorOutput(Exception e)
+        {
+            DebugLines += $"ERROR: {e.Message} at: \n {e.StackTrace} \n";
         }
     }
 }
