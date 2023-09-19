@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime;
-using System.Runtime.CompilerServices;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CashierApp.Model.Types;
 using Newtonsoft.Json;
@@ -14,6 +11,8 @@ namespace CashierApp.Model.Backend
     public static class Database
     {
         #region Static Path Files
+
+        public static IFileSystem _fileSystem = new FileSystem();
 
         private readonly static string FolderPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\CashierApp";
 
@@ -29,12 +28,12 @@ namespace CashierApp.Model.Backend
             string dateDirectory = $"{FolderPath}\\logs\\{date.Date.ToString("dd-MM-yyyy")}";
             string dateLog = $"{dateDirectory}\\{date.Date.ToString("dd-MM-yyyy")}-log.txt";
 
-            if (!Directory.Exists(dateDirectory))
+            if (!_fileSystem.Directory.Exists(dateDirectory))
             {
-                Directory.CreateDirectory(dateDirectory);
+                _fileSystem.Directory.CreateDirectory(dateDirectory);
             }
 
-            if (!File.Exists(dateLog))
+            if (!_fileSystem.File.Exists(dateLog))
             {
                 await using FileStream stream = File.Create(dateLog);
                 stream.Close();
@@ -49,7 +48,7 @@ namespace CashierApp.Model.Backend
             string dateDirectory = $"{FolderPath}\\logs\\{date.Date.ToString("dd-MM-yyyy")}";
             string dateLog = $"{dateDirectory}\\{date.Date.ToString("dd-MM-yyyy")}-log.txt";
 
-            await File.AppendAllLinesAsync(dateLog, new string[] { logEntry.ToString() });
+            await _fileSystem.File.AppendAllLinesAsync(dateLog, new string[] { logEntry.ToString() });
         }
 
         /// <summary>
@@ -66,7 +65,7 @@ namespace CashierApp.Model.Backend
             string dateDirectory = $"{FolderPath}\\{date.Date.ToString("dd-MM-yyyy")}";
             string dateLog = $"{dateDirectory}\\{date.Date.ToString("dd-MM-yyyy")}-log.txt";
 
-            await File.AppendAllLinesAsync(dateLog, new string[] { logEntry.ToString() });
+            await _fileSystem.File.AppendAllLinesAsync(dateLog, new string[] { logEntry.ToString() });
         }
 
         #endregion
@@ -80,18 +79,18 @@ namespace CashierApp.Model.Backend
         {
             string[] filePaths = new string[] { "food-products.json", "drink-products.json", "dessert-products.json" };
 
-            if (!Directory.Exists(ProductPath)) 
+            if (!_fileSystem.Directory.Exists(ProductPath)) 
             {
-                Directory.CreateDirectory(ProductPath);
+                _fileSystem.Directory.CreateDirectory(ProductPath);
             }
 
             foreach (string filePath in filePaths)
             {
                 string tempPath = $"{ProductPath}\\{filePath}";
 
-                if (!File.Exists(tempPath)) 
+                if (!_fileSystem.File.Exists(tempPath)) 
                 {
-                    await using var stream = File.Create(tempPath);
+                    await using var stream = _fileSystem.File.Create(tempPath);
                 }
             }
         }
@@ -104,8 +103,7 @@ namespace CashierApp.Model.Backend
 
             try
             {
-                using FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                using StreamReader reader = new StreamReader(stream);
+                using StreamReader reader = _fileSystem.File.OpenText(filePath);
 
                 string json = await reader.ReadToEndAsync();
 
@@ -129,6 +127,8 @@ namespace CashierApp.Model.Backend
                 await WriteLogLine($"Failed to retrieve information from food-products.json, exception: {ex.Message}", "Database.cs", LogType.ERROR);
             }
 
+            //await Task.Delay(10000);
+
             return results;
         }
 
@@ -140,8 +140,7 @@ namespace CashierApp.Model.Backend
 
             try
             {
-                using FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                using StreamReader reader = new StreamReader(stream);
+                using StreamReader reader = _fileSystem.File.OpenText(filePath);
 
                 string json = await reader.ReadToEndAsync();
 
