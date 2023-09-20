@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WcMonaldsSelfService.Model;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls.Primitives;
+using System.Linq;
 
 namespace WcMonaldsSelfService.ViewModel
 {
     internal class MainWindowVM : BaseVM
     {
-        private readonly MenuItem nopeItem = new MenuItem("Select an item", 0f);
+        private readonly MenuItem nopeItem = new("Select an item", 0f);
 
         private MenuItem? currentItem;
         public MenuItem? CurrentItem
@@ -65,9 +62,9 @@ namespace WcMonaldsSelfService.ViewModel
                     SetCenterButtonStatus(false);
                     CurrentItem = selectedItemBasket;
                     SelectedItemMenu = null;
-                    if (selectedItemBasket is Drink)
+                    if (selectedItemBasket is Drink drink)
                     {
-                        DrinkSizes = (selectedItemBasket as Drink).AcceptedSizes;
+                        DrinkSizes = drink.AcceptedSizes;
                     }
                 }
             }
@@ -78,9 +75,9 @@ namespace WcMonaldsSelfService.ViewModel
             new Burger("The Regular", 1.99f, new List<string>(){"Bun", "Beef Patty", "Ketchup"}),
             new Burger("The Big Max", 2.99f, new List<string>(){"Bun", "Beef Patty", "Lettuce", "Chillies", "Ketchup"}),
             new Burger("The King", 4.59f, new List<string>(){"Bun", "Beef Patty", "Bacon", "Chicken", "Ketchup", "Mayonaise", "BBQ sauce"}),
-            new MenuItem("Fries", 0.99f),
-            new MenuItem("Larger Fries", 1.49f),
-            new MenuItem("Mt Kilofryjaro", 1.99f),
+            new MenuItem("Small Fries", 0.99f),
+            new MenuItem("Fries", 1.49f),
+            new MenuItem("Large Fries", 1.99f),
             new LooseMeats("Chicken Nuggets", 1.39f, 12),
             new LooseMeats("Chicken Wings", 2.99f, 25),
             new LooseMeats("Garlic Bread Slices", 1.49f, 6),
@@ -97,6 +94,8 @@ namespace WcMonaldsSelfService.ViewModel
                 NotifyPropertyChanged(nameof(Menu));
             }
         }
+
+        private List<Deal> Deals = new();
 
         private ObservableCollection<MenuItem> basket = new();
         public ObservableCollection<MenuItem> Basket
@@ -209,9 +208,9 @@ namespace WcMonaldsSelfService.ViewModel
             {
                 if (LooseMeatsMenuVisibility == Visibility.Visible)
                 {
-                    LooseMeats lm = (LooseMeats)CurrentItem;
-                    int num;
-                    if (int.TryParse(value, out num) && lm.ChangeNo(num))
+                    LooseMeats? lm = CurrentItem as LooseMeats;
+                    if (lm == null) { return; }
+                    if (int.TryParse(value, out int num) && lm.ChangeNo(num))
                     {
                         curAmount = value;
                         NotifyPropertyChanged(nameof(CurAmount));
@@ -270,6 +269,17 @@ namespace WcMonaldsSelfService.ViewModel
                 ((Drink)CurrentItem).SetSize(curDrinkSize);
                 UpdateTotalCost();
                 CurPrice = CurrentItem.Price.ToString();
+            }
+        }
+
+        private float totalDiscount;
+        public float TotalDiscount
+        {
+            get => totalDiscount;
+            set
+            {
+                totalDiscount = value;
+                NotifyPropertyChanged(nameof(TotalDiscount));
             }
         }
 
@@ -337,6 +347,8 @@ namespace WcMonaldsSelfService.ViewModel
             GoToMenu = new RelayCommand(o => CurrentTab = 0);
             NextCustomer = new RelayCommand(o => ResetForNextCustomer());
             SwaptoPayedScreen = new RelayCommand(o => SetCheckoutVisabilities(true));
+
+            Deals.Add(new Deal(new MenuItem[] { Menu[1], Menu[4] }, 1));
         }
 
         private void SelectAddCurrentItemToBasket(MenuItem item)
@@ -533,11 +545,13 @@ namespace WcMonaldsSelfService.ViewModel
         /// </summary>
         private void UpdateTotalCost()
         {
+            CheckDeals();
             float runningTotal = 0f;
             foreach (var item in Basket)
             {
                 runningTotal += item.Price;
             }
+            runningTotal -= TotalDiscount;
             runningTotal = MathF.Round(runningTotal * 100);
             TotalCost = $"Total £{runningTotal / 100}";
         }
@@ -573,6 +587,21 @@ namespace WcMonaldsSelfService.ViewModel
             }
         }
 
+
+        private void CheckDeals()
+        {
+            float discount;
+            MenuItem[] basketArray = new MenuItem[Basket.Count];
+            for (int i = 0; i < Basket.Count; i++) { basketArray[i] = Basket[i]; }
+
+            foreach (var Deal in Deals)
+            {
+                if (Deal.CheckIfApplies(basketArray, out discount))
+                {
+                    TotalDiscount += discount;
+                }
+            }
+        }
         /// <summary>
         /// Adds an error to the debug error list
         /// </summary>

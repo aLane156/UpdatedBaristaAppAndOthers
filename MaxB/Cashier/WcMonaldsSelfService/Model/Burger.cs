@@ -8,7 +8,7 @@ namespace WcMonaldsSelfService.Model
 {
     public class Burger : MenuItem
     {
-        private List<string> layers = new List<string>();
+        private List<string> layers = new();
         public List<string> Layers
         {
             get { return layers; }
@@ -18,9 +18,22 @@ namespace WcMonaldsSelfService.Model
             }
         }
 
+        private List<string> layersInUse = new();
+        public List<string> LayersInUse
+        {
+            get { return layersInUse; }
+            private set
+            {
+                layersInUse = value;
+            }
+        }
+
         public Burger(string _name, float _price, List<string> layers) : base(_name, _price)
         {
             Layers = layers;
+            LayersInUse = layers;
         }
+
+
     }
 }

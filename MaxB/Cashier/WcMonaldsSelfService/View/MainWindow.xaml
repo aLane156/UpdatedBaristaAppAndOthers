@@ -12,11 +12,6 @@
     </Window.DataContext>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="87*"/>
-            <ColumnDefinition Width="43*"/>
-            <ColumnDefinition Width="670*"/>
-        </Grid.ColumnDefinitions>
         <TabControl SelectedIndex="{Binding CurrentTab}" Margin="0,-24,0,0" Grid.ColumnSpan="3">
             <TabItem Header="Menu">
                 <Grid>
@@ -29,7 +24,7 @@
                     <Button x:Name="Duplicate_Button" Content="Add Another" HorizontalAlignment="Left" Height="37" Margin="246,193,0,0" VerticalAlignment="Top" Width="117" FontSize="18" Visibility="{Binding BasketButtonVisibility}" Command="{Binding AddAnotherToBasket}"/>
                     <Button x:Name="Remove_Button" Content="Remove" HorizontalAlignment="Left" Height="37" Margin="380,193,0,0" VerticalAlignment="Top" Width="90" FontSize="18" Visibility="{Binding BasketButtonVisibility}" Command="{Binding RemoveFromBasket}"/>
                     <TextBlock x:Name="Total_Cost" HorizontalAlignment="Left" Height="41" Margin="614,247,0,0" TextWrapping="Wrap" Text="{Binding TotalCost, Mode=OneWay}" VerticalAlignment="Top" Width="143" FontSize="16"/>
-                    <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,293,0,0" VerticalAlignment="Top" Width="113" Command="{Binding GoToCheckout}"/>
+                    <Button x:Name="To_CheckOut" Content="Checkout" HorizontalAlignment="Left" Height="31" Margin="614,288,0,0" VerticalAlignment="Top" Width="113" Command="{Binding GoToCheckout}"/>
                     <TextBlock HorizontalAlignment="Left" Height="28" Margin="26,22,0,0" TextWrapping="Wrap" Text="Menu:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
                     <TextBlock HorizontalAlignment="Left" Height="28" Margin="614,22,0,0" TextWrapping="Wrap" Text="Basket:" VerticalAlignment="Top" Width="152" FontSize="20" FontWeight="Bold"/>
                     <ComboBox HorizontalAlignment="Left" Margin="236,266,0,0" VerticalAlignment="Top" Width="120" Visibility="{Binding DrinkMenuVisibility}" ItemsSource="{Binding DrinkSizes}" SelectedItem="{Binding CurDrinkSize}"/>
@@ -46,9 +41,6 @@
                     <TextBlock HorizontalAlignment="Left" Height="50" Margin="250,215,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" FontSize="16" Text="{Binding PayedText}"/>
                     <Button Content="Next customer" HorizontalAlignment="Left" Height="37" Margin="250,295,0,0" VerticalAlignment="Top" Width="147" FontSize="16" Command="{Binding NextCustomer}" Visibility="{Binding PayedVis}"/>
                 </Grid>
-            </TabItem>
-            <TabItem Header="DEBUG">
-                <TextBlock TextWrapping="Wrap" Text="{Binding DebugLines}"/>
             </TabItem>
         </TabControl>
     </Grid>
