@@ -22,9 +22,7 @@
         <TextBox Height="100" Width="400" Margin="0,600,300,0" FontSize="60" Name="ConfirmPasswordText"/>
 
         <ComboBox Height="100" Width="100" Margin="800,150,0,0" FontSize="80" x:Name="AccessLevelNumber" SelectedIndex="0">
-            <ComboBoxItem x:Name="Level1" Content="1"/>
-            <ComboBoxItem x:Name="Level2" Content="2"/>
-            <ComboBoxItem x:Name="Level3" Content="3" IsSelected="True"/>
+            
         </ComboBox>
 
         <Button Height="200" Width="400" Margin="800,600,0,0" Content="Enter" FontSize="100" Name="EnterButton" Click="CreateNewUser"/>

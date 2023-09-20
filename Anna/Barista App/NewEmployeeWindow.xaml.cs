@@ -22,22 +22,24 @@ namespace Barista_App
     /// </summary>
     public partial class NewEmployeeWindow : Window
     {
-        public string[] Levels { get; set; }
-
         public NewEmployeeWindow()
         {
             InitializeComponent();
 
             using StreamReader streamReader = new("CurrentUser.json");
             string json = streamReader.ReadToEnd();
-            CurrentUser user = JsonConvert.DeserializeObject<CurrentUser>(json);
+            CurrentUser currentUser = JsonConvert.DeserializeObject<CurrentUser>(json);
 
-            int LevelOfAccessAscii = (int)Convert.ToInt32(user.UID[0]);
+            int LevelOfAccessInt = (int)Char.GetNumericValue(currentUser.UID[0]);
 
-            if (LevelOfAccessAscii == 49)
+            if (LevelOfAccessInt == 1)
             {
                 // An employee cannot give another employee the same level of access as them.
-                Level1.IsEnabled = false;
+                AccessLevelNumber.ItemsSource = new List<string> { "2", "3"};
+            }
+            else
+            {
+                AccessLevelNumber.ItemsSource = new List<string> {"1", "2", "3" };
             }
         }
 
@@ -92,18 +94,21 @@ namespace Barista_App
             EmployeeList Employees = JsonConvert.DeserializeObject<EmployeeList>(json);
 
             Random rnd = new();
-            string newID = "";
+            int newIDint;
+            string newIDstring = "";
             bool uniqueID = false;
 
             // If the ID is not unique, this repeats until it is.
             while (uniqueID == false)
             {
-                newID = AccessLevelNumber.SelectedValue + rnd.Next(0, 99999).ToString();
+                // newID must first be calculated as an integer to prevent a digit from being lost in the case that the first digit of rnd.Next is a 0.
+                newIDint = (int.Parse(AccessLevelNumber.SelectedItem.ToString()) * 100000) + rnd.Next(0, 99999);
+                newIDstring = Convert.ToString(newIDint);
                 uniqueID = true;
 
                 for (int i = 1; i < Employees.Count + 1; i++)
                 {
-                    if (newID == Employees[i.ToString()].EmployeeID)
+                    if (newIDstring == Employees[i.ToString()].EmployeeID)
                     {
                         uniqueID = false;
                         break;
@@ -111,7 +116,7 @@ namespace Barista_App
                 }
             }
 
-            return newID;
+            return newIDstring;
 
         }
 

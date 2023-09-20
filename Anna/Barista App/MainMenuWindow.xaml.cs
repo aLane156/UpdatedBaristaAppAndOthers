@@ -17,14 +17,14 @@ namespace Barista_App
 
             using StreamReader streamReader = new("CurrentUser.json");
             string json = streamReader.ReadToEnd();
-            CurrentUser user = JsonConvert.DeserializeObject<CurrentUser>(json);
+            CurrentUser currentUser = JsonConvert.DeserializeObject<CurrentUser>(json);
 
-            TitleText.Text = "Currently signed in as: " + user.UFirstName + " " + user.USurname + ".";
+            TitleText.Text = "Currently signed in as: " + currentUser.UFirstName + " " + currentUser.USurname + ".";
 
-            int LevelOfAccessAscii = (int)Convert.ToInt32(user.UID[0]);
+            int LevelOfAccessInt = (int)Char.GetNumericValue(currentUser.UID[0]);
 
-            // Ascii code 49 represents the character 1. If an employee's ID has a number greater than 1, their level of access is not high enough to add or delete employees.
-            if (LevelOfAccessAscii >  49)
+            // If an employee's ID has a number greater than 1, their level of access is not high enough to add or delete employees.
+            if (LevelOfAccessInt >  1)
             {
                 AddEmployeeButton.IsEnabled = false;
                 AddEmployeeButton.Visibility = Visibility.Hidden;

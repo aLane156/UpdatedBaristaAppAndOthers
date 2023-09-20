@@ -23,7 +23,7 @@
         <TextBox Height="100" Width="500" Margin="800,0,0,200" FontSize="60" Name="EditPasswordText" Visibility="Visible" IsEnabled="False"/>
         <TextBox Height="100" Width="500" Margin="800,300,0,0" FontSize="60" Name="EditConfirmPasswordText" Visibility="Visible" IsEnabled="False"/>
 
-        <Button Height="200" Width="400" Margin="1000,700,0,0" Content="Submit" FontSize="60" Name="SubmitChangesButton"/>
+        <Button Height="200" Width="400" Margin="1000,700,0,0" Content="Submit" FontSize="60" Name="SubmitChangesButton" Click="SubmitChangesButton_Click"/>
         <Button Height="150" Width="300" Margin="0,0,1500,800" Content="Back" FontSize="60" Name="BackButton" Click="BackButton_Click"/>
     </Grid>
 </Window>

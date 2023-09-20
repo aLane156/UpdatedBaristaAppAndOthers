@@ -10,7 +10,7 @@
     <Grid>
         <TextBlock Height="150" Width="600" Margin="0,0,0,800" Text="Finish Order" FontSize="100" TextAlignment="Center"/>
 
-        <TextBlock Height="100" Width="300" Margin="0,0,1400,400" Text="Total: " FontSize="80" Name="TotalPriceText"/>
+        <TextBlock Height="100" Width="400" Margin="0,0,1200,400" Text="Total: " FontSize="80" Name="TotalPriceText"/>
         <TextBlock Height="100" Width="200" Margin="0,0,1400,100" Text="Cash" FontSize="60" TextAlignment="Center"/>
         <TextBlock Height="100" Width="200" Margin="700,0,0,100" Text="Card" FontSize="60" TextAlignment="Center"/>
 

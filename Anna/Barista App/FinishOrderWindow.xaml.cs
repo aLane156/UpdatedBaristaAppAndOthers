@@ -77,7 +77,7 @@ namespace Barista_App
         /// Calculates the total price of the order by parseing the string Price for each item in CurrentOrder.json into double and then adding them to a total.
         /// </summary>
         /// <returns></returns>
-        private double CalculatePrice()
+        static double CalculatePrice()
         {
             using StreamReader streamReader = new("CurrentOrder.json");
             string json = streamReader.ReadToEnd();
