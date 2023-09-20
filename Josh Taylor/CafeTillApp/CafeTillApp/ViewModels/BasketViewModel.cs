@@ -1,11 +1,6 @@
 ﻿using Prism.Events;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using CafeTillApp.Views;
 
@@ -137,6 +132,10 @@ namespace CafeTillApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// when remove button pressed remove item from list
+        /// </summary>
+        /// <param name="item"></param>
         private void RemoveItem(string item)
         {
             MainWindowViewModel.SharedBasket.Basket.Remove(item);
@@ -148,6 +147,11 @@ namespace CafeTillApp.ViewModels
             TotalText = CalculateTotal();
         }
 
+        /// <summary>
+        /// Calculates the total to be displayed 
+        /// So in format Total: £0.00
+        /// </summary>
+        /// <returns total></returns>
         public string CalculateTotal()
         {
             // Check if BasketItems is not null
@@ -179,10 +183,8 @@ namespace CafeTillApp.ViewModels
             else
             {
                 // If BasketItems is null, return an empty string
-                return "";
+                return "Total: £0.00";
             }
         }
-
-
     }
 }

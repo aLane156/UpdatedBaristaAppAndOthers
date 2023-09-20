@@ -24,6 +24,9 @@ namespace CafeTillApp.ViewModels
             set { SetProperty(ref _currentDictionary, value); }
         }
 
+        /// <summary>
+        /// Randomises colour for buttons
+        /// </summary>
         public Brush RandomColor
         {
             get
@@ -40,6 +43,9 @@ namespace CafeTillApp.ViewModels
                 return new SolidColorBrush(color);
             }
         }
+        /// <summary>
+        /// Randomises size for buttons 
+        /// </summary>
         public double RandomSize
         {
             get
@@ -50,12 +56,16 @@ namespace CafeTillApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// Randomises margins for buttons
+        /// </summary>
         public Thickness RandomMargin
         {
             get
             {
                 var marginList = new List<Thickness> { new Thickness(25), new Thickness(30), new Thickness(35) };
                 var random = new Random();
+
                 return marginList[random.Next(marginList.Count)];
             }
         }

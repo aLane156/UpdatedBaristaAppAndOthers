@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace CafeTillApp.ViewModels
 {
-    class CheckOutViewModel : BindableBase
+    public class CheckOutViewModel : BindableBase
     {
         public ICommand BackCommand { get; private set; }
         public ICommand PayCommand { get; private set; }
@@ -47,6 +47,10 @@ namespace CafeTillApp.ViewModels
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
         
+        /// <summary>
+        /// On pay wipe basket and go back to start
+        /// Complete reset
+        /// </summary>
         private void PayCommandExecute()
         {
             MainWindowViewModel.SharedBasket.Basket.Clear();
@@ -54,7 +58,12 @@ namespace CafeTillApp.ViewModels
             var newView = new MenuView();
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
-        private void EnterKeyPressed()
+        /// <summary>
+        /// when enter pressed when textbox focused
+        /// adds tips to basket and wipes texbox by reseting UI
+        /// all only happens if texbox holding a float
+        /// </summary>
+        public void EnterKeyPressed()
         {
             if (float.TryParse(Tips, out _))
             {

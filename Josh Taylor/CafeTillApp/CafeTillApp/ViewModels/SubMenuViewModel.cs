@@ -26,8 +26,9 @@ namespace CafeTillApp.ViewModels
         public DelegateCommand<string> ButtonCommand =>
             _buttonCommand ?? (_buttonCommand = new DelegateCommand<string>(ExecuteButtonCommand));
 
+        // For subscribing and unsubscriping methods
         private readonly IEventAggregator _eventAggregator;
-        private string option; // Declare the field without initializing it here
+        private string option; 
 
         private Dictionary<string, Dictionary<string, double>> _currentDictionary;
         public Dictionary<string, Dictionary<string, double>> CurrentDictionary
@@ -145,6 +146,10 @@ namespace CafeTillApp.ViewModels
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
 
+        /// <summary>
+        /// Adds item clicked on to list
+        /// </summary>
+        /// <param name="item"></param>
         void ExecuteButtonCommand(string item)
         {
             if (MainWindowViewModel.SharedBasket.Basket == null)

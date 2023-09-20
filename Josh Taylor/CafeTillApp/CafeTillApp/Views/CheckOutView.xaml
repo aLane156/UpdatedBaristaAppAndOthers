@@ -6,34 +6,37 @@
              xmlns:local="clr-namespace:CafeTillApp"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             mc:Ignorable="d" Height="517" Width="751">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="en-gb" Text="Checkout"/></TextBlock>
+            <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource ButtonText}" 
+                    Height="30" Width="55" Margin="0,0,5,0"
+                    Command="{Binding BackCommand}"/>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Top" Height="83" Width="198"><Run Language="en-gb" Text="Checkout"/></TextBlock>
-        <Label Grid.Column="1" Content="Tips:" Margin="90,159,314,184" HorizontalContentAlignment="Center"/>
-        <TextBox Grid.Column="0" TextWrapping="Wrap" Visibility="Visible" Text="{Binding Tips, UpdateSourceTrigger=PropertyChanged}" Width="315" Height="25" Background="#FFFFF6D3" Grid.ColumnSpan="2" Margin="230,160,255,185">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
-            </TextBox.InputBindings>
-        </TextBox>
+            <Label Grid.ColumnSpan="2" Content="Tips:" HorizontalContentAlignment="Center" Margin="188,146,187,289"/>
+            <TextBox TextWrapping="Wrap" Visibility="Visible" Text="{Binding Tips, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFF6D3" Margin="188,177,188,254" Grid.ColumnSpan="2">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
 
-        <Button Content="Card" HorizontalAlignment="Left" Margin="185,306,0,0" 
-                VerticalAlignment="Top" Command="{Binding PayCommand}" 
-                Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FF7C3F58" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-        <Button Content="Cash" HorizontalAlignment="Center" Margin="0,306,0,0" 
-                VerticalAlignment="Top" Command="{Binding PayCommand}" Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FFF9A875" Grid.Column="1" Grid.RowSpan="2"/>
-        <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
-                Height="30" Width="55"
-                Command="{Binding BackCommand}" Style="{StaticResource ButtonText}" Grid.Column="1" Grid.Row="2"/>
+            <Button Content="Card" HorizontalAlignment="Left" Margin="22,273,0,0" 
+                    VerticalAlignment="Top" Command="{Binding PayCommand}" 
+                    Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FF7C3F58" Grid.Column="1"/>
+            <Button Content="Cash" HorizontalAlignment="Right" Margin="0,273,22,0" 
+                    VerticalAlignment="Top" Command="{Binding PayCommand}" 
+                    Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FFF9A875"/>
+        </Grid>
     </Grid>
 </UserControl>
