@@ -6,20 +6,37 @@
              xmlns:local="clr-namespace:CafeTillApp"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="550">
+             mc:Ignorable="d" Height="517" Width="751">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Margin="120,92,0,263" TextWrapping="Wrap" Visibility="Visible" Text="{Binding Tips, UpdateSourceTrigger=PropertyChanged}" Width="315">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
-            </TextBox.InputBindings>
-        </TextBox>
-        <Button Content="Card" HorizontalAlignment="Left" Margin="94,216,0,0" 
-                VerticalAlignment="Top" Command="{Binding PayCommand}" Height="155" Width="166"/>
-        <Button Content="Cash" HorizontalAlignment="Left" Margin="301,207,0,0" 
-                VerticalAlignment="Top" Command="{Binding PayCommand}" Height="173" Width="169"/>
-        <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
-Height="30" Width="55" Margin="0,0,5,0"
-Command="{Binding BackCommand}"/>
+        <Grid>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="en-gb" Text="Checkout"/></TextBlock>
+            <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource ButtonText}" 
+                    Height="30" Width="55" Margin="0,0,5,0"
+                    Command="{Binding BackCommand}"/>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.ColumnSpan="2" Content="Tips:" HorizontalContentAlignment="Center" Margin="188,146,187,289"/>
+            <TextBox TextWrapping="Wrap" Visibility="Visible" Text="{Binding Tips, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFF6D3" Margin="188,177,188,254" Grid.ColumnSpan="2">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+
+            <Button Content="Card" HorizontalAlignment="Left" Margin="22,273,0,0" 
+                    VerticalAlignment="Top" Command="{Binding PayCommand}" 
+                    Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FF7C3F58" Grid.Column="1"/>
+            <Button Content="Cash" HorizontalAlignment="Right" Margin="0,273,22,0" 
+                    VerticalAlignment="Top" Command="{Binding PayCommand}" 
+                    Height="155" Width="166" Style="{StaticResource ButtonText}" Background="#FFF9A875"/>
+        </Grid>
     </Grid>
 </UserControl>

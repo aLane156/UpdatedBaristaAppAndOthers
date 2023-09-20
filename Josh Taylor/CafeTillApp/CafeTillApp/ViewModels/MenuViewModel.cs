@@ -4,21 +4,14 @@ using Prism.Mvvm;
 using Prism.Commands;
 using Prism.Events;
 using CafeTillApp.Views;
+using System.Windows.Media;
+using System;
+using System.Windows;
 
 namespace CafeTillApp.ViewModels
 {
     public class MenuViewModel : BindableBase
     {
-        // Example on how to set up data binding
-        /*
-        private string _content = "test button";
-        public string Content
-        {
-            get { return _content; }
-            set { SetProperty(ref _content, value); }
-        }
-        */
-
         private DelegateCommand<string> _buttonCommand;
         public DelegateCommand<string> ButtonCommand =>
             _buttonCommand ?? (_buttonCommand = new DelegateCommand<string>(ExecuteButtonCommand));
@@ -29,6 +22,52 @@ namespace CafeTillApp.ViewModels
         {
             get { return _currentDictionary; }
             set { SetProperty(ref _currentDictionary, value); }
+        }
+
+        /// <summary>
+        /// Randomises colour for buttons
+        /// </summary>
+        public Brush RandomColor
+        {
+            get
+            {
+                var colorList = new List<Color>
+                {
+                    Color.FromRgb(124, 63, 88), // Corresponds to #7C3F58
+                    Color.FromRgb(235, 107, 111), // Corresponds to #EB6B6F
+                    Color.FromRgb(249, 168, 117), // Corresponds to #F9A875
+                    Color.FromRgb(255, 246, 211)  // Corresponds to #FFF6D3
+                };
+                var random = new Random();
+                var color = colorList[random.Next(colorList.Count)];
+                return new SolidColorBrush(color);
+            }
+        }
+        /// <summary>
+        /// Randomises size for buttons 
+        /// </summary>
+        public double RandomSize
+        {
+            get
+            {
+                var sizeList = new List<double> { 120, 150, 180 };
+                var random = new Random();
+                return sizeList[random.Next(sizeList.Count)];
+            }
+        }
+
+        /// <summary>
+        /// Randomises margins for buttons
+        /// </summary>
+        public Thickness RandomMargin
+        {
+            get
+            {
+                var marginList = new List<Thickness> { new Thickness(25), new Thickness(30), new Thickness(35) };
+                var random = new Random();
+
+                return marginList[random.Next(marginList.Count)];
+            }
         }
 
         private readonly IEventAggregator _eventAggregator;

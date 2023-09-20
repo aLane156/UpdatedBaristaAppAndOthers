@@ -12,6 +12,8 @@ using System.Windows.Controls;
 using Microsoft.VisualBasic.FileIO;
 using CafeTillApp.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
+using System.Windows;
 
 namespace CafeTillApp.ViewModels
 {
@@ -24,14 +26,51 @@ namespace CafeTillApp.ViewModels
         public DelegateCommand<string> ButtonCommand =>
             _buttonCommand ?? (_buttonCommand = new DelegateCommand<string>(ExecuteButtonCommand));
 
+        // For subscribing and unsubscriping methods
         private readonly IEventAggregator _eventAggregator;
-        private string option; // Declare the field without initializing it here
+        private string option; 
 
         private Dictionary<string, Dictionary<string, double>> _currentDictionary;
         public Dictionary<string, Dictionary<string, double>> CurrentDictionary
         {
             get { return _currentDictionary; }
             set { SetProperty(ref _currentDictionary, value); }
+        }
+
+        public Brush RandomColor
+        {
+            get
+            {
+                var colorList = new List<Color>
+                {
+                    Color.FromRgb(124, 63, 88), // Corresponds to #7C3F58
+                    Color.FromRgb(235, 107, 111), // Corresponds to #EB6B6F
+                    Color.FromRgb(249, 168, 117), // Corresponds to #F9A875
+                    Color.FromRgb(255, 246, 211)  // Corresponds to #FFF6D3
+                };
+                var random = new Random();
+                var color = colorList[random.Next(colorList.Count)];
+                return new SolidColorBrush(color);
+            }
+        }
+        public double RandomSize
+        {
+            get
+            {
+                var sizeList = new List<double> { 120, 150, 180 };
+                var random = new Random();
+                return sizeList[random.Next(sizeList.Count)];
+            }
+        }
+
+        public Thickness RandomMargin
+        {
+            get
+            {
+                var marginList = new List<Thickness> { new Thickness(25), new Thickness(30), new Thickness(35) };
+                var random = new Random();
+                return marginList[random.Next(marginList.Count)];
+            }
         }
 
         public SubMenuViewModel(IEventAggregator eventAggregator)
@@ -88,7 +127,7 @@ namespace CafeTillApp.ViewModels
                     List<string> combinedItems = new List<string>();
                     foreach (KeyValuePair<string, double> item in SelectedItems)
                     {
-                        combinedItems.Add(string.Format("{0}\n£{1}", item.Key, item.Value));
+                        combinedItems.Add(string.Format("{0}\n£{1:0.00}", item.Key, item.Value));
                     }
                     return combinedItems;
                 }
@@ -107,6 +146,10 @@ namespace CafeTillApp.ViewModels
             _eventAggregator.GetEvent<ChangeViewEvent>().Publish(newView);
         }
 
+        /// <summary>
+        /// Adds item clicked on to list
+        /// </summary>
+        /// <param name="item"></param>
         void ExecuteButtonCommand(string item)
         {
             if (MainWindowViewModel.SharedBasket.Basket == null)

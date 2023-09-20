@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CafeTillApp.ViewModels"
+             xmlns:local="clr-namespace:CafeTillApp"
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <TextBlock HorizontalAlignment="Left" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Top" Height="83" Width="198"><Run Language="en-gb" Text="Main Menu"/></TextBlock>
         <!-- ItemsControl for dictionary items -->
         <ItemsControl ItemsSource="{Binding CurrentDictionary}">
             <ItemsControl.ItemsPanel>
@@ -18,10 +19,14 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding Key}" Width="120" Height="120" 
-                    Margin="25,25,25,25" 
-                    Command="{Binding Path=DataContext.ButtonCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                    CommandParameter="{Binding Key}"/>
+                    <Button Content="{Binding Key}" 
+                Width="{Binding Path=DataContext.RandomSize, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                Height="{Binding Path=DataContext.RandomSize, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                Margin="{Binding Path=DataContext.RandomMargin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                Command="{Binding Path=DataContext.ButtonCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                CommandParameter="{Binding Key}"
+                Style="{StaticResource ButtonText}"
+                Background="{Binding Path=DataContext.RandomColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

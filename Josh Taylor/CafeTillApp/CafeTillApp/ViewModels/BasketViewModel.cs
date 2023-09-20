@@ -1,11 +1,6 @@
 ﻿using Prism.Events;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using CafeTillApp.Views;
 
@@ -43,6 +38,7 @@ namespace CafeTillApp.ViewModels
             {
                 // Initialize MainWindowViewModel.SharedBasket.Basket as an empty ObservableCollection<string>
                 MainWindowViewModel.SharedBasket.Basket = new ObservableCollection<string>();
+
             }
 
             // Subscribe to the CollectionChanged event
@@ -136,6 +132,10 @@ namespace CafeTillApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// when remove button pressed remove item from list
+        /// </summary>
+        /// <param name="item"></param>
         private void RemoveItem(string item)
         {
             MainWindowViewModel.SharedBasket.Basket.Remove(item);
@@ -147,7 +147,12 @@ namespace CafeTillApp.ViewModels
             TotalText = CalculateTotal();
         }
 
-        private string CalculateTotal()
+        /// <summary>
+        /// Calculates the total to be displayed 
+        /// So in format Total: £0.00
+        /// </summary>
+        /// <returns total></returns>
+        public string CalculateTotal()
         {
             // Check if BasketItems is not null
             if (BasketItems != null)
@@ -162,6 +167,8 @@ namespace CafeTillApp.ViewModels
                     {
                         // Remove everything before and including '£'
                         string substring = item.Substring(index + 1);
+                        // Remove newline characters
+                        substring = substring.Replace("\n", "");
                         // Try to parse the remaining string to an int
                         if (float.TryParse(substring, out float value))
                         {
@@ -171,14 +178,13 @@ namespace CafeTillApp.ViewModels
                     }
                 }
                 // Return the total as a string
-                return "Total: £"+total.ToString();
+                return "Total: £" + total.ToString("0.00");
             }
             else
             {
                 // If BasketItems is null, return an empty string
-                return "";
+                return "Total: £0.00";
             }
         }
-
     }
 }

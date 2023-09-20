@@ -19,31 +19,39 @@
         </Grid.RowDefinitions>
 
         <!-- Basket Section -->
-        <ScrollViewer Grid.Row="0">
-            <ListBox ItemsSource="{Binding BasketItems}">
+        <ScrollViewer Grid.Row="0" Background="#FFF6D3">
+            <ListBox ItemsSource="{Binding BasketItems}" Background="#FFF6D3">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
                             <!-- Display your item here -->
-                            <TextBlock Text="{Binding}" />
+                            <TextBlock Text="{Binding}" Grid.Column="0" Width="150"/>
                             <!-- Add a button next to each item -->
                             <Button Content="Remove"
-                                    Command="{Binding DataContext.RemoveItemCommand,
-                                RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" />
-                        </StackPanel>
+                            Command="{Binding DataContext.RemoveItemCommand,
+                                RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                            CommandParameter="{Binding}" Style="{StaticResource ButtonText}"
+                            Grid.Column="1" Width="65"
+                            Margin="50,0,0,0"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
         </ScrollViewer>
 
 
 
         <!-- Text Box -->
-        <TextBlock Grid.Row="1" Text="{Binding TotalText}" />
+        <TextBlock Grid.Row="1" Text="{Binding TotalText}" FontSize="15"/>
 
         <!-- Button -->
         <Button Grid.Row="2" Command="{Binding CheckOutCommand}" 
-                Content="{Binding ButtonText}"
-                IsEnabled="{Binding IsCheckOutView, Converter={StaticResource InverseBooleanConverter}}"></Button>
+                Content="{Binding ButtonText}" Style="{StaticResource ButtonText}"
+                IsEnabled="{Binding IsCheckOutView, Converter={StaticResource InverseBooleanConverter}}" Background="#FFEB6B6F"></Button>
     </Grid>
 </UserControl>

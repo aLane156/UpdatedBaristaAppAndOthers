@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="460" Width="860" >
+        Title="{Binding Title}" Height="600" Width="1100" Background="#FFEFD0A2">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -16,5 +16,4 @@
         <ContentControl Content="{Binding LeftSide}" Grid.Column="0"/>
         <ContentControl Content="{Binding RightSide}" Grid.Column="1"/>
     </Grid>
-
 </Window>
