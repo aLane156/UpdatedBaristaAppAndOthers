@@ -1,4 +1,7 @@
-﻿namespace CashierApp.Model.Backend
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+namespace CashierApp.Model.Backend
 {
     public class DatabaseTests
     {

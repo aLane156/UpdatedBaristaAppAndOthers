@@ -35,7 +35,7 @@ namespace CashierApp.Model.Backend
 
             if (!_fileSystem.File.Exists(dateLog))
             {
-                await using FileStream stream = File.Create(dateLog);
+                await using var stream = _fileSystem.File.Create(dateLog);
                 stream.Close();
 
                 await WriteLogLine(new("Created log file.", "MainWindowViewModel.cs", LogType.INFO));
